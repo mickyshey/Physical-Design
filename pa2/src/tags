@@ -1,0 +1,65 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BLOCK_H	Block.h	4;"	d
+BTreeInit	FloorplanMgr.cpp	/^FloorplanMgr::BTreeInit()$/;"	f	class:FloorplanMgr
+BTreePacking	FloorplanMgr.cpp	/^FloorplanMgr::BTreePacking()$/;"	f	class:FloorplanMgr
+BTreePackingLeftRec	FloorplanMgr.cpp	/^FloorplanMgr::BTreePackingLeftRec(Block* b)$/;"	f	class:FloorplanMgr
+BTreePackingRightRec	FloorplanMgr.cpp	/^FloorplanMgr::BTreePackingRightRec(Block* b)$/;"	f	class:FloorplanMgr
+BTree_insert	FloorplanMgr.cpp	/^FloorplanMgr::BTree_insert(Block* target, Block* parent)$/;"	f	class:FloorplanMgr
+Block	Block.h	/^	Block() {}$/;"	f	class:Block
+Block	Block.h	/^	Block(string s, unsigned w, unsigned h): _name(s), _width(w), _height(h) { _parent = NULL; _left = NULL; _right = NULL; _x = 0; _y = 0; }$/;"	f	class:Block
+Block	Block.h	/^class Block$/;"	c
+FLOORPLAN_H	FloorplanMgr.h	4;"	d
+FloorplanMgr	FloorplanMgr.h	/^	FloorplanMgr() {}$/;"	f	class:FloorplanMgr
+FloorplanMgr	FloorplanMgr.h	/^	FloorplanMgr(double r): _ratio(r) {} $/;"	f	class:FloorplanMgr
+FloorplanMgr	FloorplanMgr.h	/^class FloorplanMgr$/;"	c
+UTIL_h	Util.h	4;"	d
+Xrange	FloorplanMgr.h	/^typedef pair<unsigned, unsigned> Xrange;$/;"	t
+_Hcontour	FloorplanMgr.h	/^	list<pair<Xrange, unsigned>>	_Hcontour;		\/\/ < x range, y value >$/;"	m	class:FloorplanMgr
+_blockList	FloorplanMgr.h	/^	vector<Block*>					_blockList;$/;"	m	class:FloorplanMgr
+_height	Block.h	/^	unsigned 		_height;$/;"	m	class:Block
+_left	Block.h	/^	Block*			_left;$/;"	m	class:Block
+_name	Block.h	/^	string			_name;$/;"	m	class:Block
+_netList	FloorplanMgr.h	/^	vector<vector<Block*>> 			_netList;$/;"	m	class:FloorplanMgr
+_outlineHeight	FloorplanMgr.h	/^	unsigned						_outlineHeight;$/;"	m	class:FloorplanMgr
+_outlineWidth	FloorplanMgr.h	/^	unsigned						_outlineWidth;$/;"	m	class:FloorplanMgr
+_parent	Block.h	/^	Block*			_parent;$/;"	m	class:Block
+_ratio	FloorplanMgr.h	/^	double							_ratio;$/;"	m	class:FloorplanMgr
+_right	Block.h	/^	Block*			_right;$/;"	m	class:Block
+_root	FloorplanMgr.h	/^	Block*							_root;			\/\/ root of B* tree$/;"	m	class:FloorplanMgr
+_width	Block.h	/^	unsigned 		_width;$/;"	m	class:Block
+_x	Block.h	/^	unsigned		_x;					\/\/ x coordinate$/;"	m	class:Block
+_y	Block.h	/^	unsigned		_y;					\/\/ y coordinate$/;"	m	class:Block
+getHeight	Block.h	/^	unsigned getHeight() { return _height; }$/;"	f	class:Block
+getLeft	Block.h	/^	Block* getLeft() { return _left; }$/;"	f	class:Block
+getName	Block.h	/^	string getName() { return _name; }$/;"	f	class:Block
+getParent	Block.h	/^	Block* getParent() { return _parent; }$/;"	f	class:Block
+getRatio	FloorplanMgr.h	/^	double getRatio() { return _ratio; }$/;"	f	class:FloorplanMgr
+getRight	Block.h	/^	Block* getRight() { return _right; }$/;"	f	class:Block
+getTokens	Util.cpp	/^getTokens(const string& s)$/;"	f
+getWidth	Block.h	/^	unsigned getWidth() { return _width; }$/;"	f	class:Block
+getX	Block.h	/^	unsigned getX() { return _x; }$/;"	f	class:Block
+getY	Block.h	/^	unsigned getY() { return _y; }$/;"	f	class:Block
+isFull	Block.h	/^	bool isFull() { return _right != NULL; }$/;"	f	class:Block
+isLeaf	Block.h	/^	bool isLeaf() { return (_left == NULL && _right == NULL); }$/;"	f	class:Block
+main	main.cpp	/^int main(int argc, char** argv) {$/;"	f
+readInput	FloorplanMgr.cpp	/^FloorplanMgr::readInput(string s1, string s2)$/;"	f	class:FloorplanMgr
+readInputBlock	FloorplanMgr.cpp	/^FloorplanMgr::readInputBlock(string s, unordered_map<string, Block*>& blockMap)$/;"	f	class:FloorplanMgr
+readInputNet	FloorplanMgr.cpp	/^FloorplanMgr::readInputNet(string s, unordered_map<string, Block*>& blockMap)$/;"	f	class:FloorplanMgr
+reportBTree	FloorplanMgr.cpp	/^FloorplanMgr::reportBTree()$/;"	f	class:FloorplanMgr
+reportBTreeRec	FloorplanMgr.cpp	/^FloorplanMgr::reportBTreeRec(Block* b, unsigned level)$/;"	f	class:FloorplanMgr
+reportBlockList	FloorplanMgr.cpp	/^FloorplanMgr::reportBlockList()$/;"	f	class:FloorplanMgr
+reportHcontour	FloorplanMgr.cpp	/^FloorplanMgr::reportHcontour()$/;"	f	class:FloorplanMgr
+reportNetList	FloorplanMgr.cpp	/^FloorplanMgr::reportNetList()$/;"	f	class:FloorplanMgr
+setLeft	Block.h	/^	void setLeft(Block* b) { _left = b; }$/;"	f	class:Block
+setParent	Block.h	/^	void setParent(Block* b) { _parent = b; }$/;"	f	class:Block
+setRight	Block.h	/^	void setRight(Block* b) { _right = b; }$/;"	f	class:Block
+setX	Block.h	/^	void setX(unsigned x) { _x = x; }$/;"	f	class:Block
+setY	Block.h	/^	void setY(unsigned y) { _y = y; }$/;"	f	class:Block
+updateHcontour	FloorplanMgr.cpp	/^FloorplanMgr::updateHcontour(Block* b)$/;"	f	class:FloorplanMgr
+~Block	Block.h	/^	~Block() {}$/;"	f	class:Block
+~FloorplanMgr	FloorplanMgr.h	/^	~FloorplanMgr() {}$/;"	f	class:FloorplanMgr
