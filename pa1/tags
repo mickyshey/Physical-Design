@@ -1,0 +1,397 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CELL	NetCell.h	/^typedef vector< Cell* > CELL;$/;"	t
+CELL	NetCell_bug.h	/^typedef vector< Cell* > CELL;$/;"	t
+CELL	NetCell_v2.h	/^typedef vector< Cell* > CELL;$/;"	t
+CELL	NetCell_v4.h	/^typedef vector< Cell* > CELL;$/;"	t
+CMDMGR_H	CmdMgr.h	4;"	d
+Cell	NetCell.h	/^		Cell() { _gain = 0; }$/;"	f	class:Cell
+Cell	NetCell.h	/^		Cell(string n) { _name = n; _gain = 0; }$/;"	f	class:Cell
+Cell	NetCell.h	/^class Cell$/;"	c
+Cell	NetCell_bug.h	/^		Cell() { _gain = 0; }$/;"	f	class:Cell
+Cell	NetCell_bug.h	/^		Cell(string n) { _name = n; _gain = 0; }$/;"	f	class:Cell
+Cell	NetCell_bug.h	/^class Cell$/;"	c
+Cell	NetCell_v2.h	/^		Cell() { _gain = 0; }$/;"	f	class:Cell
+Cell	NetCell_v2.h	/^		Cell(string n) { _name = n; _gain = 0; }$/;"	f	class:Cell
+Cell	NetCell_v2.h	/^class Cell$/;"	c
+Cell	NetCell_v4.h	/^		Cell() { _gain = 0; }$/;"	f	class:Cell
+Cell	NetCell_v4.h	/^		Cell(string n) { _name = n; _gain = 0; }$/;"	f	class:Cell
+Cell	NetCell_v4.h	/^class Cell$/;"	c
+CellArray	NetCell.h	/^		CellArray() {}$/;"	f	class:CellArray
+CellArray	NetCell.h	/^class CellArray$/;"	c
+CellArray	NetCell_bug.h	/^		CellArray() {}$/;"	f	class:CellArray
+CellArray	NetCell_bug.h	/^class CellArray$/;"	c
+CellArray	NetCell_v2.h	/^		CellArray() {}$/;"	f	class:CellArray
+CellArray	NetCell_v2.h	/^class CellArray$/;"	c
+CellArray	NetCell_v4.h	/^		CellArray() {}$/;"	f	class:CellArray
+CellArray	NetCell_v4.h	/^class CellArray$/;"	c
+CmdMgr	CmdMgr.h	/^class CmdMgr$/;"	c
+FM_PAR_H	FM_partition.h	4;"	d
+FM_partition	FM_partition.h	/^		FM_partition() {}$/;"	f	class:FM_partition
+FM_partition	FM_partition.h	/^class FM_partition$/;"	c
+NET	NetCell.h	/^typedef vector< Net* > NET;$/;"	t
+NET	NetCell_bug.h	/^typedef vector< Net* > NET;$/;"	t
+NET	NetCell_v2.h	/^typedef vector< Net* > NET;$/;"	t
+NET	NetCell_v4.h	/^typedef vector< Net* > NET;$/;"	t
+NETCELL_H	NetCell.h	4;"	d
+NETCELL_H	NetCell_bug.h	4;"	d
+NETCELL_H	NetCell_v2.h	4;"	d
+NETCELL_H	NetCell_v4.h	4;"	d
+Net	NetCell.h	/^		Net() { _sizeInA = _sizeInB = 0; _RealSizeInA = _RealSizeInB = 0; }$/;"	f	class:Net
+Net	NetCell.h	/^		Net(string n) { _name = n; _sizeInA = _sizeInB = 0; _RealSizeInA = _RealSizeInB = 0; }$/;"	f	class:Net
+Net	NetCell.h	/^class Net$/;"	c
+Net	NetCell_bug.h	/^		Net() { _sizeInA = _sizeInB = 0; _RealSizeInA = _RealSizeInB = 0; }$/;"	f	class:Net
+Net	NetCell_bug.h	/^		Net(string n) { _name = n; _sizeInA = _sizeInB = 0; _RealSizeInA = _RealSizeInB = 0; }$/;"	f	class:Net
+Net	NetCell_bug.h	/^class Net$/;"	c
+Net	NetCell_v2.h	/^		Net() { _sizeInA = _sizeInB = 0; _RealSizeInA = _RealSizeInB = 0; }$/;"	f	class:Net
+Net	NetCell_v2.h	/^		Net(string n) { _name = n; _sizeInA = _sizeInB = 0; _RealSizeInA = _RealSizeInB = 0; }$/;"	f	class:Net
+Net	NetCell_v2.h	/^class Net$/;"	c
+Net	NetCell_v4.h	/^		Net() { _sizeInA = _sizeInB = 0; _RealSizeInA = _RealSizeInB = 0; }$/;"	f	class:Net
+Net	NetCell_v4.h	/^		Net(string n) { _name = n; _sizeInA = _sizeInB = 0; _RealSizeInA = _RealSizeInB = 0; }$/;"	f	class:Net
+Net	NetCell_v4.h	/^class Net$/;"	c
+NetArray	NetCell.h	/^class NetArray$/;"	c
+NetArray	NetCell_bug.h	/^class NetArray$/;"	c
+NetArray	NetCell_v2.h	/^class NetArray$/;"	c
+NetArray	NetCell_v4.h	/^class NetArray$/;"	c
+_CellsInNet	NetCell.h	/^		unordered_map< string, CELL* >	_CellsInNet;$/;"	m	class:NetArray
+_CellsInNet	NetCell_bug.h	/^		unordered_map< string, CELL* >	_CellsInNet;$/;"	m	class:NetArray
+_CellsInNet	NetCell_v2.h	/^		unordered_map< string, CELL* >	_CellsInNet;$/;"	m	class:NetArray
+_CellsInNet	NetCell_v4.h	/^		unordered_map< string, CELL* >	_CellsInNet;$/;"	m	class:NetArray
+_NetsInCell	NetCell.h	/^		unordered_map< string, NET* >	_NetsInCell;$/;"	m	class:CellArray
+_NetsInCell	NetCell_bug.h	/^		unordered_map< string, NET* >	_NetsInCell;$/;"	m	class:CellArray
+_NetsInCell	NetCell_v2.h	/^		unordered_map< string, NET* >	_NetsInCell;$/;"	m	class:CellArray
+_NetsInCell	NetCell_v4.h	/^		unordered_map< string, NET* >	_NetsInCell;$/;"	m	class:CellArray
+_RealSizeInA	NetCell.h	/^		unsigned			_RealSizeInA;$/;"	m	class:Net
+_RealSizeInA	NetCell_bug.h	/^		unsigned			_RealSizeInA;$/;"	m	class:Net
+_RealSizeInA	NetCell_v2.h	/^		unsigned			_RealSizeInA;$/;"	m	class:Net
+_RealSizeInA	NetCell_v4.h	/^		unsigned			_RealSizeInA;$/;"	m	class:Net
+_RealSizeInB	NetCell.h	/^		unsigned			_RealSizeInB;$/;"	m	class:Net
+_RealSizeInB	NetCell_bug.h	/^		unsigned			_RealSizeInB;$/;"	m	class:Net
+_RealSizeInB	NetCell_v2.h	/^		unsigned			_RealSizeInB;$/;"	m	class:Net
+_RealSizeInB	NetCell_v4.h	/^		unsigned			_RealSizeInB;$/;"	m	class:Net
+_balFactor	FM_partition.h	/^		double 				_balFactor;$/;"	m	class:FM_partition
+_cHash	FM_partition.h	/^		unordered_map< string, Cell* > 	_cHash;$/;"	m	class:FM_partition
+_cells	FM_partition.h	/^		CellArray*			_cells;$/;"	m	class:FM_partition
+_gain	NetCell.h	/^		int					_gain;$/;"	m	class:Cell
+_gain	NetCell_bug.h	/^		int					_gain;$/;"	m	class:Cell
+_gain	NetCell_v2.h	/^		int					_gain;$/;"	m	class:Cell
+_gain	NetCell_v4.h	/^		int					_gain;$/;"	m	class:Cell
+_gainBucket	FM_partition.h	/^		map< int, list< Cell* >* >		_gainBucket;$/;"	m	class:FM_partition
+_globalRef	NetCell.cpp	/^unsigned Cell::_globalRef = 0;$/;"	m	class:Cell	file:
+_globalRef	NetCell.h	/^		static unsigned		_globalRef;$/;"	m	class:Cell
+_globalRef	NetCell_bug.h	/^		static unsigned		_globalRef;$/;"	m	class:Cell
+_globalRef	NetCell_v2.h	/^		static unsigned		_globalRef;$/;"	m	class:Cell
+_globalRef	NetCell_v4.h	/^		static unsigned		_globalRef;$/;"	m	class:Cell
+_grpA	FM_partition.h	/^		unordered_map< string, Cell* > 	_grpA;$/;"	m	class:FM_partition
+_grpB	FM_partition.h	/^		unordered_map< string, Cell* >	_grpB;$/;"	m	class:FM_partition
+_ifile	CmdMgr.h	/^		string 		_ifile;$/;"	m	class:CmdMgr
+_inA	NetCell.h	/^		bool				_inA;$/;"	m	class:Cell
+_inA	NetCell_bug.h	/^		bool				_inA;$/;"	m	class:Cell
+_inA	NetCell_v2.h	/^		bool				_inA;$/;"	m	class:Cell
+_nHash	FM_partition.h	/^		unordered_map< string, Net* >	_nHash;$/;"	m	class:FM_partition
+_name	NetCell.h	/^		string				_name;$/;"	m	class:Cell
+_name	NetCell.h	/^		string 				_name;$/;"	m	class:Net
+_name	NetCell_bug.h	/^		string				_name;$/;"	m	class:Cell
+_name	NetCell_bug.h	/^		string 				_name;$/;"	m	class:Net
+_name	NetCell_v2.h	/^		string				_name;$/;"	m	class:Cell
+_name	NetCell_v2.h	/^		string 				_name;$/;"	m	class:Net
+_name	NetCell_v4.h	/^		string				_name;$/;"	m	class:Cell
+_name	NetCell_v4.h	/^		string 				_name;$/;"	m	class:Net
+_nets	FM_partition.h	/^		NetArray*			_nets;$/;"	m	class:FM_partition
+_ofile	CmdMgr.h	/^		string 		_ofile;$/;"	m	class:CmdMgr
+_ref	NetCell.h	/^		unsigned			_ref;$/;"	m	class:Cell
+_ref	NetCell_bug.h	/^		unsigned			_ref;$/;"	m	class:Cell
+_ref	NetCell_v2.h	/^		unsigned			_ref;$/;"	m	class:Cell
+_ref	NetCell_v4.h	/^		unsigned			_ref;$/;"	m	class:Cell
+_sizeInA	NetCell.h	/^		unsigned			_sizeInA;$/;"	m	class:Net
+_sizeInA	NetCell_bug.h	/^		unsigned			_sizeInA;$/;"	m	class:Net
+_sizeInA	NetCell_v2.h	/^		unsigned			_sizeInA;$/;"	m	class:Net
+_sizeInA	NetCell_v4.h	/^		unsigned			_sizeInA;$/;"	m	class:Net
+_sizeInB	NetCell.h	/^		unsigned			_sizeInB;$/;"	m	class:Net
+_sizeInB	NetCell_bug.h	/^		unsigned			_sizeInB;$/;"	m	class:Net
+_sizeInB	NetCell_v2.h	/^		unsigned			_sizeInB;$/;"	m	class:Net
+_sizeInB	NetCell_v4.h	/^		unsigned			_sizeInB;$/;"	m	class:Net
+calculateFT	FM_partition.cpp	/^FM_partition::calculateFT(Cell* c, Net* n, bool inA, unsigned& numInF, unsigned& numInT)$/;"	f	class:FM_partition
+calculateFT	FM_partition_bug.cpp	/^FM_partition::calculateFT(Cell* c, Net* n, bool inA, unsigned& numInF, unsigned& numInT)$/;"	f	class:FM_partition
+calculateFT	FM_partition_v1.cpp	/^FM_partition::calculateFT(Cell* c, Net* n, bool inA, unsigned& numInF, unsigned& numInT)$/;"	f	class:FM_partition
+calculateFT	FM_partition_v2.cpp	/^FM_partition::calculateFT(Cell* c, Net* n, bool inA, unsigned& numInF, unsigned& numInT)$/;"	f	class:FM_partition
+calculateFT	FM_partition_v3.cpp	/^FM_partition::calculateFT(Cell* c, Net* n, bool inA, unsigned& numInF, unsigned& numInT)$/;"	f	class:FM_partition
+calculateFT	FM_partition_v4.cpp	/^FM_partition::calculateFT(Cell* c, Net* n, bool inA, unsigned& numInF, unsigned& numInT)$/;"	f	class:FM_partition
+computeCellGain	FM_partition.cpp	/^FM_partition::computeCellGain()$/;"	f	class:FM_partition
+computeCellGain	FM_partition_bug.cpp	/^FM_partition::computeCellGain()$/;"	f	class:FM_partition
+computeCellGain	FM_partition_v1.cpp	/^FM_partition::computeCellGain()$/;"	f	class:FM_partition
+computeCellGain	FM_partition_v2.cpp	/^FM_partition::computeCellGain()$/;"	f	class:FM_partition
+computeCellGain	FM_partition_v3.cpp	/^FM_partition::computeCellGain()$/;"	f	class:FM_partition
+computeCellGain	FM_partition_v4.cpp	/^FM_partition::computeCellGain()$/;"	f	class:FM_partition
+computeCutSize	FM_partition.cpp	/^FM_partition::computeCutSize()$/;"	f	class:FM_partition
+computeCutSize	FM_partition_bug.cpp	/^FM_partition::computeCutSize()$/;"	f	class:FM_partition
+computeCutSize	FM_partition_v1.cpp	/^FM_partition::computeCutSize()$/;"	f	class:FM_partition
+computeCutSize	FM_partition_v2.cpp	/^FM_partition::computeCutSize()$/;"	f	class:FM_partition
+computeCutSize	FM_partition_v3.cpp	/^FM_partition::computeCutSize()$/;"	f	class:FM_partition
+computeCutSize	FM_partition_v4.cpp	/^FM_partition::computeCutSize()$/;"	f	class:FM_partition
+continueSetUp	FM_partition.cpp	/^FM_partition::continueSetUp(CELL* vCell, ifstream& file)$/;"	f	class:FM_partition
+continueSetUp	FM_partition_bug.cpp	/^FM_partition::continueSetUp(CELL* vCell, ifstream& file)$/;"	f	class:FM_partition
+continueSetUp	FM_partition_v2.cpp	/^FM_partition::continueSetUp(CELL* vCell, ifstream& file)$/;"	f	class:FM_partition
+continueSetUp	FM_partition_v3.cpp	/^FM_partition::continueSetUp(CELL* vCell, ifstream& file)$/;"	f	class:FM_partition
+continueSetUp	FM_partition_v4.cpp	/^FM_partition::continueSetUp(CELL* vCell, ifstream& file)$/;"	f	class:FM_partition
+convertNets2Cells	FM_partition.cpp	/^FM_partition::convertNets2Cells()$/;"	f	class:FM_partition
+convertNets2Cells	FM_partition_bug.cpp	/^FM_partition::convertNets2Cells()$/;"	f	class:FM_partition
+convertNets2Cells	FM_partition_v1.cpp	/^FM_partition::convertNets2Cells()$/;"	f	class:FM_partition
+convertNets2Cells	FM_partition_v2.cpp	/^FM_partition::convertNets2Cells()$/;"	f	class:FM_partition
+convertNets2Cells	FM_partition_v3.cpp	/^FM_partition::convertNets2Cells()$/;"	f	class:FM_partition
+convertNets2Cells	FM_partition_v4.cpp	/^FM_partition::convertNets2Cells()$/;"	f	class:FM_partition
+decreaseGain	NetCell.h	/^		void decreaseGain() { --_gain; }$/;"	f	class:Cell
+decreaseGain	NetCell_bug.h	/^		void decreaseGain() { --_gain; }$/;"	f	class:Cell
+decreaseGain	NetCell_v2.h	/^		void decreaseGain() { --_gain; }$/;"	f	class:Cell
+decreaseGain	NetCell_v4.h	/^		void decreaseGain() { --_gain; }$/;"	f	class:Cell
+decreaseGain4AllFreeCells	FM_partition.cpp	/^FM_partition::decreaseGain4AllFreeCells(Net* n)$/;"	f	class:FM_partition
+decreaseGain4AllFreeCells	FM_partition_bug.cpp	/^FM_partition::decreaseGain4AllFreeCells(Net* n)$/;"	f	class:FM_partition
+decreaseGain4AllFreeCells	FM_partition_v1.cpp	/^FM_partition::decreaseGain4AllFreeCells(Net* n)$/;"	f	class:FM_partition
+decreaseGain4AllFreeCells	FM_partition_v2.cpp	/^FM_partition::decreaseGain4AllFreeCells(Net* n)$/;"	f	class:FM_partition
+decreaseGain4AllFreeCells	FM_partition_v3.cpp	/^FM_partition::decreaseGain4AllFreeCells(Net* n)$/;"	f	class:FM_partition
+decreaseGain4AllFreeCells	FM_partition_v4.cpp	/^FM_partition::decreaseGain4AllFreeCells(Net* n)$/;"	f	class:FM_partition
+decreaseGain4OnlyTCell	FM_partition.cpp	/^FM_partition::decreaseGain4OnlyTCell(Net* n, bool inA)$/;"	f	class:FM_partition
+decreaseGain4OnlyTCell	FM_partition_bug.cpp	/^FM_partition::decreaseGain4OnlyTCell(Net* n, bool inA)$/;"	f	class:FM_partition
+decreaseGain4OnlyTCell	FM_partition_v1.cpp	/^FM_partition::decreaseGain4OnlyTCell(Net* n, bool inA)$/;"	f	class:FM_partition
+decreaseGain4OnlyTCell	FM_partition_v2.cpp	/^FM_partition::decreaseGain4OnlyTCell(Net* n, bool inA)$/;"	f	class:FM_partition
+decreaseGain4OnlyTCell	FM_partition_v3.cpp	/^FM_partition::decreaseGain4OnlyTCell(Net* n, bool inA)$/;"	f	class:FM_partition
+decreaseGain4OnlyTCell	FM_partition_v4.cpp	/^FM_partition::decreaseGain4OnlyTCell(Net* n, bool inA)$/;"	f	class:FM_partition
+decreaseRealSizeInA	NetCell.h	/^		void decreaseRealSizeInA() { --_RealSizeInA; }$/;"	f	class:Net
+decreaseRealSizeInA	NetCell_bug.h	/^		void decreaseRealSizeInA() { --_RealSizeInA; }$/;"	f	class:Net
+decreaseRealSizeInA	NetCell_v2.h	/^		void decreaseRealSizeInA() { --_RealSizeInA; }$/;"	f	class:Net
+decreaseRealSizeInA	NetCell_v4.h	/^		void decreaseRealSizeInA() { --_RealSizeInA; }$/;"	f	class:Net
+decreaseRealSizeInB	NetCell.h	/^		void decreaseRealSizeInB() { --_RealSizeInB; }$/;"	f	class:Net
+decreaseRealSizeInB	NetCell_bug.h	/^		void decreaseRealSizeInB() { --_RealSizeInB; }$/;"	f	class:Net
+decreaseRealSizeInB	NetCell_v2.h	/^		void decreaseRealSizeInB() { --_RealSizeInB; }$/;"	f	class:Net
+decreaseRealSizeInB	NetCell_v4.h	/^		void decreaseRealSizeInB() { --_RealSizeInB; }$/;"	f	class:Net
+decreaseSizeInA	NetCell.h	/^		void decreaseSizeInA() { --_sizeInA; }$/;"	f	class:Net
+decreaseSizeInA	NetCell_bug.h	/^		void decreaseSizeInA() { --_sizeInA; }$/;"	f	class:Net
+decreaseSizeInA	NetCell_v2.h	/^		void decreaseSizeInA() { --_sizeInA; }$/;"	f	class:Net
+decreaseSizeInA	NetCell_v4.h	/^		void decreaseSizeInA() { --_sizeInA; }$/;"	f	class:Net
+decreaseSizeInB	NetCell.h	/^		void decreaseSizeInB() { --_sizeInB; }$/;"	f	class:Net
+decreaseSizeInB	NetCell_bug.h	/^		void decreaseSizeInB() { --_sizeInB; }$/;"	f	class:Net
+decreaseSizeInB	NetCell_v2.h	/^		void decreaseSizeInB() { --_sizeInB; }$/;"	f	class:Net
+decreaseSizeInB	NetCell_v4.h	/^		void decreaseSizeInB() { --_sizeInB; }$/;"	f	class:Net
+exchangeCell	FM_partition.cpp	/^FM_partition::exchangeCell(Cell* c)$/;"	f	class:FM_partition
+exchangeCell	FM_partition_bug.cpp	/^FM_partition::exchangeCell(Cell* c)$/;"	f	class:FM_partition
+exchangeCell	FM_partition_v1.cpp	/^FM_partition::exchangeCell(Cell* c)$/;"	f	class:FM_partition
+exchangeCell	FM_partition_v2.cpp	/^FM_partition::exchangeCell(Cell* c)$/;"	f	class:FM_partition
+exchangeCell	FM_partition_v3.cpp	/^FM_partition::exchangeCell(Cell* c)$/;"	f	class:FM_partition
+exchangeCell	FM_partition_v4.cpp	/^FM_partition::exchangeCell(Cell* c)$/;"	f	class:FM_partition
+getBalFactor	FM_partition.h	/^		const double getBalFactor() const { return _balFactor; }$/;"	f	class:FM_partition
+getGain	NetCell.h	/^		int getGain() { return _gain; }$/;"	f	class:Cell
+getGain	NetCell_bug.h	/^		int getGain() { return _gain; }$/;"	f	class:Cell
+getGain	NetCell_v2.h	/^		int getGain() { return _gain; }$/;"	f	class:Cell
+getGain	NetCell_v4.h	/^		int getGain() { return _gain; }$/;"	f	class:Cell
+getMaxGainCell	FM_partition.cpp	/^FM_partition::getMaxGainCell()$/;"	f	class:FM_partition
+getMaxGainCell	FM_partition_bug.cpp	/^FM_partition::getMaxGainCell()$/;"	f	class:FM_partition
+getMaxGainCell	FM_partition_v1.cpp	/^FM_partition::getMaxGainCell()$/;"	f	class:FM_partition
+getMaxGainCell	FM_partition_v2.cpp	/^FM_partition::getMaxGainCell()$/;"	f	class:FM_partition
+getMaxGainCell	FM_partition_v3.cpp	/^FM_partition::getMaxGainCell()$/;"	f	class:FM_partition
+getMaxGainCell	FM_partition_v4.cpp	/^FM_partition::getMaxGainCell()$/;"	f	class:FM_partition
+getName	NetCell.h	/^		const string& getName() { return _name; }$/;"	f	class:Cell
+getName	NetCell.h	/^		const string& getName() { return _name; }$/;"	f	class:Net
+getName	NetCell_bug.h	/^		const string& getName() { return _name; }$/;"	f	class:Cell
+getName	NetCell_bug.h	/^		const string& getName() { return _name; }$/;"	f	class:Net
+getName	NetCell_v2.h	/^		const string& getName() { return _name; }$/;"	f	class:Cell
+getName	NetCell_v2.h	/^		const string& getName() { return _name; }$/;"	f	class:Net
+getName	NetCell_v4.h	/^		const string& getName() { return _name; }$/;"	f	class:Cell
+getName	NetCell_v4.h	/^		const string& getName() { return _name; }$/;"	f	class:Net
+getRealSizeInA	NetCell.h	/^		unsigned getRealSizeInA() { return _RealSizeInA; }$/;"	f	class:Net
+getRealSizeInA	NetCell_bug.h	/^		unsigned getRealSizeInA() { return _RealSizeInA; }$/;"	f	class:Net
+getRealSizeInA	NetCell_v2.h	/^		unsigned getRealSizeInA() { return _RealSizeInA; }$/;"	f	class:Net
+getRealSizeInA	NetCell_v4.h	/^		unsigned getRealSizeInA() { return _RealSizeInA; }$/;"	f	class:Net
+getRealSizeInB	NetCell.h	/^		unsigned getRealSizeInB() { return _RealSizeInB; }$/;"	f	class:Net
+getRealSizeInB	NetCell_bug.h	/^		unsigned getRealSizeInB() { return _RealSizeInB; }$/;"	f	class:Net
+getRealSizeInB	NetCell_v2.h	/^		unsigned getRealSizeInB() { return _RealSizeInB; }$/;"	f	class:Net
+getRealSizeInB	NetCell_v4.h	/^		unsigned getRealSizeInB() { return _RealSizeInB; }$/;"	f	class:Net
+getRef	NetCell.h	/^		unordered_map< string, NET* >& getRef() { return _NetsInCell; }$/;"	f	class:CellArray
+getRef	NetCell.h	/^	 	unordered_map< string, CELL* >& getRef() { return _CellsInNet; }$/;"	f	class:NetArray
+getRef	NetCell_bug.h	/^		unordered_map< string, NET* >& getRef() { return _NetsInCell; }$/;"	f	class:CellArray
+getRef	NetCell_bug.h	/^	 	unordered_map< string, CELL* >& getRef() { return _CellsInNet; }$/;"	f	class:NetArray
+getRef	NetCell_v2.h	/^		unordered_map< string, NET* >& getRef() { return _NetsInCell; }$/;"	f	class:CellArray
+getRef	NetCell_v2.h	/^	 	unordered_map< string, CELL* >& getRef() { return _CellsInNet; }$/;"	f	class:NetArray
+getRef	NetCell_v4.h	/^		unordered_map< string, NET* >& getRef() { return _NetsInCell; }$/;"	f	class:CellArray
+getRef	NetCell_v4.h	/^	 	unordered_map< string, CELL* >& getRef() { return _CellsInNet; }$/;"	f	class:NetArray
+getSizeInA	NetCell.h	/^		unsigned getSizeInA() { return _sizeInA; }$/;"	f	class:Net
+getSizeInA	NetCell_bug.h	/^		unsigned getSizeInA() { return _sizeInA; }$/;"	f	class:Net
+getSizeInA	NetCell_v2.h	/^		unsigned getSizeInA() { return _sizeInA; }$/;"	f	class:Net
+getSizeInA	NetCell_v4.h	/^		unsigned getSizeInA() { return _sizeInA; }$/;"	f	class:Net
+getSizeInB	NetCell.h	/^		unsigned getSizeInB() { return _sizeInB; }$/;"	f	class:Net
+getSizeInB	NetCell_bug.h	/^		unsigned getSizeInB() { return _sizeInB; }$/;"	f	class:Net
+getSizeInB	NetCell_v2.h	/^		unsigned getSizeInB() { return _sizeInB; }$/;"	f	class:Net
+getSizeInB	NetCell_v4.h	/^		unsigned getSizeInB() { return _sizeInB; }$/;"	f	class:Net
+getvCell	NetCell.h	/^		CELL* getvCell(const string& s) { return _CellsInNet.at(s); }$/;"	f	class:NetArray
+getvCell	NetCell_bug.h	/^		CELL* getvCell(const string& s) { return _CellsInNet.at(s); }$/;"	f	class:NetArray
+getvCell	NetCell_v2.h	/^		CELL* getvCell(const string& s) { return _CellsInNet.at(s); }$/;"	f	class:NetArray
+getvCell	NetCell_v4.h	/^		CELL* getvCell(const string& s) { return _CellsInNet.at(s); }$/;"	f	class:NetArray
+getvNet	NetCell.h	/^		NET* getvNet(const string& s) { return _NetsInCell.at(s); }$/;"	f	class:CellArray
+getvNet	NetCell_bug.h	/^		NET* getvNet(const string& s) { return _NetsInCell.at(s); }$/;"	f	class:CellArray
+getvNet	NetCell_v2.h	/^		NET* getvNet(const string& s) { return _NetsInCell.at(s); }$/;"	f	class:CellArray
+getvNet	NetCell_v4.h	/^		NET* getvNet(const string& s) { return _NetsInCell.at(s); }$/;"	f	class:CellArray
+increaseBothSizeInA	NetCell.h	/^		void increaseBothSizeInA() { ++_RealSizeInA; ++_sizeInA; }$/;"	f	class:Net
+increaseBothSizeInA	NetCell_bug.h	/^		void increaseBothSizeInA() { ++_RealSizeInA; ++_sizeInA; }$/;"	f	class:Net
+increaseBothSizeInA	NetCell_v2.h	/^		void increaseBothSizeInA() { ++_RealSizeInA; ++_sizeInA; }$/;"	f	class:Net
+increaseBothSizeInA	NetCell_v4.h	/^		void increaseBothSizeInA() { ++_RealSizeInA; ++_sizeInA; }$/;"	f	class:Net
+increaseBothSizeInB	NetCell.h	/^		void increaseBothSizeInB() { ++_RealSizeInB; ++_sizeInB; }$/;"	f	class:Net
+increaseBothSizeInB	NetCell_bug.h	/^		void increaseBothSizeInB() { ++_RealSizeInB; ++_sizeInB; }$/;"	f	class:Net
+increaseBothSizeInB	NetCell_v2.h	/^		void increaseBothSizeInB() { ++_RealSizeInB; ++_sizeInB; }$/;"	f	class:Net
+increaseBothSizeInB	NetCell_v4.h	/^		void increaseBothSizeInB() { ++_RealSizeInB; ++_sizeInB; }$/;"	f	class:Net
+increaseGain	NetCell.h	/^		void increaseGain() { ++_gain; }$/;"	f	class:Cell
+increaseGain	NetCell_bug.h	/^		void increaseGain() { ++_gain; }$/;"	f	class:Cell
+increaseGain	NetCell_v2.h	/^		void increaseGain() { ++_gain; }$/;"	f	class:Cell
+increaseGain	NetCell_v4.h	/^		void increaseGain() { ++_gain; }$/;"	f	class:Cell
+increaseGain4AllFreeCells	FM_partition.cpp	/^FM_partition::increaseGain4AllFreeCells(Net* n)$/;"	f	class:FM_partition
+increaseGain4AllFreeCells	FM_partition_bug.cpp	/^FM_partition::increaseGain4AllFreeCells(Net* n)$/;"	f	class:FM_partition
+increaseGain4AllFreeCells	FM_partition_v1.cpp	/^FM_partition::increaseGain4AllFreeCells(Net* n)$/;"	f	class:FM_partition
+increaseGain4AllFreeCells	FM_partition_v2.cpp	/^FM_partition::increaseGain4AllFreeCells(Net* n)$/;"	f	class:FM_partition
+increaseGain4AllFreeCells	FM_partition_v3.cpp	/^FM_partition::increaseGain4AllFreeCells(Net* n)$/;"	f	class:FM_partition
+increaseGain4AllFreeCells	FM_partition_v4.cpp	/^FM_partition::increaseGain4AllFreeCells(Net* n)$/;"	f	class:FM_partition
+increaseGain4OnlyFCell	FM_partition.cpp	/^FM_partition::increaseGain4OnlyFCell(Cell* c, Net* n, bool inA)$/;"	f	class:FM_partition
+increaseGain4OnlyFCell	FM_partition_bug.cpp	/^FM_partition::increaseGain4OnlyFCell(Cell* c, Net* n, bool inA)$/;"	f	class:FM_partition
+increaseGain4OnlyFCell	FM_partition_v1.cpp	/^FM_partition::increaseGain4OnlyFCell(Net* n, bool inA)$/;"	f	class:FM_partition
+increaseGain4OnlyFCell	FM_partition_v2.cpp	/^FM_partition::increaseGain4OnlyFCell(Net* n, bool inA)$/;"	f	class:FM_partition
+increaseGain4OnlyFCell	FM_partition_v3.cpp	/^FM_partition::increaseGain4OnlyFCell(Net* n, bool inA)$/;"	f	class:FM_partition
+increaseGain4OnlyFCell	FM_partition_v4.cpp	/^FM_partition::increaseGain4OnlyFCell(Cell* c, Net* n, bool inA)$/;"	f	class:FM_partition
+increaseRealSizeInA	NetCell.h	/^		void increaseRealSizeInA() { ++_RealSizeInA; }$/;"	f	class:Net
+increaseRealSizeInA	NetCell_bug.h	/^		void increaseRealSizeInA() { ++_RealSizeInA; }$/;"	f	class:Net
+increaseRealSizeInA	NetCell_v2.h	/^		void increaseRealSizeInA() { ++_RealSizeInA; }$/;"	f	class:Net
+increaseRealSizeInA	NetCell_v4.h	/^		void increaseRealSizeInA() { ++_RealSizeInA; }$/;"	f	class:Net
+increaseRealSizeInB	NetCell.h	/^		void increaseRealSizeInB() { ++_RealSizeInB; }$/;"	f	class:Net
+increaseRealSizeInB	NetCell_bug.h	/^		void increaseRealSizeInB() { ++_RealSizeInB; }$/;"	f	class:Net
+increaseRealSizeInB	NetCell_v2.h	/^		void increaseRealSizeInB() { ++_RealSizeInB; }$/;"	f	class:Net
+increaseRealSizeInB	NetCell_v4.h	/^		void increaseRealSizeInB() { ++_RealSizeInB; }$/;"	f	class:Net
+increaseSizeInA	NetCell.h	/^		void increaseSizeInA() { ++_sizeInA; }$/;"	f	class:Net
+increaseSizeInA	NetCell_bug.h	/^		void increaseSizeInA() { ++_sizeInA; }$/;"	f	class:Net
+increaseSizeInA	NetCell_v2.h	/^		void increaseSizeInA() { ++_sizeInA; }$/;"	f	class:Net
+increaseSizeInA	NetCell_v4.h	/^		void increaseSizeInA() { ++_sizeInA; }$/;"	f	class:Net
+increaseSizeInB	NetCell.h	/^		void increaseSizeInB() { ++_sizeInB; }$/;"	f	class:Net
+increaseSizeInB	NetCell_bug.h	/^		void increaseSizeInB() { ++_sizeInB; }$/;"	f	class:Net
+increaseSizeInB	NetCell_v2.h	/^		void increaseSizeInB() { ++_sizeInB; }$/;"	f	class:Net
+increaseSizeInB	NetCell_v4.h	/^		void increaseSizeInB() { ++_sizeInB; }$/;"	f	class:Net
+initGrp	FM_partition.cpp	/^FM_partition::initGrp()$/;"	f	class:FM_partition
+initGrp	FM_partition_bug.cpp	/^FM_partition::initGrp()$/;"	f	class:FM_partition
+initGrp	FM_partition_v1.cpp	/^FM_partition::initGrp()$/;"	f	class:FM_partition
+initGrp	FM_partition_v2.cpp	/^FM_partition::initGrp()$/;"	f	class:FM_partition
+initGrp	FM_partition_v3.cpp	/^FM_partition::initGrp()$/;"	f	class:FM_partition
+initGrp	FM_partition_v4.cpp	/^FM_partition::initGrp()$/;"	f	class:FM_partition
+insertvCell	NetCell.h	/^		void insertvCell(const string& s, CELL* c) { _CellsInNet.insert({s, c}); }$/;"	f	class:NetArray
+insertvCell	NetCell_bug.h	/^		void insertvCell(const string& s, CELL* c) { _CellsInNet.insert({s, c}); }$/;"	f	class:NetArray
+insertvCell	NetCell_v2.h	/^		void insertvCell(const string& s, CELL* c) { _CellsInNet.insert({s, c}); }$/;"	f	class:NetArray
+insertvCell	NetCell_v4.h	/^		void insertvCell(const string& s, CELL* c) { _CellsInNet.insert({s, c}); }$/;"	f	class:NetArray
+insertvNet	NetCell.h	/^		void insertvNet(const string& s, NET* n) { _NetsInCell.insert({s, n}); }$/;"	f	class:CellArray
+insertvNet	NetCell_bug.h	/^		void insertvNet(const string& s, NET* n) { _NetsInCell.insert({s, n}); }$/;"	f	class:CellArray
+insertvNet	NetCell_v2.h	/^		void insertvNet(const string& s, NET* n) { _NetsInCell.insert({s, n}); }$/;"	f	class:CellArray
+insertvNet	NetCell_v4.h	/^		void insertvNet(const string& s, NET* n) { _NetsInCell.insert({s, n}); }$/;"	f	class:CellArray
+isBalanced	FM_partition.cpp	/^FM_partition::isBalanced(Cell* c)$/;"	f	class:FM_partition
+isBalanced	FM_partition_bug.cpp	/^FM_partition::isBalanced(Cell* c)$/;"	f	class:FM_partition
+isBalanced	FM_partition_v1.cpp	/^FM_partition::isBalanced(Cell* c)$/;"	f	class:FM_partition
+isBalanced	FM_partition_v2.cpp	/^FM_partition::isBalanced(Cell* c)$/;"	f	class:FM_partition
+isBalanced	FM_partition_v3.cpp	/^FM_partition::isBalanced(Cell* c)$/;"	f	class:FM_partition
+isBalanced	FM_partition_v4.cpp	/^FM_partition::isBalanced(Cell* c)$/;"	f	class:FM_partition
+isGlobalRef	NetCell.h	/^		bool isGlobalRef() { return _ref == _globalRef; }$/;"	f	class:Cell
+isGlobalRef	NetCell_bug.h	/^		bool isGlobalRef() { return _ref == _globalRef; }$/;"	f	class:Cell
+isGlobalRef	NetCell_v2.h	/^		bool isGlobalRef() { return _ref == _globalRef; }$/;"	f	class:Cell
+isGlobalRef	NetCell_v4.h	/^		bool isGlobalRef() { return _ref == _globalRef; }$/;"	f	class:Cell
+isInA	NetCell.h	/^		bool isInA() { return _inA; }$/;"	f	class:Cell
+isInA	NetCell_bug.h	/^		bool isInA() { return _inA; }$/;"	f	class:Cell
+isInA	NetCell_v2.h	/^		bool isInA() { return _inA; }$/;"	f	class:Cell
+main	main.cpp	/^int main( int argc, char** argv ) {$/;"	f
+readFile	FM_partition.cpp	/^FM_partition::readFile(const string& f)$/;"	f	class:FM_partition
+readFile	FM_partition_bug.cpp	/^FM_partition::readFile(const string& f)$/;"	f	class:FM_partition
+readFile	FM_partition_v1.cpp	/^FM_partition::readFile(const string& f)$/;"	f	class:FM_partition
+readFile	FM_partition_v2.cpp	/^FM_partition::readFile(const string& f)$/;"	f	class:FM_partition
+readFile	FM_partition_v3.cpp	/^FM_partition::readFile(const string& f)$/;"	f	class:FM_partition
+readFile	FM_partition_v4.cpp	/^FM_partition::readFile(const string& f)$/;"	f	class:FM_partition
+removeCellAndUpdateBucket	FM_partition.cpp	/^FM_partition::removeCellAndUpdateBucket(Cell* c)$/;"	f	class:FM_partition
+removeCellAndUpdateBucket	FM_partition_bug.cpp	/^FM_partition::removeCellAndUpdateBucket(Cell* c)$/;"	f	class:FM_partition
+removeCellAndUpdateBucket	FM_partition_v1.cpp	/^FM_partition::removeCellAndUpdateBucket(Cell* c)$/;"	f	class:FM_partition
+removeCellAndUpdateBucket	FM_partition_v2.cpp	/^FM_partition::removeCellAndUpdateBucket(Cell* c)$/;"	f	class:FM_partition
+removeCellAndUpdateBucket	FM_partition_v3.cpp	/^FM_partition::removeCellAndUpdateBucket(Cell* c)$/;"	f	class:FM_partition
+removeCellAndUpdateBucket	FM_partition_v4.cpp	/^FM_partition::removeCellAndUpdateBucket(Cell* c)$/;"	f	class:FM_partition
+removeCellFromBucket	FM_partition.cpp	/^FM_partition::removeCellFromBucket(Cell* c)$/;"	f	class:FM_partition
+removeCellFromBucket	FM_partition_bug.cpp	/^FM_partition::removeCellFromBucket(Cell* c)$/;"	f	class:FM_partition
+removeCellFromBucket	FM_partition_v1.cpp	/^FM_partition::removeCellFromBucket(Cell* c)$/;"	f	class:FM_partition
+removeCellFromBucket	FM_partition_v2.cpp	/^FM_partition::removeCellFromBucket(Cell* c)$/;"	f	class:FM_partition
+removeCellFromBucket	FM_partition_v3.cpp	/^FM_partition::removeCellFromBucket(Cell* c)$/;"	f	class:FM_partition
+removeCellFromBucket	FM_partition_v4.cpp	/^FM_partition::removeCellFromBucket(Cell* c)$/;"	f	class:FM_partition
+report	FM_partition.h	/^		void report() { _nets -> report(); _cells -> report(); }$/;"	f	class:FM_partition
+report	NetCell.cpp	/^CellArray::report()$/;"	f	class:CellArray
+report	NetCell.cpp	/^NetArray::report()$/;"	f	class:NetArray
+reportBucket	FM_partition.h	/^		void reportBucket() { for( auto it = _gainBucket.rbegin(); it != _gainBucket.rend(); ++it) cout << "gain: " << it -> first << ", size: " << it -> second -> size() << endl; }$/;"	f	class:FM_partition
+reportCellArray	FM_partition.h	/^		void reportCellArray() { _cells -> report(); }$/;"	f	class:FM_partition
+reportGain	FM_partition.h	/^		void reportGain() { for( auto it = _cHash.begin(); it != _cHash.end(); ++it ) cout << it -> first << ", gain: " << it -> second -> getGain() << endl; }$/;"	f	class:FM_partition
+reportGrpA	FM_partition.h	/^		void reportGrpA() { cout << "GrpA:"; for( auto it = _grpA.begin(); it != _grpA.end(); ++it ) cout << " " << it -> first; cout << endl; }$/;"	f	class:FM_partition
+reportGrpB	FM_partition.h	/^		void reportGrpB() { cout << "GrpB:"; for( auto it = _grpB.begin(); it != _grpB.end(); ++it ) cout << " " << it -> first; cout << endl; }$/;"	f	class:FM_partition
+reportNetArray	FM_partition.h	/^		void reportNetArray() { _nets -> report(); }$/;"	f	class:FM_partition
+reportNetRealSize	FM_partition.h	/^		void reportNetRealSize() { for( auto it = _nHash.begin(); it != _nHash.end(); ++ it ) cout << it -> first << ", RealsizeInA: " << it -> second -> getRealSizeInA() << ", RealsizeInB: " << it -> second -> getRealSizeInB() << endl; }$/;"	f	class:FM_partition
+reportNetSize	FM_partition.h	/^		void reportNetSize() { for( auto it = _nHash.begin(); it != _nHash.end(); ++ it ) cout << it -> first << ", sizeInA: " << it -> second -> getSizeInA() << ", sizeInB: " << it -> second -> getSizeInB() << endl; }$/;"	f	class:FM_partition
+reset	FM_partition.cpp	/^FM_partition::reset()$/;"	f	class:FM_partition
+reset	FM_partition_bug.cpp	/^FM_partition::reset()$/;"	f	class:FM_partition
+reset	FM_partition_v1.cpp	/^FM_partition::reset()$/;"	f	class:FM_partition
+reset	FM_partition_v2.cpp	/^FM_partition::reset()$/;"	f	class:FM_partition
+reset	FM_partition_v3.cpp	/^FM_partition::reset()$/;"	f	class:FM_partition
+reset	FM_partition_v4.cpp	/^FM_partition::reset()$/;"	f	class:FM_partition
+resetGain	NetCell.h	/^		void resetGain() { _gain = 0; }$/;"	f	class:Cell
+resetGain	NetCell_bug.h	/^		void resetGain() { _gain = 0; }$/;"	f	class:Cell
+resetGain	NetCell_v2.h	/^		void resetGain() { _gain = 0; }$/;"	f	class:Cell
+resetGain	NetCell_v4.h	/^		void resetGain() { _gain = 0; }$/;"	f	class:Cell
+setBalFactor	FM_partition.h	/^		void setBalFactor(double b) { _balFactor = b; }$/;"	f	class:FM_partition
+setGainBucket	FM_partition.cpp	/^FM_partition::setGainBucket()$/;"	f	class:FM_partition
+setGainBucket	FM_partition_bug.cpp	/^FM_partition::setGainBucket()$/;"	f	class:FM_partition
+setGainBucket	FM_partition_v1.cpp	/^FM_partition::setGainBucket()$/;"	f	class:FM_partition
+setGainBucket	FM_partition_v2.cpp	/^FM_partition::setGainBucket()$/;"	f	class:FM_partition
+setGainBucket	FM_partition_v3.cpp	/^FM_partition::setGainBucket()$/;"	f	class:FM_partition
+setGainBucket	FM_partition_v4.cpp	/^FM_partition::setGainBucket()$/;"	f	class:FM_partition
+setGlobalRef	NetCell.h	/^		static void setGlobalRef() { ++_globalRef; }$/;"	f	class:Cell
+setGlobalRef	NetCell_bug.h	/^		static void setGlobalRef() { ++_globalRef; }$/;"	f	class:Cell
+setGlobalRef	NetCell_v2.h	/^		static void setGlobalRef() { ++_globalRef; }$/;"	f	class:Cell
+setGlobalRef	NetCell_v4.h	/^		static void setGlobalRef() { ++_globalRef; }$/;"	f	class:Cell
+setInA	NetCell.h	/^		void setInA(bool b) { _inA = b; }$/;"	f	class:Cell
+setInA	NetCell_bug.h	/^		void setInA(bool b) { _inA = b; }$/;"	f	class:Cell
+setInA	NetCell_v2.h	/^		void setInA(bool b) { _inA = b; }$/;"	f	class:Cell
+setSizeEqual	NetCell.h	/^		void setSizeEqual() { _sizeInA = _RealSizeInA; _sizeInB = _RealSizeInB; }$/;"	f	class:Net
+setSizeEqual	NetCell_bug.h	/^		void setSizeEqual() { _sizeInA = _RealSizeInA; _sizeInB = _RealSizeInB; }$/;"	f	class:Net
+setSizeEqual	NetCell_v2.h	/^		void setSizeEqual() { _sizeInA = _RealSizeInA; _sizeInB = _RealSizeInB; }$/;"	f	class:Net
+setSizeEqual	NetCell_v4.h	/^		void setSizeEqual() { _sizeInA = _RealSizeInA; _sizeInB = _RealSizeInB; }$/;"	f	class:Net
+setToGlobalRef	NetCell.h	/^		void setToGlobalRef() { _ref = _globalRef; }$/;"	f	class:Cell
+setToGlobalRef	NetCell_bug.h	/^		void setToGlobalRef() { _ref = _globalRef; }$/;"	f	class:Cell
+setToGlobalRef	NetCell_v2.h	/^		void setToGlobalRef() { _ref = _globalRef; }$/;"	f	class:Cell
+setToGlobalRef	NetCell_v4.h	/^		void setToGlobalRef() { _ref = _globalRef; }$/;"	f	class:Cell
+setcArray	FM_partition.h	/^		void setcArray(CellArray* c) { _cells = c; }$/;"	f	class:FM_partition
+setnArray	FM_partition.h	/^		void setnArray(NetArray* n) { _nets = n; }$/;"	f	class:FM_partition
+updateCellGain	FM_partition.cpp	/^FM_partition::updateCellGain(Cell* c)$/;"	f	class:FM_partition
+updateCellGain	FM_partition_bug.cpp	/^FM_partition::updateCellGain(Cell* c)$/;"	f	class:FM_partition
+updateCellGain	FM_partition_v1.cpp	/^FM_partition::updateCellGain(Cell* c)$/;"	f	class:FM_partition
+updateCellGain	FM_partition_v2.cpp	/^FM_partition::updateCellGain(Cell* c)$/;"	f	class:FM_partition
+updateCellGain	FM_partition_v3.cpp	/^FM_partition::updateCellGain(Cell* c)$/;"	f	class:FM_partition
+updateCellGain	FM_partition_v4.cpp	/^FM_partition::updateCellGain(Cell* c)$/;"	f	class:FM_partition
+updateRealSize	FM_partition.cpp	/^FM_partition::updateRealSize(Cell* c, bool inA)$/;"	f	class:FM_partition
+updateRealSize	FM_partition_bug.cpp	/^FM_partition::updateRealSize(Cell* c, bool inA)$/;"	f	class:FM_partition
+updateRealSize	FM_partition_v1.cpp	/^FM_partition::updateRealSize(Cell* c, bool inA)$/;"	f	class:FM_partition
+updateRealSize	FM_partition_v2.cpp	/^FM_partition::updateRealSize(Cell* c, bool inA)$/;"	f	class:FM_partition
+updateRealSize	FM_partition_v3.cpp	/^FM_partition::updateRealSize(Cell* c, bool inA)$/;"	f	class:FM_partition
+updateRealSize	FM_partition_v4.cpp	/^FM_partition::updateRealSize(Cell* c, bool inA)$/;"	f	class:FM_partition
+writeFile	FM_partition.cpp	/^FM_partition::writeFile(const string& s)$/;"	f	class:FM_partition
+writeFile	FM_partition_bug.cpp	/^FM_partition::writeFile(const string& s)$/;"	f	class:FM_partition
+writeFile	FM_partition_v1.cpp	/^FM_partition::writeFile(const string& s)$/;"	f	class:FM_partition
+writeFile	FM_partition_v2.cpp	/^FM_partition::writeFile(const string& s)$/;"	f	class:FM_partition
+writeFile	FM_partition_v3.cpp	/^FM_partition::writeFile(const string& s)$/;"	f	class:FM_partition
+writeFile	FM_partition_v4.cpp	/^FM_partition::writeFile(const string& s)$/;"	f	class:FM_partition
+~Cell	NetCell.h	/^		~Cell() {}$/;"	f	class:Cell
+~Cell	NetCell_bug.h	/^		~Cell() {}$/;"	f	class:Cell
+~Cell	NetCell_v2.h	/^		~Cell() {}$/;"	f	class:Cell
+~Cell	NetCell_v4.h	/^		~Cell() {}$/;"	f	class:Cell
+~CellArray	NetCell.h	/^		~CellArray() {}$/;"	f	class:CellArray
+~CellArray	NetCell_bug.h	/^		~CellArray() {}$/;"	f	class:CellArray
+~CellArray	NetCell_v2.h	/^		~CellArray() {}$/;"	f	class:CellArray
+~CellArray	NetCell_v4.h	/^		~CellArray() {}$/;"	f	class:CellArray
+~FM_partition	FM_partition.h	/^		~FM_partition() {}$/;"	f	class:FM_partition
+~Net	NetCell.h	/^		~Net() {}$/;"	f	class:Net
+~Net	NetCell_bug.h	/^		~Net() {}$/;"	f	class:Net
+~Net	NetCell_v2.h	/^		~Net() {}$/;"	f	class:Net
+~Net	NetCell_v4.h	/^		~Net() {}$/;"	f	class:Net
