@@ -13,7 +13,7 @@
 #include "Block.h"
 #include "Util.h"
 
-#define RANDOM_CONSTRUCT 100
+#define RANDOM_CONSTRUCT 100 
 
 using namespace std;
 
@@ -66,7 +66,6 @@ FloorplanMgr::BTreeInit()
 		length += BTreeGetWireLength();
 		if( !legal ) ++outOfRangeCount;
 		cout << "current area: " << BTreeGetArea(legal) << ", current length: " << BTreeGetWireLength() << endl;
-		cout << endl;
 	}
 
 	cout << "total area: " << area << ", avg: " << area / RANDOM_CONSTRUCT << endl;
@@ -96,8 +95,6 @@ FloorplanMgr::BTreeInit()
 void
 FloorplanMgr::BTreePacking()
 {
-	cout << endl;
-	cout << "BTrePacking ... " << endl;
 	FloorplanMgr::reset();
 	updateContour(_root);
 	//reportHcontour();
@@ -293,7 +290,7 @@ FloorplanMgr::BlockDeleteAndInsert()
 {
 	unsigned idxD = rand() % _blockList.size();
 	unsigned idxI;
-/*	while( 1 ) { 
+	while( 1 ) { 
 		idxI = rand() % _blockList.size();
 		if( idxI == idxD ) continue;
 		if( _blockList[idxD] -> getParent() == _blockList[idxI] && _blockList[idxI] -> isFull() ) continue;
@@ -303,26 +300,6 @@ FloorplanMgr::BlockDeleteAndInsert()
 	cout << "deleting " << _blockList[idxD] -> getName() << endl;
 	cout << "inserting to " << _blockList[idxI] -> getName() << endl;
 	deleteAndInsert(_blockList[idxD], _blockList[idxI]);
-*/
-	deleteBlock(_blockList[idxD]);
-	cout << _blockList[idxD] -> getName() << " deleted ... " << endl;
-	while( 1 ) {
-		idxI = rand() % _blockList.size();
-		Block* i = _blockList[idxI];
-		if( idxD != idxI && !(i -> isFull()) ) {
-			_blockList[idxD] -> setParent(i);
-			if( i -> isLeaf() ) {
-				if( rand() % 2 == 0 ) i -> setLeft(_blockList[idxD]);
-				else i -> setRight(_blockList[idxD]);
-			}
-			else {
-				if( i -> getLeft() == NULL ) i -> setLeft(_blockList[idxD]);
-				else i -> setRight(_blockList[idxD]);
-			}
-			cout << "inserting to: " << i -> getName() << endl;
-			return;
-		}	
-	}
 }
 
 void

@@ -11,7 +11,7 @@ class Block
 {
 public:
 	Block() {}
-	Block(string s, unsigned w, unsigned h): _name(s), _width(w), _height(h) { _parent = NULL; _left = NULL; _right = NULL; _x = 0; _y = 0; }
+	Block(string s, unsigned w = 0, unsigned h = 0): _name(s), _width(w), _height(h) { _parent = NULL; _left = NULL; _right = NULL; _x = 0; _y = 0; }
 	Block(Block* b) { _parent = b -> getParent(); _left = b -> getLeft(); _right = b -> getRight(); }
 	~Block() {}
 

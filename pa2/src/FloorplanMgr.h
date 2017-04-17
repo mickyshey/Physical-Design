@@ -42,7 +42,7 @@ public:
 private:
 	void readInputBlock(string s, unordered_map<string, Block*>& blockMap);
 	void readInputNet(string s, unordered_map<string, Block*>& blockMap);
-	void reportBTreeRec(Block* b, unsigned level);
+	void reportBTreeRec(Block* b, unsigned level, unsigned& count);
 	void BTree_insert(Block* target, Block* parent);
 	void BTree_insertLeft(Block* target, Block* parent);
 	void BTree_insertRight(Block* target, Block* parent);
@@ -53,13 +53,13 @@ private:
 	void BTreePackingRightRec(Block* b);
 	unsigned HcontourFindMaxY(Block* b);
 	unsigned VcontourFindMaxX(Block* b);
-	unsigned BTreeGetArea();
+	unsigned BTreeGetArea(bool& legal);
 	unsigned BTreeGetWireLength();
 	unsigned getNetLength(vector<Block*>);
 	void deleteAndInsert(Block* d, Block* i);
 	void deleteBlock(Block* b);
 	void deleteBlock(Block* d, Block* i);			// dealing with special case
-	void BlockMoveUp(Block* b);
+	void BlockMoveUp(Block* b, unsigned upSide);
 	void swap(Block* a, Block* b);
 	void setToEdgeInfo(Block* b, Block* t);
 	void maintainEdge(Block* a, Block* b);
