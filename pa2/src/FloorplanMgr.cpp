@@ -46,62 +46,37 @@ FloorplanMgr::BTreeInit()
 			BTree_insert(_blockList[i], target);
 	}
 	BTreePacking();
-	reportBTree();
+	//reportBTree();
+	
 	bool legal = true;
 	unsigned area = BTreeGetArea(legal);
 	unsigned length = BTreeGetWireLength();
 	unsigned outOfRangeCount = legal ? 0 : 1;
-	cout << "current area: " << area << ", current length: " << length << endl;
 
-	for( int i = 1; i < RANDOM_CONSTRUCT; ++i) {					// randomly construct 99 B* tree + init
+	for( int i = 1; i < RANDOM_CONSTRUCT; ++i) {			// randomly construct 99 BTree + init
 		unsigned num = rand() % 3;	
 		if( num == 0 ) 		BlockRotate();
-		else if( num == 1 ) BlockDeleteAndInsert();
+		else if( num == 1 ) BlockDeleteAndInsert(0);		// don't duplicate BTree here
 		else				BlockSwap();
 		BTreePacking();
-		reportBTree();
+		//reportBTree();
 
 		legal = true;
 		area += BTreeGetArea(legal);
 		length += BTreeGetWireLength();
 		if( !legal ) ++outOfRangeCount;
-		cout << "current area: " << BTreeGetArea(legal) << ", current length: " << BTreeGetWireLength() << endl;
-		cout << endl;
 	}
 
 	cout << "total area: " << area << ", avg: " << area / RANDOM_CONSTRUCT << endl;
 	cout << "total wire length: " << length << ", avg: " << length / RANDOM_CONSTRUCT << endl;
 	cout << "# illegal: " << outOfRangeCount << endl;
-/*		if( target -> getLeft() == NULL && (target -> getRightX()) + (b -> getWidth()) <= _outlineWidth && (target -> getY()) + (b -> getHeight()) <= _outlineHeight ) {
-			b -> setX(target -> getRightX());
-			BTree_insertLeft(b, target);
-		}
-		else if( target -> getRight() == NULL && (target -> getX() + b -> getWidth() <= _outlineWidth) && (target -> getUpY() + b -> getHeight() <= _outlineHeight ) ) {
-			b -> setX(target -> getX());
-			BTree_insertRight(b, target);
-			if( target -> getLeft() != NULL ) targetQ.push(target -> getLeft());
-			targetQ.push(target -> getRight());
-			targetQ.pop();
-			target = targetQ.front();
-		}
-		else {
-			if( target -> getLeft() != NULL ) targetQ.push(target -> getLeft());
-			if( target -> getRight() != NULL ) targetQ.push(target -> getRight());
-			targetQ.pop();
-			target = targetQ.front();
-		}
-*/	
 }
 
 void
 FloorplanMgr::BTreePacking()
 {
-	cout << endl;
-	cout << "BTrePacking ... " << endl;
 	FloorplanMgr::reset();
 	updateContour(_root);
-	//reportHcontour();
-	//reportVcontour();
 	BTreePackingLeftRec(_root -> getLeft());
 	BTreePackingRightRec(_root -> getRight());
 }
@@ -280,32 +255,27 @@ FloorplanMgr::getNetLength(vector<Block*> n)
 	return (maxX - minX) + (maxY - minY);
 }
 
-void
+unsigned
 FloorplanMgr::BlockRotate()
 {
 	unsigned idx = rand() % _blockList.size();
-	cout << "rotating " << _blockList[idx] -> getName() << endl;
+	//cout << "rotating " << _blockList[idx] -> getName() << endl;
 	_blockList[idx] -> rotate();
+	return idx;
 }
 
-void
-FloorplanMgr::BlockDeleteAndInsert()
+Block*
+FloorplanMgr::BlockDeleteAndInsert(bool d)
 {
+	Block* DuplicatedRoot = NULL;
+	if( d ) {
+		//cout << "Duplicated BTree: " << endl;
+		DuplicatedRoot = BTreeDuplicate();
+	}
 	unsigned idxD = rand() % _blockList.size();
 	unsigned idxI;
-/*	while( 1 ) { 
-		idxI = rand() % _blockList.size();
-		if( idxI == idxD ) continue;
-		if( _blockList[idxD] -> getParent() == _blockList[idxI] && _blockList[idxI] -> isFull() ) continue;
-		if( !(_blockList[idxI] -> isFull()) ) break;	
-		else cout << _blockList[idxI] -> getName() << " is full" << endl;
-	}
-	cout << "deleting " << _blockList[idxD] -> getName() << endl;
-	cout << "inserting to " << _blockList[idxI] -> getName() << endl;
-	deleteAndInsert(_blockList[idxD], _blockList[idxI]);
-*/
 	deleteBlock(_blockList[idxD]);
-	cout << _blockList[idxD] -> getName() << " deleted ... " << endl;
+	//cout << _blockList[idxD] -> getName() << " deleted ... " << endl;
 	while( 1 ) {
 		idxI = rand() % _blockList.size();
 		Block* i = _blockList[idxI];
@@ -319,8 +289,8 @@ FloorplanMgr::BlockDeleteAndInsert()
 				if( i -> getLeft() == NULL ) i -> setLeft(_blockList[idxD]);
 				else i -> setRight(_blockList[idxD]);
 			}
-			cout << "inserting to: " << i -> getName() << endl;
-			return;
+			//cout << "inserting to: " << i -> getName() << endl;
+			return DuplicatedRoot;
 		}	
 	}
 }
@@ -328,6 +298,7 @@ FloorplanMgr::BlockDeleteAndInsert()
 void
 FloorplanMgr::deleteAndInsert(Block* d, Block* i)
 {
+/*
 	unsigned side;
 	if( d -> getParent() == i ) {
 		if( i -> getLeft() == d ) side = 0;		// record side info before deleting
@@ -352,6 +323,7 @@ FloorplanMgr::deleteAndInsert(Block* d, Block* i)
 		else i -> setRight(d);
 	}
 	d -> setParent(i);
+*/
 }
 
 void
@@ -393,6 +365,7 @@ void
 FloorplanMgr::deleteBlock(Block* d, Block* i)
 {
 // i is a child of d
+/*
 	Block* p = d -> getParent();
 	unsigned side = (d -> getLeft() == i ? 0 : 1);
 	Block* t = (side == 0 ? d -> getRight() : d -> getLeft());
@@ -407,6 +380,7 @@ FloorplanMgr::deleteBlock(Block* d, Block* i)
 	if( side == 0 ) t -> setLeft(i);
 	else t -> setRight(i);
 	d -> setToLeaf();
+*/
 }
 
 void
@@ -435,7 +409,47 @@ FloorplanMgr::BlockMoveUp(Block* b, unsigned upSide)
 	}
 }
 
+Block*
+FloorplanMgr::BTreeDuplicate()
+{
+	Block* newRoot = new Block(_root);
+	BTreeDuplicateRec(_root, newRoot);
+	unsigned count = 0;
+	//reportBTreeRec(newRoot, 0, count);
+	return newRoot;
+}
+
 void
+FloorplanMgr::BTreeDuplicateRec(Block* t, Block* d)
+{
+	Block* _left = t -> getLeft();
+	Block* _right = t -> getRight();
+	if( _left ) {
+		Block* newLeft = new Block(_left);
+		d -> setLeft(newLeft);
+		newLeft -> setParent(d);
+		BTreeDuplicateRec(_left, newLeft);
+	}
+	if( _right ) {
+		Block* newRight = new Block(_right);
+		d -> setRight(newRight);
+		newRight -> setParent(d);
+		BTreeDuplicateRec(_right, newRight);
+	}
+}
+
+void
+FloorplanMgr::BTreeFree(Block* b)
+{
+	Block* left = b -> getLeft();
+	Block* right = b -> getRight();
+	if( left ) BTreeFree(left);
+	if( right ) BTreeFree(right);
+	delete b;
+}
+
+
+pair<unsigned, unsigned>
 FloorplanMgr::BlockSwap()
 {
 	unsigned idxA = rand() % _blockList.size();
@@ -444,8 +458,9 @@ FloorplanMgr::BlockSwap()
 		idxB = rand() % _blockList.size();
 		if( idxA != idxB ) break;
 	}
-	cout << "swapping " << _blockList[idxA] -> getName() << " and " << _blockList[idxB] -> getName() << endl;
+	//cout << "swapping " << _blockList[idxA] -> getName() << " and " << _blockList[idxB] -> getName() << endl;
 	FloorplanMgr::swap(_blockList[idxA], _blockList[idxB]);
+	return {idxA, idxB};
 }
 
 void
@@ -456,29 +471,22 @@ FloorplanMgr::swap(Block* a, Block* b)
 	a -> setEqual(b);
 	b -> setEqual(tmp);
 	delete tmp;
-	/*Block* tmp = new Block(a);
-	if( a -> getParent() == b ) {}
-	else if( b -> getParent() == a ) {}
-	else {
-	setToEdgeInfo(a, b);			// maintain edge info "from" the node
-	setToEdgeInfo(b, tmp);
-	}	
-	maintainEdge(a, b);				// maintain edge info "to" the node
-	delete tmp;
-	*/
 }
 
 void
 FloorplanMgr::setToEdgeInfo(Block* b, Block* t)
 {
+/*
 	b -> setParent(t -> getParent());
 	b -> setLeft(t -> getLeft());
 	b -> setRight(t -> getRight());
+*/
 }
 
 void
 FloorplanMgr::maintainEdge(Block* a, Block* b)
 {
+/*
 	Block* t;
 	if( t = a -> getParent() ) {
 		if( t -> getLeft() == b ) t -> setLeft(a);
@@ -494,6 +502,7 @@ FloorplanMgr::maintainEdge(Block* a, Block* b)
 	if( t = a -> getRight() ) t -> setParent(a);
 	if( t = b -> getLeft() ) t -> setParent(b);
 	if( t = b -> getRight() ) t -> setParent(b);
+*/
 }
 
 //===================================
@@ -527,6 +536,8 @@ FloorplanMgr::readInputBlock(string s, unordered_map<string, Block*>& blockMap)
 			b -> setX(stoi(tokens[2])); 
 			b -> setY(stoi(tokens[3])); 
 			blockMap.insert({tokens[0], b});
+			// should be removed
+			//_blockList.push_back(b);		// causing memory leakage, HOW to deal with this prob ?
 		}
 	}
 	file.close();
@@ -567,20 +578,6 @@ FloorplanMgr::BTree_insert(Block* target, Block* parent)
 		parent -> setLeft(target);
 	else
 		parent -> setRight(target);
-}
-
-void
-FloorplanMgr::BTree_insertLeft(Block* target, Block* parent)
-{
-	target -> setParent(parent);
-	parent -> setLeft(target);
-}
-
-void
-FloorplanMgr::BTree_insertRight(Block* target, Block* parent)
-{
-	target -> setParent(parent);
-	parent -> setRight(target);
 }
 
 void

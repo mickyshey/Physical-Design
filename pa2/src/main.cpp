@@ -15,6 +15,8 @@ int main(int argc, char** argv) {
 	
 	fp -> readInput(argv[2], argv[3]);
 	fp -> BTreeInit();
+
+	delete fp;
 	//fp -> BTreePacking();
 	//fp -> reportBTree();
 	//fp -> BlockDeleteAndInsert();

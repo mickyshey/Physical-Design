@@ -28,9 +28,9 @@ public:
 	void BTreePacking();
 
 //		Perturbation function
-	void BlockRotate();
-	void BlockDeleteAndInsert();
-	void BlockSwap();
+	unsigned BlockRotate();						// return the chosen idx in BlockList
+	Block* BlockDeleteAndInsert(bool d);		// return the _root of the duplicated BTree
+	pair<unsigned, unsigned> BlockSwap();		// return the pair of idx being swapped
 
 //		Reporting function
 	void reportBlockList(); 
@@ -44,8 +44,6 @@ private:
 	void readInputNet(string s, unordered_map<string, Block*>& blockMap);
 	void reportBTreeRec(Block* b, unsigned level, unsigned& count);
 	void BTree_insert(Block* target, Block* parent);
-	void BTree_insertLeft(Block* target, Block* parent);
-	void BTree_insertRight(Block* target, Block* parent);
 	void updateContour(Block* b) { updateHcontour(b); updateVcontour(b); }
 	void updateHcontour(Block* b);
 	void updateVcontour(Block* b);
@@ -64,6 +62,9 @@ private:
 	void setToEdgeInfo(Block* b, Block* t);
 	void maintainEdge(Block* a, Block* b);
 	void reset();
+	Block* BTreeDuplicate();
+	void BTreeDuplicateRec(Block* t, Block* d);
+	void BTreeFree(Block* b);
 
 	double							_ratio;
 	unsigned						_outlineWidth;
