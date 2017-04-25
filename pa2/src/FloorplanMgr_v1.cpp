@@ -7,12 +7,17 @@
 #include <climits>
 #include <cstdlib>
 #include <iomanip>
+#include <cassert>
+#include <cmath>
+#include <map>
 
 #include "FloorplanMgr.h"
 #include "Block.h"
 #include "Util.h"
 
-#define RANDOM_CONSTRUCT 20
+#define RANDOM_CONSTRUCT 100
+#define ITERATION_COUNT 1000 
+#define THRESHOLD 1000
 
 using namespace std;
 
@@ -27,6 +32,9 @@ FloorplanMgr::readInput(string s1, string s2)
 void
 FloorplanMgr::BTreeInit()
 {
+	for( size_t i = 0; i < _blockList.size(); ++i)
+		_blockList[i] -> reset();
+
 	queue<Block*> targetQ;
 	_root = _blockList[0];
 	targetQ.push(_root);
@@ -45,50 +53,251 @@ FloorplanMgr::BTreeInit()
 			BTree_insert(_blockList[i], target);
 	}
 	BTreePacking();
-	reportBTree();
+	//reportBTree();
+}
+
+void
+FloorplanMgr::computeAvg()
+{
+	BTreeInit();
 	bool legal = true;
 	unsigned area = BTreeGetArea(legal);
 	unsigned length = BTreeGetWireLength();
 	unsigned outOfRangeCount = legal ? 0 : 1;
-	cout << "current area: " << area << ", current length: " << length << endl;
 
-	for( int i = 1; i < RANDOM_CONSTRUCT; ++i) {					// randomly construct 99 B* tree + init
+	for( int i = 1; i < RANDOM_CONSTRUCT; ++i) {			// randomly construct 99 BTree + init
 		unsigned num = rand() % 3;	
 		if( num == 0 ) 		BlockRotate();
-		else if( num == 1 ) BlockDeleteAndInsert();
+		else if( num == 1 ) BlockDeleteAndInsert(0);		// don't duplicate BTree here
 		else				BlockSwap();
 		BTreePacking();
-		reportBTree();
+		//reportBTree();
 
 		legal = true;
 		area += BTreeGetArea(legal);
 		length += BTreeGetWireLength();
 		if( !legal ) ++outOfRangeCount;
-		cout << "current area: " << BTreeGetArea(legal) << ", current length: " << BTreeGetWireLength() << endl;
 	}
 
-	cout << "total area: " << area << ", avg: " << area / RANDOM_CONSTRUCT << endl;
-	cout << "total wire length: " << length << ", avg: " << length / RANDOM_CONSTRUCT << endl;
-	cout << "# illegal: " << outOfRangeCount << endl;
-/*		if( target -> getLeft() == NULL && (target -> getRightX()) + (b -> getWidth()) <= _outlineWidth && (target -> getY()) + (b -> getHeight()) <= _outlineHeight ) {
-			b -> setX(target -> getRightX());
-			BTree_insertLeft(b, target);
+	_avgArea = (double)area / (double)RANDOM_CONSTRUCT;
+	_avgWireLength = (double)length / (double)RANDOM_CONSTRUCT;
+	cerr << "avgArea: " << fixed << _avgArea << endl;
+	cerr << "avgWireLength: " << fixed << _avgWireLength << endl;
+	cerr << "# illegal: " << outOfRangeCount << endl;
+}
+
+void
+FloorplanMgr::simAnnealing()
+{
+	unsigned itCount = (_blockList.size() > 10 ? ITERATION_COUNT : ITERATION_COUNT / 2);
+	cout << "# iterations in each T: " << itCount << endl;
+	_start = clock();	
+	bool startRecord = false;
+	map<double, Block*> fitRoots;
+	double cost;
+	unsigned SA_count = 1;
+	while( 1 ) {
+		if( SA_count > 2 ) { startRecord = true; fitRoots.clear(); }
+		BTreeInit();
+		cost = getCost();
+		double T = 1e08; 
+		while( T > 1e-05 ) {
+			unsigned iterationCount = 0;
+			//while( iterationCount <= ITERATION_COUNT ) {
+			while( iterationCount <= itCount ) {
+				unsigned num = rand() % 3;
+				double currCost;
+				++iterationCount;
+				if( num == 0 ) {
+					unsigned idx = BlockRotate();
+					BTreePacking();
+					currCost = getCost();
+					if( currCost < THRESHOLD ) {
+						if( startRecord) {
+							//cerr << setw(80) << "at: " << getTime() << " ... fit !! : " << currCost << endl;
+							Block* dup = BTreeDuplicate();
+							fitRoots.insert({currCost, dup});
+						}
+					}
+					if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) ) {
+						_blockList[idx] -> rotate();			// undo rotate
+						BTreePacking();
+					}
+					else cost = currCost;
+				}
+				else if( num == 1 ) {
+					Block* newRoot = BlockDeleteAndInsert(1);	
+					BTreePacking();
+					currCost = getCost();
+					if( currCost < THRESHOLD ) {
+						if( startRecord) {
+							//cerr << setw(80) << "at: " << getTime() << " ... fit !! : " << currCost << endl;
+							Block* dup = BTreeDuplicate();
+							fitRoots.insert({currCost, dup});
+						}
+					}
+					if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) ) {
+						// undo delete and insert:
+						BTreeExchange(newRoot);
+						BTreePacking();
+					}
+					else {
+						cost = currCost;
+						BTreeFree(newRoot);
+					}
+				}
+				else {
+					pair<unsigned, unsigned> swapIdx = BlockSwap();
+					BTreePacking();
+					currCost = getCost();
+					if( currCost < THRESHOLD ) {
+						if( startRecord) {
+							//cerr << setw(80) << "at: " << getTime() << " ... fit !! : " << currCost << endl;
+							Block* dup = BTreeDuplicate();
+							fitRoots.insert({currCost, dup});
+						}
+					}
+					if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) ) {
+						FloorplanMgr::swap(swapIdx.first, swapIdx.second);		// undo swap
+						BTreePacking();
+					}
+					else cost = currCost;
+				}
+			cerr << "time: " << getTime() << ", T: " << fixed << T << ", current cost: " << cost << "               \r" << flush;
+			}
+			T *= 0.9;
+		}	
+		if( BTreeGetMaxX() <= _outlineWidth && BTreeGetMaxY() <= _outlineHeight ) break;
+		if( fitRoots.size() ) break;
+		++SA_count;
+	}
+	if( startRecord ) {
+		auto it = fitRoots.begin();
+		//cout << endl << endl << "best in map: " << it -> first << endl;
+		//cout << "size of map: " << fitRoots.size() << endl;
+		if( it -> first < cost ) {
+			BTreeExchange(it -> second);
+			BTreePacking();
 		}
-		else if( target -> getRight() == NULL && (target -> getX() + b -> getWidth() <= _outlineWidth) && (target -> getUpY() + b -> getHeight() <= _outlineHeight ) ) {
-			b -> setX(target -> getX());
-			BTree_insertRight(b, target);
-			if( target -> getLeft() != NULL ) targetQ.push(target -> getLeft());
-			targetQ.push(target -> getRight());
-			targetQ.pop();
-			target = targetQ.front();
+	}
+	bool legal = false;
+	unsigned area = BTreeGetArea(legal);
+	unsigned length = BTreeGetWireLength();
+	cerr << endl << endl;
+	cerr << "time: " << fixed << getTime() << endl;
+	cerr << "legal: " << legal << endl;
+	cerr << "area: " << fixed << area << endl;
+	cerr << "wire length: " << fixed << length << endl;
+	cerr << "cost: " << fixed << _alpha * (double)area + (1 - _alpha) * (double)length << endl;
+	//reportBTree();
+	//reportHcontour();
+	//reportVcontour();
+}
+
+// (1) maintain _blockList and _netList
+// (2) free the origin BTree
+// (3) set _root = newRoot
+void
+FloorplanMgr::BTreeExchange(Block* newRoot)
+{
+	vector<Block*> newBlockList;
+	vector<vector<Block*>> newNetList;
+	newBlockList.reserve(_blockList.size());
+	newNetList.reserve(_netList.size());	
+	unordered_map<string, Block*> newBlockMap;
+	setBlockMap(newRoot, newBlockMap);
+	for( size_t i = 0; i < _blockList.size(); ++i )
+		newBlockList.push_back(newBlockMap.at(_blockList[i] -> getName()));
+	for( size_t i = 0; i < _netList.size(); ++i) {
+		vector<Block*> newNet;
+		newNet.reserve(_netList[i].size());
+		for( size_t j = 0; j < _netList[i].size(); ++j ) {
+			Block* b = _netList[i][j];
+			if( newBlockMap.find(b -> getName()) != newBlockMap.end() )
+				newNet.push_back(newBlockMap.at(b -> getName()));
+			else newNet.push_back(b);				// terminal
 		}
-		else {
-			if( target -> getLeft() != NULL ) targetQ.push(target -> getLeft());
-			if( target -> getRight() != NULL ) targetQ.push(target -> getRight());
-			targetQ.pop();
-			target = targetQ.front();
-		}
-*/	
+		newNetList.push_back(newNet);
+	}
+	_blockList.swap(newBlockList);
+	_netList.swap(newNetList);
+	BTreeFree(_root);
+	_root = newRoot;
+}
+
+void
+FloorplanMgr::setBlockMap(Block* r, unordered_map<string, Block*>& m)
+{
+	Block* left = r -> getLeft();
+	Block* right = r -> getRight();
+	if( left ) setBlockMap(left, m);
+	if( right ) setBlockMap(right, m);
+	m.insert({r -> getName(), r});
+}
+
+double
+FloorplanMgr::getCost()
+{
+	double cost = 0;
+	unsigned maxX = BTreeGetMaxX();
+	unsigned maxY = BTreeGetMaxY();	
+	unsigned area = maxX * maxY;
+	unsigned length = BTreeGetWireLength();
+	cost += _alpha * (double)area / _avgArea;
+	cost += (1 - _alpha) * (double)length / _avgWireLength;
+	if( maxX > _outlineWidth ) cost += 10000 * (maxX - _outlineWidth);
+	if( maxY > _outlineHeight ) cost += 10000 * (maxY - _outlineHeight);
+	return cost;
+}
+
+void
+FloorplanMgr::writeOutput(string s)
+{
+	ofstream file;
+	file.open(s);
+	unsigned maxX = BTreeGetMaxX();
+	unsigned maxY = BTreeGetMaxY();
+	unsigned area = maxX * maxY;
+	unsigned length = BTreeGetWireLength();
+	double cost = _alpha * (double)area + (1 - _alpha) * (double)length;
+	file << fixed << cost << endl;
+	file << fixed << length << endl;
+	file << fixed << area << endl;
+	file << maxX << " " << maxY << endl;
+	file << fixed << getTime() << endl;
+	for( unsigned i = 0; i < _blockList.size(); ++i ) {
+		Block* b = _blockList[i];
+		file << b -> getName() << " " << b -> getX() << " " << b -> getY()
+			 << " " << b -> getRightX() << " " << b -> getUpY() << endl;
+	}
+	file.close();
+}
+
+void
+FloorplanMgr::writeLog(string s)
+{
+	ofstream file;
+	file.open(s);
+	unsigned maxX = BTreeGetMaxX();
+	unsigned maxY = BTreeGetMaxY();
+	unsigned area = maxX * maxY;
+	unsigned length = BTreeGetWireLength();
+	double cost = _alpha * (double)area + (1 - _alpha) * (double)length;
+	file << "var log = {" << endl;
+	file << "\"boundary\": [" << _outlineWidth << ", " << _outlineHeight << "]," << endl;
+	file << "\"trace\": [" << endl;
+	file << "{" << endl;
+	file << "\"temp\": \"T\"," << endl;
+	file << "\"cost\": \"" << cost << "\"," << endl;
+	file << "\"packing\": [" << endl;
+	for( unsigned i = 0; i < _blockList.size(); ++i ) {
+		Block* b = _blockList[i];
+		file << "[\"" << b -> getName() << "\", " << b -> getX() << ", " << b -> getY() << ", " << b -> getRightX() << ", " << b -> getUpY() << "]" << (i == _blockList.size() - 1 ? "" : ",") << endl;
+	}
+	file << "]" << endl;
+	file << "}" << endl;
+	file << "]}" << endl;
+	file.close();
 }
 
 void
@@ -96,10 +305,11 @@ FloorplanMgr::BTreePacking()
 {
 	FloorplanMgr::reset();
 	updateContour(_root);
-	reportHcontour();
-	reportVcontour();
 	BTreePackingLeftRec(_root -> getLeft());
 	BTreePackingRightRec(_root -> getRight());
+	//reportBTree();
+	//reportHcontour();
+	//reportVcontour();
 }
 
 void
@@ -108,62 +318,28 @@ FloorplanMgr::updateHcontour(Block* b)
 	unsigned xLeft = b -> getX();
 	unsigned xRight = b -> getRightX();
 	unsigned yValue = b -> getUpY();
-	cout << "update H: " << b -> getName() << ", range: " << xLeft << " ~ " << xRight << ", with y: " << yValue << endl;
+	//cout << "update H: " << b -> getName() << ", range: " << xLeft << " ~ " << xRight << ", with y: " << yValue << endl;
 	for( auto it = _Hcontour.begin(); it != _Hcontour.end(); ++it ) {
 		Xrange xrange = it -> first;
 		//cout << "checking: " << xrange.first << " ~ " << xrange.second << endl;
 		unsigned oriValue = it -> second;
 		if( xLeft >= xrange.second ) continue;
 		if( xRight <= xrange.first ) return;
-		if( xLeft >= xrange.first && xLeft < xrange.second && xRight > xrange.first && xRight <= xrange.second ) {				
-			Xrange tmp;
-			if( xrange.first != xLeft && xrange.second != xRight ) {	
-					// target: 55 ~ 65, range: 50 ~ 70
-				tmp = {xrange.first, xLeft};
-				_Hcontour.insert(it, {tmp, oriValue});		// 50 ~ 55: ori
-				tmp = {xLeft, xRight};
-				_Hcontour.insert(it, {tmp, yValue});		// 55 ~ 65: new
-				(it -> first).first = xRight;				// 65 ~ 70: ori	
-			}
-			else if( xRight != xrange.second ) {
-					// target: 55 ~ 65, range: 55 ~ 70
-				tmp = {xLeft, xRight};
-				_Hcontour.insert(it, {tmp, yValue});		// 55 ~ 65: new
-				(it -> first).first = xRight;				// 65 ~ 70: ori
-			}
-			else {
-					// target: 55 ~ 65, range: 50 ~ 65
-				if( xrange.first != xLeft) {
-					tmp = {xrange.first, xLeft};
-					_Hcontour.insert(it, {tmp, oriValue});	// 50 ~ 55: ori
-				}
-				(it -> first).first = xLeft;				// 55 ~ 65: new
+		if( yValue > oriValue ) {
+			if( xLeft <= xrange.first && xRight >= xrange.second ) {				
 				it -> second = yValue;
 			}
-			return;
-		}
-		else if( xLeft >= xrange.first && xLeft < xrange.second ) {
-			if( xLeft == xrange.first ) {
-					// target: 55 ~ 65, range: 55 ~ 60
-				it -> second = yValue;
-			}
-			else {
-					// target: 55 ~ 65, range: 53 ~ 60
-				Xrange tmp = {xrange.first, xLeft};
-				_Hcontour.insert(it, {tmp, oriValue});		// 53 ~ 55: ori
-				(it -> first).first = xLeft;				// 55 ~ 60: new
-				it -> second = yValue;
-			}
-		}
-		else {
-			if( xRight == xrange.second ) {
-					// target: 55 ~ 65, range: 65 ~ 70
-			}
-			else {
-					// target: 55 ~ 65, range: 63 ~ 70
+			else if( xLeft <= xrange.first && xRight < xrange.second ) {
 				Xrange tmp = {xrange.first, xRight};
-				_Hcontour.insert(it, {tmp, yValue});		// 63 ~ 65: new
-				(it -> first).first = xRight;				// 65 ~ 70: ori
+				_Vcontour.insert(it, {tmp, yValue});	
+				(it -> first).first = xRight;				
+				//it -> second = oriValue;
+			}
+			else {
+				Xrange tmp = {xrange.first, xLeft};
+				_Vcontour.insert(it, {tmp, oriValue});		
+				(it -> first).first = xLeft;					
+				it -> second = yValue;
 			}
 		}
 	}
@@ -175,63 +351,28 @@ FloorplanMgr::updateVcontour(Block* b)
 	unsigned yDown = b -> getY();
 	unsigned yUp = b -> getUpY();
 	unsigned xValue = b -> getRightX();
-	cout << "update V: " << b -> getName() << ", range: " << yDown << " ~ " << yUp << ", with x: " << xValue << endl;
+	//cout << "update V: " << b -> getName() << ", range: " << yDown << " ~ " << yUp << ", with x: " << xValue << endl;
 	for( auto it = _Vcontour.begin(); it != _Vcontour.end(); ++it ) {
 		Yrange yrange = it -> first;
 		//cout << "checking: " << yrange.first << " ~ " << yrange.second << endl;
 		unsigned oriValue = it -> second;
 		if( yDown >= yrange.second ) continue;
 		if( yUp <= yrange.first ) return;
-		if( yDown >= yrange.first && yDown < yrange.second && yUp > yrange.first && yUp <= yrange.second ) {				
-			Yrange tmp;
-			if( yrange.first != yDown && yrange.second != yUp ) {	
-					// target: 55 ~ 65, range: 50 ~ 70				// target: range to update; range: Block range
-				tmp = {yrange.first, yDown};
-				_Vcontour.insert(it, {tmp, oriValue});		// 50 ~ 55: ori
-				tmp = {yDown, yUp};
-				_Vcontour.insert(it, {tmp, xValue});		// 55 ~ 65: new
-				(it -> first).first = yUp;					// 65 ~ 70: ori	
-			}
-			else if( yUp != yrange.second ) {
-					// target: 55 ~ 65, range: 55 ~ 70
-				tmp = {yDown, yUp};
-				_Vcontour.insert(it, {tmp, xValue});		// 55 ~ 65: new
-				(it -> first).first = yUp;					// 65 ~ 70: ori
-			}
-			else {
-					// target: 55 ~ 65, range: 50 ~ 65
-				if( yrange.first != yDown ) {
-					tmp = {yrange.first, yDown};
-					_Vcontour.insert(it, {tmp, oriValue});	// 50 ~ 55: ori
-				}
-				(it -> first).first = yDown;				// 55 ~ 65: new
+		if( xValue > oriValue ) {
+			if( yDown <= yrange.first && yUp >= yrange.second ) {				
 				it -> second = xValue;
 			}
-			return;
-		}
-		else if( yDown >= yrange.first && yDown < yrange.second ) {
-			if( yDown == yrange.first ) {
-					// target: 55 ~ 65, range: 55 ~ 60
-				it -> second = xValue;
-			}
-			else {
-					// target: 55 ~ 65, range: 53 ~ 60
-				Yrange tmp = {yrange.first, yDown};
-				_Vcontour.insert(it, {tmp, oriValue});		// 53 ~ 55: ori
-				(it -> first).first = yDown;				// 55 ~ 60: new
-				it -> second = xValue;
-			}
-		}
-		else {
-			if( yUp == yrange.second ) {
-					// target: 55 ~ 65, range: 65 ~ 70
-				
-			}
-			else {
-					// target: 55 ~ 65, range: 63 ~ 70
+			else if( yDown <= yrange.first && yUp < yrange.second ) {
 				Yrange tmp = {yrange.first, yUp};
-				_Vcontour.insert(it, {tmp, xValue});		// 63 ~ 65: new
-				(it -> first).first = yUp;					// 65 ~ 70: ori
+				_Vcontour.insert(it, {tmp, xValue});	
+				(it -> first).first = yUp;		
+				//it -> second = oriValue;
+			}
+			else {
+				Yrange tmp = {yrange.first, yDown};
+				_Vcontour.insert(it, {tmp, oriValue});	
+				(it -> first).first = yDown;		
+				it -> second = xValue;
 			}
 		}
 	}
@@ -243,12 +384,12 @@ FloorplanMgr::BTreePackingLeftRec(Block* b)
 	if( b == NULL ) return;
 	Block* parent = b -> getParent();
 	b -> setY(parent -> getY());
-	cout << "left packing: " << b -> getName() << ", scanning V: " << b -> getY() << " ~ " << b -> getUpY() << endl;
-	unsigned max = VcontourFindMaxX(b);
-	b -> setX(max);
+	//cout << "left packing: " << b -> getName() << ", scanning V: " << b -> getY() << " ~ " << b -> getUpY() << endl;
+	unsigned maxX = VcontourFindMaxX(b);
+	b -> setX(maxX);
 	updateContour(b);
-	reportHcontour();
-	reportVcontour();
+	//reportHcontour();
+	//reportVcontour();
 
 	BTreePackingLeftRec(b -> getLeft());
 	BTreePackingRightRec(b -> getRight());
@@ -260,12 +401,12 @@ FloorplanMgr::BTreePackingRightRec(Block* b)
 	if( b == NULL ) return;
 	Block* parent = b -> getParent();
 	b -> setX(parent -> getX());
-	cout << "right packing: " << b -> getName() << ", scanning H: " << b -> getX() << " ~ " << b -> getRightX() << endl;
-	unsigned max = HcontourFindMaxY(b);
-	b -> setY(max);
+	//cout << "right packing: " << b -> getName() << ", scanning H: " << b -> getX() << " ~ " << b -> getRightX() << endl;
+	unsigned maxY = HcontourFindMaxY(b);
+	b -> setY(maxY);
 	updateContour(b);
-	reportHcontour();
-	reportVcontour();
+	//reportHcontour();
+	//reportVcontour();
 
 	BTreePackingLeftRec(b -> getLeft());
 	BTreePackingRightRec(b -> getRight());
@@ -274,47 +415,65 @@ FloorplanMgr::BTreePackingRightRec(Block* b)
 unsigned
 FloorplanMgr::HcontourFindMaxY(Block* b)
 {
-	unsigned max = 0;
+	unsigned maxY = 0;
 	unsigned xLeft = b -> getX();
 	unsigned xRight = b -> getRightX();
 	for( auto it = _Hcontour.begin(); it != _Hcontour.end(); ++it ) {
 		Xrange xrange = it -> first;
 		unsigned y = it -> second;
 		if( xLeft >= xrange.second ) continue;
-		if( xRight <= xrange.first ) return max;
-		if( y > max ) max = y;
+		if( xRight <= xrange.first ) return maxY;
+		if( y > maxY ) maxY = y;
 	}
+	return maxY;
 }
 
 unsigned
 FloorplanMgr::VcontourFindMaxX(Block* b)
 {
-	unsigned max = 0;
+	unsigned maxX = 0;
 	unsigned yDown = b -> getY();
 	unsigned yUp = b -> getUpY();
 	for( auto it = _Vcontour.begin(); it != _Vcontour.end(); ++it ) {
 		Yrange yrange = it -> first;
 		unsigned x = it -> second;
 		if( yDown >= yrange.second ) continue;
-		if( yUp <= yrange.first ) return max;
-		if( x > max ) max = x;
+		if( yUp <= yrange.first ) return maxX;
+		if( x > maxX ) maxX = x;
 	}
+	return maxX;
 }
 
 unsigned
 FloorplanMgr::BTreeGetArea(bool& legal)
 {
-	unsigned maxX = 0, maxY = 0; 
+	unsigned maxX = BTreeGetMaxX();
+	unsigned maxY = BTreeGetMaxY(); 
+	if( maxX > _outlineWidth || maxY > _outlineHeight ) legal = false;
+	else legal = true;
+	return maxX * maxY;
+}
+
+unsigned
+FloorplanMgr::BTreeGetMaxX()
+{
+	unsigned maxX = 0;
 	for( auto it = _Vcontour.begin(); it != _Vcontour.end(); ++it ) {
 		unsigned x = it -> second;
 		if( x > maxX ) maxX = x;
 	}
+	return maxX;
+}
+
+unsigned
+FloorplanMgr::BTreeGetMaxY()
+{
+	unsigned maxY = 0;
 	for( auto it = _Hcontour.begin(); it != _Hcontour.end(); ++it ) {
 		unsigned y = it -> second;
 		if( y > maxY ) maxY = y;
 	}
-	if( maxX > _outlineWidth || maxY > _outlineHeight ) legal = false;
-	return maxX * maxY;
+	return maxY;
 }
 
 unsigned
@@ -341,38 +500,52 @@ FloorplanMgr::getNetLength(vector<Block*> n)
 		if( y > maxY ) maxY = y;
 		if( y < minY ) minY = y;
 	}
-	//cout << "X: " << minX << " ~ " << maxX << ", Y: " << minY << " ~ " << maxY << endl;
 	return (maxX - minX) + (maxY - minY);
 }
 
-void
+unsigned
 FloorplanMgr::BlockRotate()
 {
 	unsigned idx = rand() % _blockList.size();
-	cout << "rotating " << _blockList[idx] -> getName() << endl;
+	//cout << "rotating " << _blockList[idx] -> getName() << endl;
 	_blockList[idx] -> rotate();
+	return idx;
 }
 
-void
-FloorplanMgr::BlockDeleteAndInsert()
+Block*
+FloorplanMgr::BlockDeleteAndInsert(bool d)
 {
+	Block* DuplicatedRoot = NULL;
+	if( d ) {
+		DuplicatedRoot = BTreeDuplicate();
+	}
 	unsigned idxD = rand() % _blockList.size();
 	unsigned idxI;
-	while( 1 ) { 
+	deleteBlock(_blockList[idxD]);
+	//cout << _blockList[idxD] -> getName() << " deleted ... " << endl;
+	while( 1 ) {
 		idxI = rand() % _blockList.size();
-		if( idxI == idxD ) continue;
-		if( _blockList[idxD] -> getParent() == _blockList[idxI] && _blockList[idxI] -> isFull() ) continue;
-		if( !(_blockList[idxI] -> isFull()) ) break;	
-		else cout << _blockList[idxI] -> getName() << " is full" << endl;
+		Block* i = _blockList[idxI];
+		if( idxD != idxI && !(i -> isFull()) ) {
+			_blockList[idxD] -> setParent(i);
+			if( i -> isLeaf() ) {
+				if( rand() % 2 == 0 ) i -> setLeft(_blockList[idxD]);
+				else i -> setRight(_blockList[idxD]);
+			}
+			else {
+				if( i -> getLeft() == NULL ) i -> setLeft(_blockList[idxD]);
+				else i -> setRight(_blockList[idxD]);
+			}
+			//cout << "inserting to: " << i -> getName() << endl;
+			return DuplicatedRoot;
+		}	
 	}
-	cout << "deleting " << _blockList[idxD] -> getName() << endl;
-	cout << "inserting to " << _blockList[idxI] -> getName() << endl;
-	deleteAndInsert(_blockList[idxD], _blockList[idxI]);
 }
 
 void
 FloorplanMgr::deleteAndInsert(Block* d, Block* i)
 {
+/*
 	unsigned side;
 	if( d -> getParent() == i ) {
 		if( i -> getLeft() == d ) side = 0;		// record side info before deleting
@@ -397,6 +570,7 @@ FloorplanMgr::deleteAndInsert(Block* d, Block* i)
 		else i -> setRight(d);
 	}
 	d -> setParent(i);
+*/
 }
 
 void
@@ -409,20 +583,27 @@ FloorplanMgr::deleteBlock(Block* b)
 	}
 	else if( b -> isFull() ) {				// node with two children
 		unsigned side = rand() % 2;
-		if( b == _root ) _root = (side == 0 ? b -> getLeft() : b -> getRight());
 		Block* movingNode = (side == 0 ? b -> getLeft() : b -> getRight());
 		Block* stayingNode = (side == 0 ? b -> getRight() : b -> getLeft());
 		movingNode -> setParent(p);
 		stayingNode -> setParent(movingNode);
-		BlockMoveUp(movingNode);
+		BlockMoveUp(movingNode, side);
 		if( side == 0 ) movingNode -> setRight(stayingNode);
 		else movingNode -> setLeft(stayingNode);
+		if( b != _root ) {
+			if( p -> getLeft() == b ) p -> setLeft(movingNode);		// parent point to moving node
+			else p -> setRight(movingNode);
+		}
+		else _root = (side == 0 ? b -> getLeft() : b -> getRight());
 	}
 	else {									// node with one child
 		Block* c = (b -> getLeft() == NULL ? b -> getRight() : b -> getLeft());
 		c -> setParent(p);
-		if( p -> getLeft() == b ) p -> setLeft(c);
-		else p -> setRight(c);
+		if( b != _root ) {
+			if( p -> getLeft() == b ) p -> setLeft(c);
+			else p -> setRight(c);
+		}
+		else _root = (b -> getLeft() == NULL ? b -> getRight() : b -> getLeft());
 	}
 	b -> setToLeaf();
 }
@@ -431,33 +612,91 @@ void
 FloorplanMgr::deleteBlock(Block* d, Block* i)
 {
 // i is a child of d
+/*
 	Block* p = d -> getParent();
 	unsigned side = (d -> getLeft() == i ? 0 : 1);
 	Block* t = (side == 0 ? d -> getRight() : d -> getLeft());
-	if( d == _root ) _root = t;
 	t -> setParent(p);
 	i -> setParent(t);
-	BlockMoveUp(t);	
+	BlockMoveUp(t, (side == 0 ? 1 : 0));	// the moving up node is on other side
+	if( d != _root ) {
+		if( p -> getLeft() == d ) p -> setLeft(t);
+		else p -> setRight(t);
+	}
+	else _root = t;
 	if( side == 0 ) t -> setLeft(i);
 	else t -> setRight(i);
 	d -> setToLeaf();
+*/
 }
 
 void
-FloorplanMgr::BlockMoveUp(Block* b)
+FloorplanMgr::BlockMoveUp(Block* b, unsigned upSide)
 {
 	if( b -> isFull() ) {
 		unsigned side = rand() % 2;
 		Block* movingNode = (side == 0 ? b -> getLeft() : b -> getRight());
 		Block* stayingNode = (side == 0 ? b -> getRight() : b -> getLeft());
 		stayingNode -> setParent(movingNode);
-		BlockMoveUp(movingNode);
+		BlockMoveUp(movingNode, side);
 		if( side == 0 ) movingNode -> setRight(stayingNode);
 		else movingNode -> setLeft(stayingNode);
+		if( upSide == 0 ) b -> setLeft(movingNode);		// point back to moving node
+		else b -> setRight(movingNode);
+	}
+	else if( !b -> isLeaf() ) {			// block with one child
+		if( upSide == 0 && b -> getLeft() == NULL ) {			// moving right child to left
+			b -> setLeft(b -> getRight());
+			b -> setRight(NULL);
+		}
+		else if( upSide == 1 && b -> getRight() == NULL ) {		// moving left child to right
+			b -> setRight(b -> getLeft());
+			b -> setLeft(NULL);
+		}
+	}
+}
+
+Block*
+FloorplanMgr::BTreeDuplicate()
+{
+	Block* newRoot = new Block(_root);
+	BTreeDuplicateRec(_root, newRoot);
+	unsigned count = 0;
+	//reportBTreeRec(newRoot, 0, count);
+	return newRoot;
+}
+
+void
+FloorplanMgr::BTreeDuplicateRec(Block* t, Block* d)
+{
+	Block* _left = t -> getLeft();
+	Block* _right = t -> getRight();
+	if( _left ) {
+		Block* newLeft = new Block(_left);
+		d -> setLeft(newLeft);
+		newLeft -> setParent(d);
+		BTreeDuplicateRec(_left, newLeft);
+	}
+	if( _right ) {
+		Block* newRight = new Block(_right);
+		d -> setRight(newRight);
+		newRight -> setParent(d);
+		BTreeDuplicateRec(_right, newRight);
 	}
 }
 
 void
+FloorplanMgr::BTreeFree(Block* b)
+{
+	Block* left = b -> getLeft();
+	Block* right = b -> getRight();
+	if( left ) BTreeFree(left);
+	if( right ) BTreeFree(right);
+	delete b;
+}
+
+
+pair<unsigned, unsigned>
 FloorplanMgr::BlockSwap()
 {
 	unsigned idxA = rand() % _blockList.size();
@@ -466,8 +705,9 @@ FloorplanMgr::BlockSwap()
 		idxB = rand() % _blockList.size();
 		if( idxA != idxB ) break;
 	}
-	cout << "swapping " << _blockList[idxA] -> getName() << " and " << _blockList[idxB] -> getName() << endl;
+	//cout << "swapping " << _blockList[idxA] -> getName() << " and " << _blockList[idxB] -> getName() << endl;
 	FloorplanMgr::swap(_blockList[idxA], _blockList[idxB]);
+	return {idxA, idxB};
 }
 
 void
@@ -478,29 +718,22 @@ FloorplanMgr::swap(Block* a, Block* b)
 	a -> setEqual(b);
 	b -> setEqual(tmp);
 	delete tmp;
-	/*Block* tmp = new Block(a);
-	if( a -> getParent() == b ) {}
-	else if( b -> getParent() == a ) {}
-	else {
-	setToEdgeInfo(a, b);			// maintain edge info "from" the node
-	setToEdgeInfo(b, tmp);
-	}	
-	maintainEdge(a, b);				// maintain edge info "to" the node
-	delete tmp;
-	*/
 }
 
 void
 FloorplanMgr::setToEdgeInfo(Block* b, Block* t)
 {
+/*
 	b -> setParent(t -> getParent());
 	b -> setLeft(t -> getLeft());
 	b -> setRight(t -> getRight());
+*/
 }
 
 void
 FloorplanMgr::maintainEdge(Block* a, Block* b)
 {
+/*
 	Block* t;
 	if( t = a -> getParent() ) {
 		if( t -> getLeft() == b ) t -> setLeft(a);
@@ -516,6 +749,7 @@ FloorplanMgr::maintainEdge(Block* a, Block* b)
 	if( t = a -> getRight() ) t -> setParent(a);
 	if( t = b -> getLeft() ) t -> setParent(b);
 	if( t = b -> getRight() ) t -> setParent(b);
+*/
 }
 
 //===================================
@@ -549,6 +783,7 @@ FloorplanMgr::readInputBlock(string s, unordered_map<string, Block*>& blockMap)
 			b -> setX(stoi(tokens[2])); 
 			b -> setY(stoi(tokens[3])); 
 			blockMap.insert({tokens[0], b});
+			// should be removed
 		}
 	}
 	file.close();
@@ -589,20 +824,6 @@ FloorplanMgr::BTree_insert(Block* target, Block* parent)
 		parent -> setLeft(target);
 	else
 		parent -> setRight(target);
-}
-
-void
-FloorplanMgr::BTree_insertLeft(Block* target, Block* parent)
-{
-	target -> setParent(parent);
-	parent -> setLeft(target);
-}
-
-void
-FloorplanMgr::BTree_insertRight(Block* target, Block* parent)
-{
-	target -> setParent(parent);
-	parent -> setRight(target);
 }
 
 void
@@ -656,21 +877,24 @@ FloorplanMgr::reportBTree()
 	cout << "=================" << endl;
 	cout << " reporting BTree " << endl;
 	cout << "=================" << endl;
-	reportBTreeRec(_root, 0);	
+	unsigned count = 0;
+	reportBTreeRec(_root, 0, count);	
+	cout << endl << "# Node: " << count << endl;
 	cout << endl;
 }
 
 void
-FloorplanMgr::reportBTreeRec(Block* b, unsigned level)
+FloorplanMgr::reportBTreeRec(Block* b, unsigned level, unsigned& count)
 {
 	for( unsigned i = 0; i < level; ++i )
 		cout << "   "; 
 	cout << "[" << level << "] ";
 	if( b == NULL ) { cout << "NULL" << endl; return; }
+	++count;
 	cout << b -> getName() << " @ ( " << b -> getX() << ", " << b -> getY() << " ), Width: "
 		 << b -> getWidth() << ", Height: " << b -> getHeight() << endl;
-	reportBTreeRec(b -> getLeft(), level + 1);
-	reportBTreeRec(b -> getRight(), level + 1);
+	reportBTreeRec(b -> getLeft(), level + 1, count);
+	reportBTreeRec(b -> getRight(), level + 1, count);
 }
 
 void

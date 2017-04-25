@@ -12,6 +12,8 @@ BTreeGetArea	FloorplanMgr.cpp	/^FloorplanMgr::BTreeGetArea(bool& legal)$/;"	f	cl
 BTreeGetArea	FloorplanMgr_v1.cpp	/^FloorplanMgr::BTreeGetArea(bool& legal)$/;"	f	class:FloorplanMgr
 BTreeGetArea	FloorplanMgr_v2.cpp	/^FloorplanMgr::BTreeGetArea(bool& legal)$/;"	f	class:FloorplanMgr
 BTreeGetArea	FloorplanMgr_v3.cpp	/^FloorplanMgr::BTreeGetArea(bool& legal)$/;"	f	class:FloorplanMgr
+BTreeGetMaxX	FloorplanMgr.cpp	/^FloorplanMgr::BTreeGetMaxX()$/;"	f	class:FloorplanMgr
+BTreeGetMaxY	FloorplanMgr.cpp	/^FloorplanMgr::BTreeGetMaxY()$/;"	f	class:FloorplanMgr
 BTreeGetWireLength	FloorplanMgr.cpp	/^FloorplanMgr::BTreeGetWireLength()$/;"	f	class:FloorplanMgr
 BTreeGetWireLength	FloorplanMgr_v1.cpp	/^FloorplanMgr::BTreeGetWireLength()$/;"	f	class:FloorplanMgr
 BTreeGetWireLength	FloorplanMgr_v2.cpp	/^FloorplanMgr::BTreeGetWireLength()$/;"	f	class:FloorplanMgr
@@ -62,19 +64,21 @@ BlockSwap	FloorplanMgr.cpp	/^FloorplanMgr::BlockSwap()$/;"	f	class:FloorplanMgr
 BlockSwap	FloorplanMgr_v1.cpp	/^FloorplanMgr::BlockSwap()$/;"	f	class:FloorplanMgr
 BlockSwap	FloorplanMgr_v2.cpp	/^FloorplanMgr::BlockSwap()$/;"	f	class:FloorplanMgr
 BlockSwap	FloorplanMgr_v3.cpp	/^FloorplanMgr::BlockSwap()$/;"	f	class:FloorplanMgr
+COST_FACTOR	FloorplanMgr.cpp	18;"	d	file:
 FLOORPLAN_H	FloorplanMgr.h	4;"	d
 FloorplanMgr	FloorplanMgr.h	/^	FloorplanMgr() {}$/;"	f	class:FloorplanMgr
-FloorplanMgr	FloorplanMgr.h	/^	FloorplanMgr(double r): _ratio(r) {} $/;"	f	class:FloorplanMgr
+FloorplanMgr	FloorplanMgr.h	/^	FloorplanMgr(double a): _alpha(a) {} $/;"	f	class:FloorplanMgr
 FloorplanMgr	FloorplanMgr.h	/^class FloorplanMgr$/;"	c
 HcontourFindMaxY	FloorplanMgr.cpp	/^FloorplanMgr::HcontourFindMaxY(Block* b)$/;"	f	class:FloorplanMgr
 HcontourFindMaxY	FloorplanMgr_v1.cpp	/^FloorplanMgr::HcontourFindMaxY(Block* b)$/;"	f	class:FloorplanMgr
 HcontourFindMaxY	FloorplanMgr_v2.cpp	/^FloorplanMgr::HcontourFindMaxY(Block* b)$/;"	f	class:FloorplanMgr
 HcontourFindMaxY	FloorplanMgr_v3.cpp	/^FloorplanMgr::HcontourFindMaxY(Block* b)$/;"	f	class:FloorplanMgr
-RANDOM_CONSTRUCT	FloorplanMgr.cpp	16;"	d	file:
+RANDOM_CONSTRUCT	FloorplanMgr.cpp	17;"	d	file:
 RANDOM_CONSTRUCT	FloorplanMgr_v1.cpp	15;"	d	file:
 RANDOM_CONSTRUCT	FloorplanMgr_v2.cpp	15;"	d	file:
 RANDOM_CONSTRUCT	FloorplanMgr_v3.cpp	16;"	d	file:
 UTIL_h	Util.h	4;"	d
+UndoDeleteAndInsert	FloorplanMgr.cpp	/^FloorplanMgr::UndoDeleteAndInsert(Block* newRoot)$/;"	f	class:FloorplanMgr
 VcontourFindMaxX	FloorplanMgr.cpp	/^FloorplanMgr::VcontourFindMaxX(Block* b)$/;"	f	class:FloorplanMgr
 VcontourFindMaxX	FloorplanMgr_v1.cpp	/^FloorplanMgr::VcontourFindMaxX(Block* b)$/;"	f	class:FloorplanMgr
 VcontourFindMaxX	FloorplanMgr_v2.cpp	/^FloorplanMgr::VcontourFindMaxX(Block* b)$/;"	f	class:FloorplanMgr
@@ -83,15 +87,18 @@ Xrange	FloorplanMgr.h	/^typedef pair<unsigned, unsigned> Xrange;$/;"	t
 Yrange	FloorplanMgr.h	/^typedef pair<unsigned, unsigned> Yrange;$/;"	t
 _Hcontour	FloorplanMgr.h	/^	list<pair<Xrange, unsigned>>	_Hcontour;		\/\/ < x range, y value >$/;"	m	class:FloorplanMgr
 _Vcontour	FloorplanMgr.h	/^	list<pair<Yrange, unsigned>>	_Vcontour;		\/\/ < y range, x value >$/;"	m	class:FloorplanMgr
+_alpha	FloorplanMgr.h	/^	double							_alpha;$/;"	m	class:FloorplanMgr
+_avgArea	FloorplanMgr.h	/^	double							_avgArea;$/;"	m	class:FloorplanMgr
+_avgWireLength	FloorplanMgr.h	/^	double							_avgWireLength;$/;"	m	class:FloorplanMgr
 _blockList	FloorplanMgr.h	/^	vector<Block*>					_blockList;$/;"	m	class:FloorplanMgr
 _height	Block.h	/^	unsigned 		_height;$/;"	m	class:Block
 _left	Block.h	/^	Block*			_left;$/;"	m	class:Block
 _name	Block.h	/^	string			_name;$/;"	m	class:Block
 _netList	FloorplanMgr.h	/^	vector<vector<Block*>> 			_netList;$/;"	m	class:FloorplanMgr
+_outlineCost	FloorplanMgr.h	/^	double							_outlineCost;$/;"	m	class:FloorplanMgr
 _outlineHeight	FloorplanMgr.h	/^	unsigned						_outlineHeight;$/;"	m	class:FloorplanMgr
 _outlineWidth	FloorplanMgr.h	/^	unsigned						_outlineWidth;$/;"	m	class:FloorplanMgr
 _parent	Block.h	/^	Block*			_parent;$/;"	m	class:Block
-_ratio	FloorplanMgr.h	/^	double							_ratio;$/;"	m	class:FloorplanMgr
 _right	Block.h	/^	Block*			_right;$/;"	m	class:Block
 _root	FloorplanMgr.h	/^	Block*							_root;			\/\/ root of B* tree$/;"	m	class:FloorplanMgr
 _width	Block.h	/^	unsigned 		_width;$/;"	m	class:Block
@@ -109,6 +116,7 @@ deleteBlock	FloorplanMgr_v2.cpp	/^FloorplanMgr::deleteBlock(Block* b)$/;"	f	clas
 deleteBlock	FloorplanMgr_v2.cpp	/^FloorplanMgr::deleteBlock(Block* d, Block* i)$/;"	f	class:FloorplanMgr
 deleteBlock	FloorplanMgr_v3.cpp	/^FloorplanMgr::deleteBlock(Block* b)$/;"	f	class:FloorplanMgr
 deleteBlock	FloorplanMgr_v3.cpp	/^FloorplanMgr::deleteBlock(Block* d, Block* i)$/;"	f	class:FloorplanMgr
+getCost	FloorplanMgr.cpp	/^FloorplanMgr::getCost()$/;"	f	class:FloorplanMgr
 getHeight	Block.h	/^	unsigned getHeight() { return _height; }$/;"	f	class:Block
 getLeft	Block.h	/^	Block* getLeft() { return _left; }$/;"	f	class:Block
 getName	Block.h	/^	string getName() { return _name; }$/;"	f	class:Block
@@ -117,7 +125,6 @@ getNetLength	FloorplanMgr_v1.cpp	/^FloorplanMgr::getNetLength(vector<Block*> n)$
 getNetLength	FloorplanMgr_v2.cpp	/^FloorplanMgr::getNetLength(vector<Block*> n)$/;"	f	class:FloorplanMgr
 getNetLength	FloorplanMgr_v3.cpp	/^FloorplanMgr::getNetLength(vector<Block*> n)$/;"	f	class:FloorplanMgr
 getParent	Block.h	/^	Block* getParent() { return _parent; }$/;"	f	class:Block
-getRatio	FloorplanMgr.h	/^	double getRatio() { return _ratio; }$/;"	f	class:FloorplanMgr
 getRight	Block.h	/^	Block* getRight() { return _right; }$/;"	f	class:Block
 getRightX	Block.h	/^	unsigned getRightX() { return _x + _width; }$/;"	f	class:Block
 getTokens	Util.cpp	/^getTokens(const string& s)$/;"	f
@@ -173,6 +180,7 @@ reset	FloorplanMgr_v1.cpp	/^FloorplanMgr::reset()$/;"	f	class:FloorplanMgr
 reset	FloorplanMgr_v2.cpp	/^FloorplanMgr::reset()$/;"	f	class:FloorplanMgr
 reset	FloorplanMgr_v3.cpp	/^FloorplanMgr::reset()$/;"	f	class:FloorplanMgr
 rotate	Block.h	/^	void rotate() { unsigned tmp = _width; _width = _height; _height = tmp; }$/;"	f	class:Block
+setBlockMap	FloorplanMgr.cpp	/^FloorplanMgr::setBlockMap(Block* r, unordered_map<string, Block*>& m)$/;"	f	class:FloorplanMgr
 setEqual	Block.cpp	/^Block::setEqual(Block* b)$/;"	f	class:Block
 setLeft	Block.h	/^	void setLeft(Block* b) { _left = b; }$/;"	f	class:Block
 setParent	Block.h	/^	void setParent(Block* b) { _parent = b; }$/;"	f	class:Block
@@ -185,7 +193,9 @@ setToLeaf	Block.h	/^	void setToLeaf() { _left = NULL; _right = NULL; }$/;"	f	cla
 setToOrigin	Block.h	/^	void setToOrigin() { _x = 0; _y = 0; }$/;"	f	class:Block
 setX	Block.h	/^	void setX(unsigned x) { _x = x; }$/;"	f	class:Block
 setY	Block.h	/^	void setY(unsigned y) { _y = y; }$/;"	f	class:Block
+simAnnealing	FloorplanMgr.cpp	/^FloorplanMgr::simAnnealing()$/;"	f	class:FloorplanMgr
 swap	FloorplanMgr.cpp	/^FloorplanMgr::swap(Block* a, Block* b)$/;"	f	class:FloorplanMgr
+swap	FloorplanMgr.h	/^	void swap(unsigned a, unsigned b) { FloorplanMgr::swap(_blockList[a], _blockList[b]); }$/;"	f	class:FloorplanMgr
 swap	FloorplanMgr_v1.cpp	/^FloorplanMgr::swap(Block* a, Block* b)$/;"	f	class:FloorplanMgr
 swap	FloorplanMgr_v2.cpp	/^FloorplanMgr::swap(Block* a, Block* b)$/;"	f	class:FloorplanMgr
 swap	FloorplanMgr_v3.cpp	/^FloorplanMgr::swap(Block* a, Block* b)$/;"	f	class:FloorplanMgr

@@ -33,9 +33,10 @@ public:
 	void setX(unsigned x) { _x = x; }
 	void setY(unsigned y) { _y = y; }
 	void rotate() { unsigned tmp = _width; _width = _height; _height = tmp; }
-	void setToLeaf() { _left = NULL; _right = NULL; }
+	void setToLeaf() { _left = _right = NULL; }
 	void setEqual(Block* b);
-	void setToOrigin() { _x = 0; _y = 0; }
+	void setToOrigin() { _x = _y = 0; }
+	void reset() { _parent = _left = _right = NULL; }
 
 
 private:
