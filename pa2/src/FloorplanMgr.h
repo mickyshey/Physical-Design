@@ -29,9 +29,11 @@ public:
 	void BTreePacking();
 	void simAnnealing();
 	double getCost();
+	bool isFit();
 	void writeOutput(string s);
 	void writeLog(string s);
 	double getTime() { return (double)(clock() - _start) / CLOCKS_PER_SEC; }
+	void test();
 
 //		Perturbation function
 	unsigned BlockRotate();						// return the chosen idx in BlockList
@@ -76,6 +78,9 @@ private:
 	void BTreeFree(Block* b);
 	void BTreeExchange(Block* newRoot);
 	void setBlockMap(Block* r, unordered_map<string, Block*>& m);
+	void undoRotate(unsigned idx) { _blockList[idx] -> rotate(); BTreePacking(); } 
+	void undoDeleteAndInsert(Block* root) { BTreeExchange(root); BTreePacking(); }
+	void undoSwap(pair<unsigned, unsigned> swapIdx) { FloorplanMgr::swap(swapIdx.second, swapIdx.first); BTreePacking(); }
 
 	double							_alpha;
 	unsigned						_outlineWidth;

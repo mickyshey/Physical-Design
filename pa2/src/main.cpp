@@ -14,12 +14,12 @@ int main(int argc, char** argv) {
 	FloorplanMgr* fp = new FloorplanMgr(atof(argv[1]));
 	
 	fp -> readInput(argv[2], argv[3]);
-	//fp -> BTreeInit();
 	fp -> computeAvg();
-
+	
+	//fp -> test();
 	fp -> simAnnealing();
 	fp -> writeOutput(argv[4]);
-	fp -> writeLog("log.json");
+	//fp -> writeLog("log.json");
 
 	delete fp;
 }

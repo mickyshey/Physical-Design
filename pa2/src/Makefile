@@ -1,4 +1,4 @@
-CFLAGS = -O2 -std=c++11
+CFLAGS = -O3 -std=c++11
 
 main: main.o FloorplanMgr.o Block.o Util.o
 		g++ $(CFLAGS) -o floorplan main.o FloorplanMgr.o Block.o Util.o

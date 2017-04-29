@@ -16,8 +16,10 @@
 #include "Util.h"
 
 #define RANDOM_CONSTRUCT 100
-#define ITERATION_COUNT 1000 
+//#define ITERATION_COUNT 1000 
+#define ITERATION_COUNT 20 
 #define THRESHOLD 1000
+#define TRY 2
 
 using namespace std;
 
@@ -89,19 +91,21 @@ FloorplanMgr::computeAvg()
 void
 FloorplanMgr::simAnnealing()
 {
-	unsigned itCount = (_blockList.size() > 10 ? ITERATION_COUNT : ITERATION_COUNT / 2);
+	//unsigned itCount = (_blockList.size() > 10 ? ITERATION_COUNT : ITERATION_COUNT / 2);
+	unsigned itCount = _blockList.size() * ITERATION_COUNT;
 	cout << "# iterations in each T: " << itCount << endl;
 	_start = clock();	
-	bool startRecord = false;
-	map<double, Block*> fitRoots;
 	double cost;
+	double bestCost = INT_MAX;
+	Block* bestBTree = NULL;
 	unsigned SA_count = 1;
+	unsigned fit_count = 1;
 	while( 1 ) {
-		if( SA_count > 2 ) { startRecord = true; }
 		BTreeInit();
 		cost = getCost();
+		bool findFit = false;
 		double T = 1e08; 
-		while( T > 1e-05 ) {
+		while( T > 1e-03 ) {
 			unsigned iterationCount = 0;
 			//while( iterationCount <= ITERATION_COUNT ) {
 			while( iterationCount <= itCount ) {
@@ -111,86 +115,121 @@ FloorplanMgr::simAnnealing()
 				if( num == 0 ) {
 					unsigned idx = BlockRotate();
 					BTreePacking();
-					currCost = getCost();
-					if( currCost < THRESHOLD ) {
-						//if( startRecord) {
-							//cerr << setw(80) << "at: " << getTime() << " ... fit !! : " << currCost << endl;
-							Block* dup = BTreeDuplicate();
-							fitRoots.insert({currCost, dup});
-						//}
+					if( findFit ) {
+						if( isFit() ) {
+							currCost = getCost();
+							if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) )	undoRotate(idx);						
+							else cost = currCost;
+						}
+						else {
+							undoRotate(idx);
+						}
 					}
-					if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) ) {
-						_blockList[idx] -> rotate();			// undo rotate
-						BTreePacking();
+					else {
+						currCost = getCost();
+						if( isFit() ) {
+							//cout << "now fit ... , cost: " << cost << ", currCost: " << currCost << endl;
+							findFit = true;
+							//cout << "findFit: " << findFit << endl;
+							cost = currCost;
+						}
+						else {
+							if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) ) undoRotate(idx); 
+							else cost = currCost;
+						}
 					}
-					else cost = currCost;
 				}
 				else if( num == 1 ) {
 					Block* newRoot = BlockDeleteAndInsert(1);	
 					BTreePacking();
-					currCost = getCost();
-					if( currCost < THRESHOLD ) {
-						//if( startRecord) {
-							//cerr << setw(80) << "at: " << getTime() << " ... fit !! : " << currCost << endl;
-							Block* dup = BTreeDuplicate();
-							fitRoots.insert({currCost, dup});
-						//}
-					}
-					if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) ) {
-						// undo delete and insert:
-						BTreeExchange(newRoot);
-						BTreePacking();
+					if( findFit ) {
+						if( isFit() ) {
+							currCost = getCost();
+							if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) )	undoDeleteAndInsert(newRoot);						
+							else cost = currCost;
+						}
+						else {
+							undoDeleteAndInsert(newRoot);
+						}
 					}
 					else {
-						cost = currCost;
-						BTreeFree(newRoot);
+						currCost = getCost();
+						if( isFit() ) {
+							//cout << "now fit ... , cost: " << cost << ", currCost: " << currCost << endl;
+							findFit = true;
+							//cout << "findFit: " << findFit << endl;
+							cost = currCost;
+						}
+						else {
+							if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) ) undoDeleteAndInsert(newRoot); 
+							else cost = currCost;
+						}
 					}
 				}
 				else {
 					pair<unsigned, unsigned> swapIdx = BlockSwap();
 					BTreePacking();
-					currCost = getCost();
-					if( currCost < THRESHOLD ) {
-						//if( startRecord) {
-							//cerr << setw(80) << "at: " << getTime() << " ... fit !! : " << currCost << endl;
-							Block* dup = BTreeDuplicate();
-							fitRoots.insert({currCost, dup});
-						//}
+					if( findFit ) {
+						if( isFit() ) {
+							currCost = getCost();
+							if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) )	undoSwap(swapIdx);						
+							else cost = currCost;
+						}
+						else {
+							//cout << "before undo ..." << _blockList[swapIdx.first] -> getName() << ", " << _blockList[swapIdx.second] -> getName() << endl;
+							//reportBTree();
+							undoSwap(swapIdx);
+							//cout << "after undo ..." << endl;
+							//reportBTree();
+						}
 					}
-					if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) ) {
-						FloorplanMgr::swap(swapIdx.first, swapIdx.second);		// undo swap
-						BTreePacking();
+					else {
+						currCost = getCost();
+						if( isFit() ) {
+							//cout << "now fit ... , cost: " << cost << ", currCost: " << currCost << endl;
+							findFit = true;
+							//cout << "findFit: " << findFit << endl;
+							cost = currCost;
+						}
+						else {
+							if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) ) undoSwap(swapIdx); 
+							else cost = currCost;
+						}
 					}
-					else cost = currCost;
 				}
 			cerr << "time: " << getTime() << ", T: " << fixed << T << ", current cost: " << cost << "               \r" << flush;
 			}
 			T *= 0.9;
 		}	
-		//if( BTreeGetMaxX() <= _outlineWidth && BTreeGetMaxY() <= _outlineHeight ) break;
-		if( startRecord && fitRoots.size() ) break;
-		if( fitRoots.size() > 50 ) break;
+		cout << endl << endl << "# SA: " << SA_count << endl;
 		++SA_count;
-	}
-	//if( startRecord ) {
-		auto it = fitRoots.begin();
-		//cout << endl << endl << "best in map: " << it -> first << endl;
-		//cout << "size of map: " << fitRoots.size() << endl;
-		if( it -> first < cost ) {
-			BTreeExchange(it -> second);
-			BTreePacking();
+		if( SA_count > 4 && bestBTree ) break; 
+		if( !isFit() ) continue;	
+		//if( cost > THRESHOLD ) continue;
+		if( cost < bestCost ) {
+			bestCost = cost;
+			cout << "find better solution ..." << endl;
+			unsigned maxX = BTreeGetMaxX();
+			unsigned maxY = BTreeGetMaxY();
+			cout << "area: " << fixed << maxX * maxY << endl;
+			cout << "length: " << fixed << BTreeGetWireLength() << endl;
+			if( bestBTree ) BTreeFree(bestBTree);
+			bestBTree = BTreeDuplicate();
 		}
-	//}
-	bool legal = false;
-	unsigned area = BTreeGetArea(legal);
-	unsigned length = BTreeGetWireLength();
-	cerr << endl << endl;
-	cerr << "time: " << fixed << getTime() << endl;
-	cerr << "legal: " << legal << endl;
-	cerr << "area: " << fixed << area << endl;
-	cerr << "wire length: " << fixed << length << endl;
-	cerr << "pseudo cost: " << fixed << getCost() << endl;
-	cerr << "cost: " << fixed << _alpha * (double)area + (1 - _alpha) * (double)length << endl;
+		if( fit_count > 1 ) break;
+		++fit_count;
+	}
+	BTreeExchange(bestBTree);
+	BTreePacking();
+	//bool legal = false;
+	//unsigned area = BTreeGetArea(legal);
+	//unsigned length = BTreeGetWireLength();
+	//cerr << endl;
+	//cerr << "time: " << fixed << getTime() << endl;
+	//cerr << "legal: " << legal << endl;
+	//cerr << "area: " << fixed << area << endl;
+	//cerr << "wire length: " << fixed << length << endl;
+	//cerr << "cost: " << fixed << _alpha * (double)area + (1 - _alpha) * (double)length << endl;
 	//reportBTree();
 	//reportHcontour();
 	//reportVcontour();
@@ -245,11 +284,23 @@ FloorplanMgr::getCost()
 	unsigned maxY = BTreeGetMaxY();	
 	unsigned area = maxX * maxY;
 	unsigned length = BTreeGetWireLength();
-	cost += _alpha * (double)area / _avgArea;
-	cost += (1 - _alpha) * (double)length / _avgWireLength;
-	if( maxX > _outlineWidth ) cost += 10000 * (maxX - _outlineWidth);
-	if( maxY > _outlineHeight ) cost += 10000 * (maxY - _outlineHeight);
+	cost += _alpha * double(area) / _avgArea;
+	cost += (1 - _alpha ) * double(length) / _avgWireLength;
+	if( maxX > _outlineWidth ) cost += 100000 * (maxX - _outlineWidth);
+	if( maxY > _outlineHeight ) cost += 100000 * (maxY - _outlineHeight);
+//	if( cost < THRESHOLD ) {
+//		cout << "fit: " << isFit() << ", maxX: " << maxX << ", outlineW: " << _outlineWidth << ", maxY: " << maxY << ", outlineH: " << _outlineHeight << endl;
+//		cout << "area: " << area << ", length: " << length << endl;
+//	}
 	return cost;
+}
+
+bool
+FloorplanMgr::isFit()
+{
+	unsigned maxX = BTreeGetMaxX();
+	unsigned maxY = BTreeGetMaxY();
+	return (maxX <= _outlineWidth && maxY <= _outlineHeight);
 }
 
 void
@@ -709,17 +760,65 @@ FloorplanMgr::BlockSwap()
 	}
 	//cout << "swapping " << _blockList[idxA] -> getName() << " and " << _blockList[idxB] -> getName() << endl;
 	FloorplanMgr::swap(_blockList[idxA], _blockList[idxB]);
+	//reportBTree();
 	return {idxA, idxB};
 }
 
 void
 FloorplanMgr::swap(Block* a, Block* b)
 {
-	Block* tmp = new Block;
-	tmp -> setEqual(a);				// change the data member except edges
-	a -> setEqual(b);
-	b -> setEqual(tmp);
-	delete tmp;
+	if( b -> getParent() == a ) {
+		unsigned side = (a -> getLeft() == b ? 0 : 1);
+		Block* bLeft = b -> getLeft();
+		Block* bRight = b -> getRight();
+		Block* aParent = a -> getParent();							// b -> a
+		Block* aChild = (side ? a -> getLeft() : a -> getRight());
+		b -> setParent(aParent);									// take care of a's parent
+		if( a == _root ) _root = b;
+		else if( aParent -> getLeft() == a ) aParent -> setLeft(b);
+		else aParent -> setRight(b);
+		if( side ) { b -> setLeft(aChild); b -> setRight(a); }		// take care of a's another chid
+		else { b -> setRight(aChild); b -> setLeft(a); }
+		if( aChild ) aChild -> setParent(b);		a -> setParent(b);
+		a -> setLeft(bLeft);		if( bLeft ) bLeft -> setParent(a);			// a -> b
+		a -> setRight(bRight);		if( bRight ) bRight -> setParent(a);	
+	}
+	else if( a -> getParent() == b ) {
+		FloorplanMgr::swap(b, a);
+	}
+	else if( a -> getParent() == b -> getParent() ) {
+		Block* p = a -> getParent();
+		Block* aLeft = a -> getLeft();
+		Block* aRight = a -> getRight();
+		Block* bLeft = b -> getLeft();
+		Block* bRight = b -> getRight();
+		if( p -> getLeft() == a ) { p -> setRight(a); p -> setLeft(b); }
+		else { p -> setLeft(a); p -> setRight(b); }
+		a -> setLeft(bLeft);		if( bLeft ) bLeft -> setParent(a);
+		a -> setRight(bRight);		if( bRight ) bRight -> setParent(a);	
+		b -> setLeft(aLeft);		if( aLeft ) aLeft -> setParent(b);
+		b -> setRight(aRight);		if( aRight ) aRight -> setParent(b);
+	}
+	else {
+		if( b == _root ) FloorplanMgr::swap(b, a);
+		Block* aLeft = a -> getLeft();
+		Block* aRight = a -> getRight();
+		Block* aParent = a -> getParent();
+		Block* bLeft = b -> getLeft();
+		Block* bRight = b -> getRight();
+		Block* bParent = b -> getParent();
+		b -> setParent(aParent);
+		if( a == _root ) _root = b;
+		else if( aParent -> getLeft() == a ) aParent -> setLeft(b);
+		else aParent -> setRight(b);
+		b -> setLeft(aLeft);		if( aLeft ) aLeft -> setParent(b);
+		b -> setRight(aRight);		if( aRight ) aRight -> setParent(b);
+		a -> setParent(bParent);
+		if( bParent -> getLeft() == b ) bParent -> setLeft(a);
+		else bParent -> setRight(a);
+		a -> setLeft(bLeft);		if( bLeft ) bLeft -> setParent(a);
+		a -> setRight(bRight);		if( bRight ) bRight -> setParent(a);
+	}
 }
 
 void
@@ -864,9 +963,10 @@ FloorplanMgr::reportNetList()
 	cout << "===================" << endl;
 	for( size_t i = 0; i < _netList.size(); ++i) {
 		vector<Block*> net = _netList[i];
-		cout << "NET:";
+		cout << "NET:" << i << endl;
 		for( size_t j = 0; j < net.size(); ++j) {
-			cout << " " << net[j] -> getName();
+			//cout << " " << "name: " << net[j] -> getName() << ", x: " << net[j] -> getX() << ", y: " << net[j] -> getY() << endl;
+			cout << " " << "name: " << net[j] -> getName() << ", w: " << net[j] -> getWidth() << ", h: " << net[j] -> getHeight() << endl;
 		}
 		cout << endl;
 	}
@@ -893,8 +993,10 @@ FloorplanMgr::reportBTreeRec(Block* b, unsigned level, unsigned& count)
 	cout << "[" << level << "] ";
 	if( b == NULL ) { cout << "NULL" << endl; return; }
 	++count;
-	cout << b -> getName() << " @ ( " << b -> getX() << ", " << b -> getY() << " ), Width: "
-		 << b -> getWidth() << ", Height: " << b -> getHeight() << endl;
+	//cout << b -> getName() << " @ ( " << b -> getX() << ", " << b -> getY() << " ), Width: "
+	//	 << b -> getWidth() << ", Height: " << b -> getHeight() << endl;
+	cout << b -> getName() << ", p: " << (b -> getParent() ? b -> getParent() -> getName() : "NULL")
+		 << ", l: " << (b -> getLeft() ? b -> getLeft() -> getName() : "NULL") << ", r: " << (b -> getRight() ? b -> getRight() -> getName() : "NULL") << endl;
 	reportBTreeRec(b -> getLeft(), level + 1, count);
 	reportBTreeRec(b -> getRight(), level + 1, count);
 }
@@ -923,4 +1025,25 @@ FloorplanMgr::reportVcontour()
 		cout << yrange.first << " ~ " << yrange.second << ": " << it -> second << endl;
 	}
 	cout << endl;
+}
+
+void
+FloorplanMgr::test()
+{
+	bool legal;
+	BTreeInit();
+	BTreePacking();
+	//reportBTree();
+	//reportNetList();
+	for( int i = 0; i < 1000; ++i ) {
+	BlockSwap();
+	BTreePacking();
+	//reportBTree();
+	reportHcontour();
+	reportVcontour();
+	cout << "maxX: " << BTreeGetMaxX() << ", outlineW: " << _outlineWidth << endl;
+	cout << "maxY: " << BTreeGetMaxY() << ", outlineH: " << _outlineHeight << endl;
+	cout << "fit: " << isFit() << endl;
+	}
+	//reportNetList();
 }

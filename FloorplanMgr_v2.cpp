@@ -97,7 +97,7 @@ FloorplanMgr::simAnnealing()
 	double cost;
 	unsigned SA_count = 1;
 	while( 1 ) {
-		if( SA_count > 2 ) { startRecord = true; fitRoots.clear(); }
+		if( SA_count > 2 ) { startRecord = true; }
 		BTreeInit();
 		cost = getCost();
 		double T = 1e08; 
@@ -113,11 +113,11 @@ FloorplanMgr::simAnnealing()
 					BTreePacking();
 					currCost = getCost();
 					if( currCost < THRESHOLD ) {
-						if( startRecord) {
+						//if( startRecord) {
 							//cerr << setw(80) << "at: " << getTime() << " ... fit !! : " << currCost << endl;
 							Block* dup = BTreeDuplicate();
 							fitRoots.insert({currCost, dup});
-						}
+						//}
 					}
 					if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) ) {
 						_blockList[idx] -> rotate();			// undo rotate
@@ -130,11 +130,11 @@ FloorplanMgr::simAnnealing()
 					BTreePacking();
 					currCost = getCost();
 					if( currCost < THRESHOLD ) {
-						if( startRecord) {
+						//if( startRecord) {
 							//cerr << setw(80) << "at: " << getTime() << " ... fit !! : " << currCost << endl;
 							Block* dup = BTreeDuplicate();
 							fitRoots.insert({currCost, dup});
-						}
+						//}
 					}
 					if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) ) {
 						// undo delete and insert:
@@ -151,11 +151,11 @@ FloorplanMgr::simAnnealing()
 					BTreePacking();
 					currCost = getCost();
 					if( currCost < THRESHOLD ) {
-						if( startRecord) {
+						//if( startRecord) {
 							//cerr << setw(80) << "at: " << getTime() << " ... fit !! : " << currCost << endl;
 							Block* dup = BTreeDuplicate();
 							fitRoots.insert({currCost, dup});
-						}
+						//}
 					}
 					if( currCost > cost && (double)rand() / RAND_MAX > exp((cost - currCost) / T) ) {
 						FloorplanMgr::swap(swapIdx.first, swapIdx.second);		// undo swap
@@ -167,11 +167,12 @@ FloorplanMgr::simAnnealing()
 			}
 			T *= 0.9;
 		}	
-		if( BTreeGetMaxX() <= _outlineWidth && BTreeGetMaxY() <= _outlineHeight ) break;
-		if( fitRoots.size() ) break;
+		//if( BTreeGetMaxX() <= _outlineWidth && BTreeGetMaxY() <= _outlineHeight ) break;
+		if( startRecord && fitRoots.size() ) break;
+		if( fitRoots.size() > 50 ) break;
 		++SA_count;
 	}
-	if( startRecord ) {
+	//if( startRecord ) {
 		auto it = fitRoots.begin();
 		//cout << endl << endl << "best in map: " << it -> first << endl;
 		//cout << "size of map: " << fitRoots.size() << endl;
@@ -179,7 +180,7 @@ FloorplanMgr::simAnnealing()
 			BTreeExchange(it -> second);
 			BTreePacking();
 		}
-	}
+	//}
 	bool legal = false;
 	unsigned area = BTreeGetArea(legal);
 	unsigned length = BTreeGetWireLength();
@@ -188,6 +189,7 @@ FloorplanMgr::simAnnealing()
 	cerr << "legal: " << legal << endl;
 	cerr << "area: " << fixed << area << endl;
 	cerr << "wire length: " << fixed << length << endl;
+	cerr << "pseudo cost: " << fixed << getCost() << endl;
 	cerr << "cost: " << fixed << _alpha * (double)area + (1 - _alpha) * (double)length << endl;
 	//reportBTree();
 	//reportHcontour();
