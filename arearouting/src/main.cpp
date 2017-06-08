@@ -8,4 +8,6 @@ int main(int argc, char** argv)
 	std::cout << "hello world ..." << std::endl;
 	Router router;
 	router.readInput(argv[1]);
+	router.OASG();
+	router.OAST();
 }
