@@ -1,0 +1,923 @@
+#include "Legal.h"
+#include "arghandler.h"
+#include "GnuplotLivePlotter.h"
+#include "GnuplotMatrixPlotter.h"
+
+#include <algorithm>
+#include <cmath>
+#include <limits>
+#include <list>
+#include <set>
+#include <cassert>
+#include <iomanip>
+#include <ctime>
+using namespace std;
+
+CLegal* Cluster::_legal = NULL;
+
+bool sortModule( Module* a, Module* b)
+{
+    return a->x() < b->x();
+}
+
+bool sortX(pair<double, unsigned>& a, pair<double, unsigned>& b)
+{
+	return a.first < b.first;
+}
+
+bool CLegal::solve()
+{
+    // TODO: edit your code HERE
+    // Note:
+    //      1. You should save your legal solution into m_bestLocations, and call setLegalResult() tp upload it into Placement.
+    //      2. Run check() to make sure that the solution is legal.
+    //      3. Feel free to add any class, function, and/or data member.
+    // Good luck!
+    saveGlobalResult();
+
+	// start legalization
+	clock_t start = clock();
+	// sort modules by x position
+	InitCellOrder();
+
+	// Abacus
+/*
+	cout << "Boundary: " << endl;
+	cout << "Left: " << _placement.boundaryLeft() << ", Right: " << _placement.boundaryRight() << endl;
+	cout << "Bottom: " << _placement.boundaryBottom() << ", Top: " << _placement.boundaryTop() << endl;
+	cout << "m_site_bottom: " << m_site_bottom << endl;
+	cout << "m_site_height: " << m_site_height << endl;
+	cout << "# rows: " << _placement.numRows() << ", row height: " << _placement.getRowHeight() << endl;
+*/
+
+	/**********************/
+	// modified code
+	vector< vector<double> > origInfo;
+	// end of modification
+	/**********************/
+	
+	unsigned chipWidth = _placement.boundaryRight() - _placement.boundaryLeft();
+	unsigned numRows = _placement.numRows();
+	_clusters_in_row.resize(numRows);
+	_rowWidth.resize(numRows, 0);
+	//cout << "# cells: " << m_cell_order.size() << endl;
+	for( unsigned i = 0; i < m_cell_order.size(); ++i ) {
+		unsigned moduleIdx = m_cell_order[i];
+/*
+		cout << "********************" << endl;
+		cout << " placing idx: " << i << ", cell name: " << _placement.module(moduleIdx).name() << endl;
+		cout << "********************" << endl;
+*/
+		unsigned mergeCount;
+		double bestCost = 1e20;
+		double currCost = 1e20;
+      double res = ( m_globalLocations[moduleIdx].y - m_site_bottom ) / _placement.getRowHeight();
+		unsigned floorRowIdx = (unsigned)res;
+		unsigned bestRowIdx = floorRowIdx;
+
+		assert(floorRowIdx < numRows);
+		for( unsigned j = floorRowIdx; j < numRows; ++j ) {
+			if( overUpperBound(moduleIdx, j, bestCost) ) break;
+			if( moduleWidth(moduleIdx) + _rowWidth[j] > chipWidth ) continue;
+
+			vector<Cluster*>& clusters = _clusters_in_row[j];
+/*	
+			cout << "********************" << endl;
+			cout << "trying row: " << j << ", cell width: " << _placement.module(moduleIdx).width() << endl;
+			cout << "********************" << endl;
+			reportClusters(clusters);
+*/			
+			/********************************************/
+			//	should record the original clusters info,
+			// as well as the curr location of cells
+			/********************************************/
+			//vector< vector<double> > origInfo(clusters.size());
+			//recordOrigInfo(clusters, origInfo);
+			//recordCurrLocations(clusters);
+
+			/********************/
+			// modified code
+			origInfo.clear();			
+			// end of modification
+			/********************/
+
+			mergeCount = placeRow(moduleIdx, clusters, origInfo, 0);			// 0: trial
+/*
+			cout << "******after placeRow, mergeCount: " << mergeCount << endl;
+			reportClusters(clusters);
+*/
+			assert(clusters.size());
+			//if( CLegal::fitInCore(clusters, mergeCount) ) {
+				set2BestLocations(clusters, j, mergeCount);
+				currCost = getCost(clusters, mergeCount);
+				//cout << "row: " << j << ", currCost: " << currCost << ", bestrow: " << bestRowIdx << ", bestCost: " << bestCost << endl;
+				if( currCost < bestCost ) { bestCost = currCost; bestRowIdx = j; }
+			//}
+			//undoPlaceRow(mergeCount, clusters, origInfo);
+
+			/**************************************************/
+			//	should recover from the original clusters info
+			/**************************************************/
+			recoverFromOrigInfo(clusters, origInfo, mergeCount);
+			recoverCurrLocations(clusters, mergeCount);
+
+			/*******************/
+			// modified code
+			undoPlaceRow(mergeCount, clusters, origInfo);
+			// end of modification
+			/*******************/
+/*
+			cout << "******after undo" << endl;
+			reportClusters(clusters);
+*/
+		}
+		if( floorRowIdx ) {
+			for( unsigned j = floorRowIdx - 1; j >= 0; --j ) {
+				if( overUpperBound(moduleIdx, j, bestCost) ) break;
+				if( moduleWidth(moduleIdx) + _rowWidth[j] > chipWidth ) continue;
+
+				vector<Cluster*>& clusters = _clusters_in_row[j];
+/*
+			cout << "********************" << endl;
+			cout << "trying row: " << j << ", cell width: " << _placement.module(moduleIdx).width() << endl;
+			cout << "********************" << endl;
+			reportClusters(clusters);
+*/
+				/********************************************/
+				//	should record the original clusters info
+				/********************************************/
+				//vector< vector<double> > origInfo(clusters.size());
+				//recordOrigInfo(clusters, origInfo);
+				//recordCurrLocations(clusters);
+
+				/********************/
+				// modified code
+				origInfo.clear();			
+				// end of modification
+				/********************/
+
+				mergeCount = placeRow(moduleIdx, clusters, origInfo, 0);
+/*
+			cout << "******after placeRow, mergeCount: " << mergeCount << endl;
+			reportClusters(clusters);
+*/
+				assert(clusters.size());
+				//if( CLegal::fitInCore(clusters, mergeCount) ) {
+					set2BestLocations(clusters, j, mergeCount);
+					currCost = getCost(clusters, mergeCount);
+					//cout << "row: " << j << ", currCost: " << currCost << ", bestrow: " << bestRowIdx << ", bestCost: " << bestCost << endl;
+					if( currCost < bestCost ) { bestCost = currCost; bestRowIdx = j; }
+				//}
+				//undoPlaceRow(mergeCount, clusters, origInfo);
+
+				/**************************************************/
+				//	should recover from the original clusters info
+				/**************************************************/
+				recoverFromOrigInfo(clusters, origInfo, mergeCount);
+				recoverCurrLocations(clusters, mergeCount);
+
+			/*******************/
+			// modified code
+			undoPlaceRow(mergeCount, clusters, origInfo);
+			// end of modification
+			/*******************/
+
+/*
+				cout << "******after undo" << endl;
+				reportClusters(clusters);
+*/
+			}
+		}
+
+		/********************/
+		// modified code
+		origInfo.clear();			
+		// end of modification
+		/********************/
+
+		_rowWidth[bestRowIdx] += moduleWidth(moduleIdx);
+		vector<Cluster*>& clusters = _clusters_in_row[bestRowIdx];
+		//cout << _placement.module(moduleIdx).name() << ": place to best row: " << bestRowIdx << endl;
+		mergeCount = placeRow(moduleIdx, clusters, origInfo, 1);				// 1: real
+		assert(CLegal::fitInCore(clusters, mergeCount));
+		mergeClustersReal(clusters);
+		set2BestLocations(clusters, bestRowIdx, clusters.size() - 1);	// set all Cluster in clusters
+	} 
+
+	cout << endl;
+	cout << "Runtime of Legalization: " << (double)(clock() - start)/CLOCKS_PER_SEC << endl << endl;
+
+    setLegalResult();
+
+	return true;
+	//report();
+	clock_t check_start;	
+
+    if( check() )
+    {
+        cout<< "total displacement: " << totalDisplacement() << endl;
+			// modified by r04943179
+			cout << endl;
+			cout<< "Runtime of Check: " << (double)(clock() - check_start)/CLOCKS_PER_SEC << endl << endl;
+			return true;
+			// end of modification
+    }
+    else
+        return false;
+
+}
+
+bool CLegal::check()
+{
+    cout << "start check" << endl;
+    int notInSite=0;
+    int notInRow=0;
+    int overLap=0;
+
+    ///////////////////////////////////////////////////////
+    //1.check all standard cell are on row and in the core region
+    //////////////////////////////////////////////////////////
+    for(unsigned int i=0; i<_placement.numModules(); ++i)
+    {
+        Module& module = _placement.module(i);
+        if(module.isFixed()) continue;
+        double curX = module.x();
+        double curY = module.y();
+
+        double res = ( curY - m_site_bottom ) / _placement.getRowHeight();
+        //cout << curY << " " << res << endl;
+        int ires = (int) res;
+        if( (m_site_bottom + _placement.getRowHeight() * ires) != curY )
+        {
+                cerr<<"\nWarning: cell:"<<i<<" is not on row!!";
+                ++notInRow;
+        }
+        if( (curY<_placement.boundaryBottom()) || (curX<_placement.boundaryLeft())||
+                ( (curX+module.width())>_placement.boundaryRight()) ||
+                ( (curY+module.height())>_placement.boundaryTop()) )
+        {
+            cerr<<"\nWarning: cell:"<<i<<" is not in the core!!";
+            ++notInSite;
+        }
+    }
+
+    ///////////////////////////////////////////
+    //2. row-based overlapping checking
+    ///////////////////////////////////////////
+
+    Rectangle chip = _placement.rectangleChip();
+    const double &rowHeight = _placement.getRowHeight();
+    unsigned numRows = _placement.numRows();
+    vector< vector<Module*> > rowModules( numRows, vector<Module*>( 0 ) );
+    for(unsigned int i=0; i<_placement.numModules(); ++i)
+    {
+        Module& module = _placement.module(i);
+        double curY = m_bestLocations[i].y;
+
+        if( module.area() == 0 ) continue;
+        if( module.isFixed() ) continue;
+
+        double yLow = curY - chip.bottom(), yHigh= curY + module.height() - chip.bottom();
+        size_t low = floor( yLow / rowHeight ), high = floor(yHigh / rowHeight);
+        if( fabs( yHigh - rowHeight * floor(yHigh / rowHeight) ) < 0.01 ){ --high; }
+
+        for( size_t i = low; i <= high; ++i ){ rowModules[ i ].push_back( &module ); }
+    }
+    for( size_t i = 0; i < numRows; ++i )
+    {
+        vector<Module*> &modules = rowModules[i];
+        sort(modules.begin(), modules.end(), sortModule);
+        if( modules.size() < 1 ) { continue; }
+        for( size_t j = 0; j < modules.size() - 1; ++j ){
+            Module &mod = *modules[ j ];
+            if(mod.isFixed()) continue;
+            size_t nextId = j+1;
+            while( mod.x() + mod.width() - modules[ nextId ]->x() > 0.01 ){
+                Module &modNext = *modules[ nextId ];
+                if( mod.x() + mod.width() - modules[ nextId ]->x() > 0.01 ){
+                    ++overLap;
+                    cout << mod.name() << " overlap with " << modNext.name() << endl;
+                }
+                ++nextId; if( nextId == modules.size() ) { break; }
+            }
+        }
+    }
+
+    cout << endl <<
+            "  # row error: "<<notInRow<<
+            "\n  # site error: "<<notInSite<<
+            "\n  # overlap error: "<<overLap<< endl;
+    //cout << "end of check" << endl;
+
+    if( notInRow!=0 || notInSite!=0 || overLap!=0 )
+    {
+        cout <<"Check failed!!" << endl;
+        return false;
+    }
+    else
+    {
+        cout <<"Check success!!" << endl;
+        return true;
+    }
+}
+
+double CLegal::totalDisplacement()
+{
+    double totaldis = 0;
+    for( unsigned  moduleId = 0 ; moduleId < _placement.numModules() ; moduleId++ )
+    {
+        Module& curModule = _placement.module(moduleId);
+        double x = curModule.x();
+        double y = curModule.y();
+
+        totaldis += CPoint::Distance(m_globalLocations[moduleId] , CPoint( x, y ));
+    }
+    return totaldis;
+}
+
+CLegal::CLegal( Placement& placement  ) :
+    _placement( placement )
+{
+
+    //Compute average cell width
+    int cell_count = 0;
+    double total_width = 0;
+    //double max_height = 0.0;
+    m_max_module_height = 0.0;
+    m_max_module_width = 0.0;
+    for( unsigned  moduleId = 0 ; moduleId < placement.numModules() ; moduleId++ )
+    {
+        Module& curModule = placement.module(moduleId);
+
+        m_max_module_height = max( m_max_module_height, curModule.height() );
+        m_max_module_width = max( m_max_module_width, curModule.width() );
+    //Do not include fixed cells and macros
+        if( curModule.isFixed() || curModule.height() > placement.getRowHeight() )
+        continue;
+
+        cell_count++;
+        total_width += curModule.width();
+    }
+
+    m_average_cell_width = total_width / cell_count;
+
+    m_free_sites = placement.m_sites;
+    m_site_bottom = m_free_sites.front().y();
+    m_site_height = m_free_sites.front().height();
+
+    //initalize m_origLocations and m_bestLocations
+    m_bestLocations.resize( placement.numModules() );
+    m_globalLocations.resize( placement.numModules() );
+
+	// modified by r04943179
+	m_origLocations.resize( placement.numModules() );
+	// end of modification
+
+    m_chip_left_bound = placement.rectangleChip().left();
+	m_chip_right_bound = placement.rectangleChip().right();
+
+}
+
+void CLegal::saveGlobalResult()
+{
+    for (unsigned moduleId = 0; moduleId < _placement.numModules(); moduleId++)
+    {
+        Module &curModule = _placement.module(moduleId);
+        double x = curModule.x();
+        double y = curModule.y();
+
+        m_globalLocations[moduleId] = CPoint( x, y );
+        m_bestLocations[moduleId] = CPoint( x, y );
+		
+    }
+}
+
+void CLegal::setLegalResult()
+{
+    for (unsigned moduleId = 0; moduleId < _placement.numModules(); moduleId++)
+    {
+        Module &curModule = _placement.module(moduleId);
+        curModule.setPosition(m_bestLocations[moduleId].x,m_bestLocations[moduleId].y);
+    }
+}
+
+void CLegal::InitCellOrder()
+{
+	vector< pair<double, unsigned> > tmp;
+	for( unsigned i = 0; i < _placement.numModules(); ++i ) {
+		Module& m = _placement.module(i);
+		if( m.isFixed() ) continue;
+		tmp.push_back({m.x(), i});
+	}
+	sort(tmp.begin(), tmp.end(), sortX);
+	m_cell_order.resize(tmp.size());
+	for( unsigned i = 0; i < tmp.size(); ++i )
+		m_cell_order[i] = tmp[i].second;
+	/*for( unsigned i = 0; i < tmp.size(); ++i ) {
+		cout << "idx: " << m_cell_order[i] << endl;
+		cout << "x: " << _placement.module(m_cell_order[i]).x() << endl;
+	}*/
+}
+
+void CLegal::recordOrigInfo(vector<Cluster*>& clusters, vector< vector<double> >& origInfo)
+{
+	for( unsigned i = 0; i < clusters.size(); ++i) {
+		Cluster* c = clusters[i];
+		vector<double>& info = origInfo[i];
+
+		info.resize(4);
+		info[0] = c -> getX();
+		info[1] = c -> getE();
+		info[2] = c -> getQ();
+		info[3] = c -> getW();
+	}
+}
+
+void CLegal::recoverFromOrigInfo(vector<Cluster*>& clusters, vector< vector<double> >& origInfo, unsigned mergeCount)
+{
+	assert(origInfo.size() == mergeCount + 1);
+/*
+	for( unsigned i = 0; i < clusters.size(); ++i ) {
+		Cluster* c = clusters[i];
+		vector<double>& info = origInfo[i];
+
+		c -> setX(info[0]);
+		c -> setE(info[1]);
+		c -> setQ(info[2]);
+		c -> setW(info[3]);
+	}
+*/
+	for( unsigned i = 0; i < origInfo.size(); ++i ) {
+		unsigned cIdx = clusters.size() - 1 - i;
+		Cluster* c = clusters[cIdx];
+		vector<double>& info = origInfo[i];
+
+		c -> setX(info[0]);
+		c -> setE(info[1]);
+		c -> setQ(info[2]);
+		c -> setW(info[3]);
+	}
+}
+
+void CLegal::recordCurrLocations(vector<Cluster*>& clusters)
+{
+	for( unsigned i = 0; i < clusters.size(); ++i ) {
+		Cluster* c = clusters[i];
+		for( unsigned j = 0; j < c -> size(); ++j ) {
+			unsigned moduleIdx = c -> getModuleIdx(j);
+			double x = m_bestLocations[moduleIdx].x;
+			double y = m_bestLocations[moduleIdx].y;
+			m_origLocations[moduleIdx] = CPoint(x, y);
+		}
+	}
+}
+
+void CLegal::recoverCurrLocations(vector<Cluster*>& clusters, unsigned mergeCount)
+{
+	//for( unsigned i = 0; i < clusters.size(); ++i ) {
+	for( unsigned i = clusters.size() - 1 - mergeCount; i < clusters.size(); ++i ) {
+		Cluster* c = clusters[i];
+		for( unsigned j = 0; j < c -> size(); ++j ) {
+			unsigned moduleIdx = c -> getModuleIdx(j);
+			double x = m_origLocations[moduleIdx].x;
+			double y = m_origLocations[moduleIdx].y;
+			m_bestLocations[moduleIdx] = CPoint(x, y);
+		}
+	}
+}
+
+unsigned CLegal::placeRow(unsigned moduleIdx, vector<Cluster*>& clusters, vector< vector<double> >& origInfo, bool isReal)
+{
+	assert(!origInfo.size());
+	// first cell in the row
+	if( !clusters.size() ) {
+		//cout << "first cell in row, create cluster ..." << endl;
+		Cluster* c = new Cluster(moduleIdx);
+		clusters.push_back(c);
+	/******************/
+	// modified code
+if( !isReal ) {
+	origInfo.emplace_back();
+	assert(origInfo.size() == 1);
+	vector<double>& info = origInfo[0];
+	// record the last cluster info
+	//Cluster* c = clusters.back();
+	assert(!info.size());
+	info.resize(4);
+	info[0] = c -> getX();
+	info[1] = c -> getE();
+	info[2] = c -> getQ();
+	info[3] = c -> getW();
+	// record curr locations
+	for( unsigned k = 0; k < c -> size(); ++k ) {
+		unsigned moduleIdx = c -> getModuleIdx(k);
+		double x = m_bestLocations[moduleIdx].x;
+		double y = m_bestLocations[moduleIdx].y;
+		m_origLocations[moduleIdx] = CPoint(x, y);
+	}
+}
+	// end of modification
+	/******************/
+		return 0;
+	}
+	Cluster* c = clusters.back();	
+	if( c -> getX() + c -> getW() < m_globalLocations[moduleIdx].x ) {		// should we include "=" ?
+		//cout << "overlap with preC, create cluster ..." << endl;
+		Cluster* tmp = new Cluster(moduleIdx);
+		clusters.push_back(tmp);
+	/******************/
+	// modified code
+if( !isReal ) {
+	origInfo.emplace_back();
+	assert(origInfo.size() == 1);
+	vector<double>& info = origInfo[0];
+	// record the last cluster info
+	//Cluster* c = clusters.back();
+	assert(!info.size());
+	info.resize(4);
+	info[0] = c -> getX();
+	info[1] = c -> getE();
+	info[2] = c -> getQ();
+	info[3] = c -> getW();
+	// record curr locations
+	for( unsigned k = 0; k < c -> size(); ++k ) {
+		unsigned moduleIdx = c -> getModuleIdx(k);
+		double x = m_bestLocations[moduleIdx].x;
+		double y = m_bestLocations[moduleIdx].y;
+		m_origLocations[moduleIdx] = CPoint(x, y);
+	}
+}
+	// end of modification
+	/******************/
+		unsigned mergeCount = 0;
+		collapse(clusters.size() - 1, clusters, isReal, mergeCount, origInfo);
+		return mergeCount;
+
+		/***********************************/
+		// should i collapse this cluster ?
+		/***********************************/
+		
+	} 
+	
+	/******************/
+	// modified code
+if( !isReal ) {
+	origInfo.emplace_back();
+	assert(origInfo.size() == 1);
+	vector<double>& info = origInfo[0];
+	// record the last cluster info
+	//Cluster* c = clusters.back();
+	assert(!info.size());
+	info.resize(4);
+	info[0] = c -> getX();
+	info[1] = c -> getE();
+	info[2] = c -> getQ();
+	info[3] = c -> getW();
+	// record curr locations
+	for( unsigned k = 0; k < c -> size(); ++k ) {
+		unsigned moduleIdx = c -> getModuleIdx(k);
+		double x = m_bestLocations[moduleIdx].x;
+		double y = m_bestLocations[moduleIdx].y;
+		m_origLocations[moduleIdx] = CPoint(x, y);
+	}
+}
+	// end of modification
+	/******************/
+
+	c -> addCell(moduleIdx, isReal);
+	unsigned mergeCount = 0;
+	collapse(clusters.size() - 1, clusters, isReal, mergeCount, origInfo);		// last idx of c is clusters.size() - 1
+
+	return mergeCount;
+}
+
+void CLegal::undoPlaceRow(unsigned mergeCount, vector<Cluster*>& clusters, vector< vector<double> >& origInfo)
+{
+	assert(clusters.size());
+	Cluster* c;
+
+	// for the last cluster in row
+	c = clusters.back();
+	// only one cell in this cluster, delete the cluster and pop_back clusters
+	if( c -> size() == 1 ) { delete c; clusters.pop_back(); return; }
+	c -> popBack();
+}
+
+double CLegal::getCost(vector<Cluster*>& clusters, unsigned mergeCount)
+{
+	assert(clusters.size());
+	double cost = 0.0;
+	//for( unsigned i = 0; i < clusters.size(); ++i ) {
+	for( unsigned i = clusters.size() - 1 - mergeCount; i < clusters.size(); ++i ) {
+		Cluster* c = clusters[i];
+		assert(c -> size());
+		for( unsigned j = 0; j < c -> size(); ++j ) {
+			unsigned moduleIdx = c -> getModuleIdx(j);
+			// we should get the tmp location from m_bestLocations
+			double origX = m_bestLocations[moduleIdx].x;
+			double origY = m_bestLocations[moduleIdx].y;
+			double globalX = m_globalLocations[moduleIdx].x;
+			double globalY = m_globalLocations[moduleIdx].y;
+			cost += pow(origX - globalX, 2);
+			cost += pow(origY - globalY, 2);
+		}
+	} 
+	return cost;
+}
+
+bool CLegal::overUpperBound(unsigned moduleIdx, unsigned rowIdx, double bestCost)
+{
+	double globalY = m_globalLocations[moduleIdx].y;
+	double y = rowIdx * m_site_height;
+	double cost = pow(y - globalY, 2);
+	return cost > bestCost;
+}
+
+void Cluster::addCell(unsigned moduleIdx, bool isReal)
+{
+	assert(_cells.size());
+	_cells.push_back(moduleIdx);
+	_E += 1;
+	_Q += _legal -> m_globalLocations[moduleIdx].x - _W;	// e(m) = 1
+	_W += _legal -> moduleWidth(moduleIdx);
+}
+
+void CLegal::collapse(unsigned clusterIdx, vector<Cluster*>& clusters, bool isReal, unsigned& mergeCount, vector< vector<double> >& origInfo)
+{
+	assert(clusterIdx < clusters.size());
+	Cluster* c = clusters[clusterIdx];
+	c -> setX(c -> getQ() / c -> getE());
+	if( c -> getX() < m_chip_left_bound ) c -> setX(m_chip_left_bound);
+	if( c -> getX() + c -> getW() > m_chip_right_bound) c -> setX(m_chip_right_bound - c -> getW());
+	/*******************************************************/
+	//	check if the cluster is too wide to fit in the core
+	/*******************************************************/
+	//if( c -> getX() < m_chip_left_bound ) { fitInCore = false; return; }
+
+	updateX(mergeCount, clusters);
+	if( clusterIdx ) {			// predecessor exists
+		Cluster* predecessor = clusters[clusterIdx - 1];
+		if( (predecessor -> getX()) + (predecessor -> getW()) >= c -> getX() ) {		// should we not include "=" ?
+			++mergeCount;
+			merge(clusterIdx, clusters, isReal, origInfo);
+			collapse(clusterIdx - 1, clusters, isReal, mergeCount, origInfo);
+		}
+	}
+}
+
+void CLegal::updateX(unsigned mergeCount, vector<Cluster*>& clusters)
+{
+	unsigned i = clusters.size() - mergeCount;
+	assert(i);
+	for( ; i < clusters.size(); ++i ) {
+		Cluster* c = clusters[i];
+		Cluster* preC = clusters[i - 1];
+		c -> setX(preC -> getX() + preC -> getW());
+	}
+}
+
+//	merging clusterIdx and its predecessor
+void CLegal::merge(unsigned clusterIdx, vector<Cluster*>& clusters, bool isReal, vector< vector<double> >& origInfo)
+{
+	assert(clusterIdx);
+	Cluster* c = clusters[clusterIdx];
+	Cluster* preC = clusters[clusterIdx - 1];
+
+	/*******************/
+	// modified code
+	if( !isReal ) {
+		assert(origInfo.size());
+		// record predecessor cluster info
+		origInfo.emplace_back();
+		vector<double>& info = origInfo.back();
+		assert(!info.size());
+		info.resize(4);
+		info[0] = preC -> getX();
+		info[1] = preC -> getE();
+		info[2] = preC -> getQ();
+		info[3] = preC -> getW();
+		// record curr locations;
+		for( unsigned i = 0; i < preC -> size(); ++i ) {
+			unsigned moduleIdx = preC -> getModuleIdx(i);
+			double x = m_bestLocations[moduleIdx].x;
+			double y = m_bestLocations[moduleIdx].y;
+			m_origLocations[moduleIdx] = CPoint(x, y);
+		}
+	}
+	// end of modification
+	/*******************/
+
+	preC -> setE(preC -> getE() + c -> getE());
+	preC -> setQ(preC -> getQ() + c -> getQ() - (c -> getE() * preC -> getW()));
+	preC -> setW(preC -> getW() + c -> getW());
+}
+/*
+void Cluster::set2OrigLocations(unsigned rowIdx)
+{
+	assert(cells_in_cluster.size());
+	double x = x_c;
+	double y = _legal.m_site_bottom + rowIdx * _legal.m_site_height;
+
+	unsigned moduleIdx = cells_in_cluster[0];
+	_legal.m_origLocations[moduleIdx] = CPoint(x, y);
+
+	unsigned lastIdx;
+	for( unsigned i = 1; i < cells_in_cluster.size(); ++i ) {
+		lastIdx = cells_in_cluster[i - 1];
+		moduleIdx = cells_in_cluster[i];
+		x += _legal.moduleWidth(lastIdx);
+		_legal.m_origLocations[moduleIdx] = CPoint(x, y);
+	}
+}
+*/
+void CLegal::set2BestLocations(vector<Cluster*>& clusters, unsigned rowIdx, unsigned mergeCount)
+{
+	assert(clusters.size());
+	//for( unsigned i = 0; i < clusters.size() - mergeCount; ++i ) {
+	for( unsigned i = clusters.size() - 1 - mergeCount; i < clusters.size(); ++i ) {
+		Cluster* c = clusters[i];
+		c -> set2BestLocations(rowIdx);
+	}
+}
+
+void Cluster::set2BestLocations(unsigned rowIdx)
+{
+	double x =	_X; 
+	double y = _legal -> m_site_bottom + (rowIdx * _legal -> m_site_height);
+
+	unsigned moduleIdx = _cells[0];
+	_legal -> m_bestLocations[moduleIdx] = CPoint(x, y);
+	
+	double width = _legal -> moduleWidth(moduleIdx);
+	for( unsigned i = 1; i < _cells.size(); ++i ) {
+		moduleIdx = _cells[i];
+		_legal -> m_bestLocations[moduleIdx] = CPoint(x + width, y);
+		width += _legal -> moduleWidth(moduleIdx);
+	}
+}
+
+void CLegal::report()
+{
+	cout << "Boundary:" << endl;
+	cout << "Left: " << _placement.boundaryLeft() << ", Right: " << _placement.boundaryRight() << endl;
+	cout << "Bottom: " << _placement.boundaryBottom() << ", Top: " << _placement.boundaryTop() << endl;
+	
+	unsigned count = 0;
+	for( unsigned i = 0; i < _clusters_in_row.size(); ++i ) {
+		vector<Cluster*>& clusters = _clusters_in_row[i];
+
+		cout << "*******************" << endl;
+		cout << "	row " << i << endl;
+		cout << "*******************" << endl;
+		reportClusters(clusters);
+
+		for( unsigned j = 0; j < clusters.size(); ++j ) {
+			Cluster* c = clusters[j];
+			for( unsigned k = 0; k < c -> size(); ++k ) {
+				++count;
+				unsigned moduleIdx = c -> getModuleIdx(k);
+				Module& m = _placement.module(moduleIdx);
+				//cout << m.name() << ", x: " << m.x() << ", y: " << m.y() << ", width: " << m.width() << ", height: " << m.height() << endl;
+				cout << m.name() << ", x: " << m_bestLocations[moduleIdx].x << ", y: " << m_bestLocations[moduleIdx].y << ", width: " << m.width() << ", height: " << m.height() << endl;
+			}
+		}
+		cout << endl << endl;
+	}
+	cout << "Total cells: " << count << endl;
+}
+
+void CLegal::reportClusters(vector<Cluster*>& clusters)
+{
+	cout << "report clusters ..." << endl;
+	for( unsigned j = 0; j < clusters.size(); ++j ) {
+		Cluster* c = clusters[j];
+		cout << "X: " << c -> getX() << ", E: " << c -> getE() << ", Q: " << c -> getQ() << ", W: " << c -> getW() << ", size: " << c -> size() << endl;
+	}
+	cout << "report m_bestX ..." << endl;
+	for( unsigned j = 0; j < clusters.size(); ++j ) {
+		Cluster* c = clusters[j];
+		for( unsigned k = 0; k < c -> size(); ++k ) {
+			cout << m_bestLocations[c -> getModuleIdx(k)].x << " ";
+		}
+	}
+	cout << endl;
+	cout << "report m_bestY ..." << endl;
+	for( unsigned j = 0; j < clusters.size(); ++j ) {
+		Cluster* c = clusters[j];
+		for( unsigned k = 0; k < c -> size(); ++k ) {
+			cout << m_bestLocations[c -> getModuleIdx(k)].y << " ";
+		}
+	}
+	cout << endl;
+}
+
+void CLegal::reportCurrLocations(vector<Cluster*>& clusters)
+{
+	cout << "report m_origLocations ..." << endl;
+	for( unsigned j = 0; j < clusters.size(); ++j ) {
+		Cluster* c = clusters[j];
+		for( unsigned k = 0; k < c -> size(); ++k ) {
+			cout << m_origLocations[c -> getModuleIdx(k)].x << " ";
+		}
+	}
+	cout << endl;
+	cout << "report m_bestLocations ..." << endl;
+	for( unsigned j = 0; j < clusters.size(); ++j ) {
+		Cluster* c = clusters[j];
+		for( unsigned k = 0; k < c -> size(); ++k ) {
+			cout << m_bestLocations[c -> getModuleIdx(k)].x << " ";
+		}
+	}
+	cout << endl;
+	cout << "report cluster info ..." << endl;
+	for( unsigned j = 0; j < clusters.size(); ++j ) {
+		Cluster* c = clusters[j];
+		cout << "X: " << c -> getX() << ", E: " << c -> getE() << ", Q: " << c -> getQ() << ", W: " << c -> getW() << endl;
+	}
+}
+
+void CLegal::reportOrigInfo(vector< vector<double> >& origInfo)
+{
+	cout << "reportOrigInfo ..." << endl;
+	for( unsigned i = 0; i < origInfo.size(); ++i ) {
+		cout << "cluster: " << i << endl;
+		vector<double>& info = origInfo[i];
+		cout << "X: " << info[0] << ", E: " << info[1] << ", Q: " << info[2] << ", W: " << info[3] << endl;
+	}
+}
+
+bool CLegal::fitInCore(vector<Cluster*>& clusters, unsigned mergeCount)
+{
+	assert(clusters.size());
+	unsigned lastIdx = clusters.size() - 1 - mergeCount;
+	Cluster* headC = clusters[0];
+	Cluster* lastC = clusters[lastIdx];
+	//cout << "left of clusters: " << headC -> getX() << ", boundaryLeft: " << _placement.boundaryLeft() << endl;
+	//cout << "right of clusters: " << lastC -> getX() + lastC -> getW() << ", boundaryRight: " << _placement.boundaryRight() << endl;
+	return (lastC -> getX() + lastC -> getW() <= _placement.boundaryRight() && headC -> getX() >= _placement.boundaryLeft());
+}
+
+void CLegal::mergeClustersReal(vector<Cluster*>& clusters)
+{
+	assert(clusters.size());
+
+	/**********************/
+	// try with a brutal way
+	/**********************/
+	
+	vector<Cluster*> tmpClusters;
+	Cluster* tmp = NULL;	
+/*
+	cout << "*****************" << endl;
+	cout << " before merge" << endl;
+	cout << "*****************" << endl;
+	reportClusters(clusters);
+*/
+	for( unsigned i = 0; i < clusters.size() - 1; ++i ) {
+		Cluster* c = clusters[i];
+		Cluster* nextC = clusters[i + 1];
+		if( c -> getX() + c -> getW() == nextC -> getX() ) {
+			if( !tmp ) {
+				tmp = new Cluster(c);
+				for( unsigned i = 0; i < c -> size(); ++i ) {
+					tmp -> pushBack(c -> getModuleIdx(i));
+					//tmp -> setE(tmp -> getE() + 1);		// update E
+				}
+			}
+			for( unsigned i = 0; i < nextC -> size(); ++i ) {
+				tmp -> pushBack(nextC -> getModuleIdx(i));
+				//tmp -> setE(tmp -> getE() + 1);
+			}
+			delete c;
+			if( nextC == clusters.back() ) { tmpClusters.push_back(tmp); delete nextC; tmp = NULL; }
+		}
+		else {
+			if( tmp ) {
+				tmpClusters.push_back(tmp);
+				delete c;
+				tmp = NULL;
+			}
+			tmpClusters.push_back(c);
+			if( i + 2 == clusters.size() ) tmpClusters.push_back(nextC);
+/*
+			if( i + 2 < clusters.size() ) {	
+				Cluster* afterNextC = clusters[i + 2];
+				if( nextC -> getX() + nextC -> getW() != afterNextC -> getX() ) {
+					tmpClusters.push_back(nextC);
+				}
+			}
+			else {
+				tmpClusters.push_back(nextC);
+			}
+*/
+		}
+	}
+	if( !tmpClusters.size() ) return;
+	clusters.swap(tmpClusters);
+/*
+	cout << "*****************" << endl;
+	cout << " after merge" << endl;
+	cout << "*****************" << endl;
+	reportClusters(clusters);
+*/
+}

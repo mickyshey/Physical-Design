@@ -1,0 +1,6 @@
+/home/r04943179/Physical-Design/pa3/legalization/src/Gnuplot/CMakeFiles/Gnuplot.dir
+/home/r04943179/Physical-Design/pa3/legalization/src/PlaceCommon/CMakeFiles/PlaceCommon.dir
+/home/r04943179/Physical-Design/pa3/legalization/src/CMakeFiles/legalizer.dir
+/home/r04943179/Physical-Design/pa3/legalization/src/Legalizer/CMakeFiles/Legalizer.dir
+/home/r04943179/Physical-Design/pa3/legalization/src/Parser/CMakeFiles/Parser.dir
+/home/r04943179/Physical-Design/pa3/legalization/src/Placement/CMakeFiles/Placement.dir

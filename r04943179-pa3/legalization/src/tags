@@ -1,0 +1,373 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ARGHANDLER_H	PlaceCommon/arghandler.h	2;"	d
+ASSERT	PlaceCommon/Util.h	23;"	d
+ASSERTCRASH	PlaceCommon/Util.h	17;"	d
+BOOKSHELFPARSER_H	Parser/BookshelfParser.h	2;"	d
+BookshelfParser	Parser/BookshelfParser.cpp	/^BookshelfParser::BookshelfParser(Placement &placement)$/;"	f	class:BookshelfParser
+BookshelfParser	Parser/BookshelfParser.h	/^class BookshelfParser$/;"	c
+CArgHandler	PlaceCommon/arghandler.cpp	/^CArgHandler::CArgHandler()$/;"	f	class:CArgHandler
+CArgHandler	PlaceCommon/arghandler.h	/^class CArgHandler$/;"	c
+CLegal	Legalizer/Legal.cpp	/^CLegal::CLegal( Placement& placement  ) :$/;"	f	class:CLegal
+CLegal	Legalizer/Legal.h	/^class CLegal$/;"	c
+CParamPlacement	PlaceCommon/ParamPlacement.cpp	/^CParamPlacement::CParamPlacement()$/;"	f	class:CParamPlacement
+CParamPlacement	PlaceCommon/ParamPlacement.h	/^class CParamPlacement$/;"	c
+CPoint	PlaceCommon/Util.h	/^        CPoint( double x, double y ){$/;"	f	class:CPoint
+CPoint	PlaceCommon/Util.h	/^        CPoint() {};$/;"	f	class:CPoint
+CPoint	PlaceCommon/Util.h	/^class CPoint$/;"	c
+CheckExist	PlaceCommon/arghandler.cpp	/^bool CArgHandler::CheckExist( const string caption )$/;"	f	class:CArgHandler
+Cluster	Legalizer/Legal.h	/^		Cluster():$/;"	f	class:Cluster
+Cluster	Legalizer/Legal.h	/^		Cluster(Cluster* c):$/;"	f	class:Cluster
+Cluster	Legalizer/Legal.h	/^		Cluster(unsigned moduleIdx) {$/;"	f	class:Cluster
+Cluster	Legalizer/Legal.h	/^class Cluster$/;"	c
+DEBUGCODE	PlaceCommon/Util.h	28;"	d
+Distance	PlaceCommon/Util.h	/^        static double Distance( const CPoint& p1,  const CPoint& p2 ){$/;"	f	class:CPoint
+FindCaptionIndex	PlaceCommon/arghandler.cpp	/^int CArgHandler::FindCaptionIndex( const string caption )$/;"	f	class:CArgHandler
+GNUPLOTLIVEPLOTTER_H	Gnuplot/GnuplotLivePlotter.h	2;"	d
+GNUPLOTMATRIXPLOTTER_H	Gnuplot/GnuplotMatrixPlotter.h	2;"	d
+GNUPLOTPLOTTER_H	Gnuplot/GnuplotPlotter.h	2;"	d
+GnuplotLivePlotter	Gnuplot/GnuplotLivePlotter.cpp	/^GnuplotLivePlotter::GnuplotLivePlotter()$/;"	f	class:GnuplotLivePlotter
+GnuplotLivePlotter	Gnuplot/GnuplotLivePlotter.h	/^class GnuplotLivePlotter$/;"	c
+GnuplotMatrixPlotter	Gnuplot/GnuplotMatrixPlotter.cpp	/^GnuplotMatrixPlotter::GnuplotMatrixPlotter()$/;"	f	class:GnuplotMatrixPlotter
+GnuplotMatrixPlotter	Gnuplot/GnuplotMatrixPlotter.h	/^class GnuplotMatrixPlotter$/;"	c
+GnuplotPlotter	Gnuplot/GnuplotPlotter.cpp	/^GnuplotPlotter::GnuplotPlotter()$/;"	f	class:GnuplotPlotter
+GnuplotPlotter	Gnuplot/GnuplotPlotter.h	/^class GnuplotPlotter$/;"	c
+Greater	Placement/Row.h	/^    static bool Greater( const Row& r1, const Row& r2  )$/;"	f	class:Row
+Init	PlaceCommon/arghandler.cpp	/^void CArgHandler::Init( const int argc, char* argv[] )$/;"	f	class:CArgHandler
+InitCellOrder	Legalizer/Legal.cpp	/^void CLegal::InitCellOrder()$/;"	f	class:CLegal
+IsDev	PlaceCommon/arghandler.h	/^        bool IsDev()         { return m_isDev;      };$/;"	f	class:CArgHandler
+Lesser	Placement/Row.h	/^    static bool Lesser( const Row& r1, const Row& r2  )$/;"	f	class:Row
+MODULE_H	Placement/Module.h	2;"	d
+Module	Placement/Module.h	/^    Module(string name = "" , double width = -1, double height = -1, bool isFixed = false)$/;"	f	class:Module
+Module	Placement/Module.h	/^class Module$/;"	c
+NET_H	Placement/Net.h	2;"	d
+Net	Placement/Net.h	/^    Net() {}$/;"	f	class:Net
+Net	Placement/Net.h	/^class Net {$/;"	c
+OR_E	Placement/Module.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Module::Orient
+OR_E	Placement/Row.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Row::Orient
+OR_FE	Placement/Module.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Module::Orient
+OR_FE	Placement/Row.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Row::Orient
+OR_FN	Placement/Module.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Module::Orient
+OR_FN	Placement/Row.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Row::Orient
+OR_FS	Placement/Module.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Module::Orient
+OR_FS	Placement/Row.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Row::Orient
+OR_FW	Placement/Module.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Module::Orient
+OR_FW	Placement/Row.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Row::Orient
+OR_N	Placement/Module.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Module::Orient
+OR_N	Placement/Row.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Row::Orient
+OR_S	Placement/Module.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Module::Orient
+OR_S	Placement/Row.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Row::Orient
+OR_W	Placement/Module.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Module::Orient
+OR_W	Placement/Row.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	e	enum:Row::Orient
+Orient	Placement/Module.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	g	class:Module
+Orient	Placement/Row.h	/^    enum Orient {OR_N, OR_W, OR_S, OR_E, OR_FN, OR_FW, OR_FS, OR_FE};$/;"	g	class:Row
+PARAMPLACEMENT_H	PlaceCommon/ParamPlacement.h	2;"	d
+PIN_H	Placement/Pin.h	2;"	d
+PLACEMENT_H	Placement/Placement.h	2;"	d
+Pin	Placement/Pin.h	/^    Pin(unsigned moduleId = -1, unsigned netId = -1, double xOffset = -1, double yOffset = -1)$/;"	f	class:Pin
+Pin	Placement/Pin.h	/^class Pin$/;"	c
+Placement	Placement/Placement.cpp	/^Placement::Placement()$/;"	f	class:Placement
+Placement	Placement/Placement.h	/^class Placement$/;"	c
+Print	PlaceCommon/Util.h	/^        void Print(){$/;"	f	class:CPoint
+RECTANGLE_H	Placement/Rectangle.h	2;"	d
+ROW_H	Placement/Row.h	2;"	d
+Rectangle	Placement/Rectangle.h	/^    Rectangle(double left = 0, double bottom = 0, double right = 0, double top = 0)$/;"	f	class:Rectangle
+Rectangle	Placement/Rectangle.h	/^class Rectangle$/;"	c
+Row	Placement/Row.h	/^    Row( double& set_bottom,  double& set_height,  double& set_step ) :$/;"	f	class:Row
+Row	Placement/Row.h	/^    Row(double x = -1, double y = -1, double height = -1, double siteSpacing = -1,$/;"	f	class:Row
+Row	Placement/Row.h	/^class Row$/;"	c
+SCALE_TO_LEFT	PlaceCommon/ParamPlacement.h	/^SCALE_TO_LEFT,$/;"	e	enum:SCALE_TYPE
+SCALE_TO_LEFT_BETWEEN_MACRO	PlaceCommon/ParamPlacement.h	/^SCALE_TO_LEFT_BETWEEN_MACRO,$/;"	e	enum:SCALE_TYPE
+SCALE_TO_MIDLINE	PlaceCommon/ParamPlacement.h	/^SCALE_TO_MIDLINE,$/;"	e	enum:SCALE_TYPE
+SCALE_TO_MIDLINE_BETWEEN_MACRO	PlaceCommon/ParamPlacement.h	/^SCALE_TO_MIDLINE_BETWEEN_MACRO$/;"	e	enum:SCALE_TYPE
+SCALE_TO_RIGHT	PlaceCommon/ParamPlacement.h	/^SCALE_TO_RIGHT,$/;"	e	enum:SCALE_TYPE
+SCALE_TO_RIGHT_BETWEEN_MACRO	PlaceCommon/ParamPlacement.h	/^SCALE_TO_RIGHT_BETWEEN_MACRO,$/;"	e	enum:SCALE_TYPE
+SCALE_TYPE	PlaceCommon/ParamPlacement.h	/^enum SCALE_TYPE$/;"	g
+UTIL_H	PlaceCommon/Util.h	2;"	d
+XDistance	PlaceCommon/Util.h	/^        static double XDistance( const CPoint& p1,  const CPoint& p2 ){$/;"	f	class:CPoint
+_CLEGAL_	Legalizer/Legal.h	2;"	d
+_E	Legalizer/Legal.h	/^		double _E;$/;"	m	class:Cluster
+_Q	Legalizer/Legal.h	/^		double _Q;$/;"	m	class:Cluster
+_W	Legalizer/Legal.h	/^		double _W;$/;"	m	class:Cluster
+_X	Legalizer/Legal.h	/^		double _X;$/;"	m	class:Cluster
+_autoFit	Gnuplot/GnuplotLivePlotter.h	/^    bool _autoFit;$/;"	m	class:GnuplotLivePlotter
+_autoFit	Gnuplot/GnuplotPlotter.h	/^    bool _autoFit;$/;"	m	class:GnuplotPlotter
+_bottom	Placement/Rectangle.h	/^    double _bottom;$/;"	m	class:Rectangle
+_boundaryBottom	Placement/Placement.h	/^    double _boundaryBottom;$/;"	m	class:Placement
+_boundaryLeft	Placement/Placement.h	/^    double _boundaryLeft;$/;"	m	class:Placement
+_boundaryRight	Placement/Placement.h	/^    double _boundaryRight;$/;"	m	class:Placement
+_boundaryTop	Placement/Placement.h	/^    double _boundaryTop;$/;"	m	class:Placement
+_cells	Legalizer/Legal.h	/^		vector<unsigned> _cells;$/;"	m	class:Cluster
+_clusters_in_row	Legalizer/Legal.h	/^		vector< vector<Cluster*> > _clusters_in_row; $/;"	m	class:CLegal
+_fpipe	Gnuplot/GnuplotLivePlotter.h	/^    FILE *_fpipe;$/;"	m	class:GnuplotLivePlotter
+_height	Placement/Module.h	/^    double _width, _height;$/;"	m	class:Module
+_height	Placement/Row.h	/^    double _height; \/\/ hieght of row$/;"	m	class:Row
+_idx	Placement/Module.h	/^	unsigned _idx;$/;"	m	class:Module
+_isFixed	Placement/Module.h	/^    bool _isFixed;$/;"	m	class:Module
+_isSymmetric	Placement/Row.h	/^    bool _isSymmetric; \/\/ symmetry$/;"	m	class:Row
+_left	Placement/Rectangle.h	/^    double _left;$/;"	m	class:Rectangle
+_legal	Legalizer/Legal.h	/^		static CLegal* _legal;$/;"	m	class:Cluster
+_loadplname	Placement/Placement.h	/^    string _loadplname;$/;"	m	class:Placement
+_matrix	Gnuplot/GnuplotMatrixPlotter.h	/^    vector<double> _matrix;$/;"	m	class:GnuplotMatrixPlotter
+_moduleId	Placement/Pin.h	/^    unsigned _moduleId; \/\/ id of the associated module$/;"	m	class:Pin
+_modules	Placement/Placement.h	/^    vector<Module> _modules;$/;"	m	class:Placement
+_name	Placement/Module.h	/^    string _name;$/;"	m	class:Module
+_name	Placement/Placement.h	/^    string _name;$/;"	m	class:Placement
+_netId	Placement/Pin.h	/^    unsigned _netId;    \/\/ id of the associated net$/;"	m	class:Pin
+_nets	Placement/Placement.h	/^    vector<Net> _nets;$/;"	m	class:Placement
+_nodeNameToModuleId	Parser/BookshelfParser.h	/^    map<string, unsigned> _nodeNameToModuleId;$/;"	m	class:BookshelfParser
+_numCols	Gnuplot/GnuplotMatrixPlotter.h	/^    unsigned _numCols;$/;"	m	class:GnuplotMatrixPlotter
+_numRows	Gnuplot/GnuplotMatrixPlotter.h	/^    unsigned _numRows;$/;"	m	class:GnuplotMatrixPlotter
+_numSites	Placement/Row.h	/^    unsigned _numSites; \/\/ number of sites$/;"	m	class:Row
+_orient	Placement/Module.h	/^    Orient _orient;$/;"	m	class:Module
+_orient	Placement/Row.h	/^    Orient _orient; \/\/ orient$/;"	m	class:Row
+_pPins	Placement/Module.h	/^    vector<Pin*> _pPins;$/;"	m	class:Module
+_pPins	Placement/Net.h	/^    vector<Pin *> _pPins;$/;"	m	class:Net
+_pinId	Placement/Pin.h	/^    unsigned _pinId;    \/\/ Pin Id$/;"	m	class:Pin
+_pins	Placement/Placement.h	/^    vector<Pin> _pins;$/;"	m	class:Placement
+_placement	Legalizer/Legal.h	/^        Placement& _placement;$/;"	m	class:CLegal
+_placement	Parser/BookshelfParser.h	/^    Placement& _placement;$/;"	m	class:BookshelfParser
+_rectangleChip	Placement/Placement.h	/^    Rectangle _rectangleChip;$/;"	m	class:Placement
+_rectangles	Gnuplot/GnuplotLivePlotter.h	/^    vector<Rectangle> _rectangles;$/;"	m	class:GnuplotLivePlotter
+_rectangles	Gnuplot/GnuplotPlotter.h	/^    vector<Rectangle> _rectangles;$/;"	m	class:GnuplotPlotter
+_right	Placement/Rectangle.h	/^    double _right;$/;"	m	class:Rectangle
+_rowHeight	Placement/Placement.h	/^    double _rowHeight;$/;"	m	class:Placement
+_rowWidth	Legalizer/Legal.h	/^		vector<double>					_rowWidth;$/;"	m	class:CLegal
+_rows	Placement/Placement.h	/^    vector<Row> _rows;$/;"	m	class:Placement
+_siteSpacing	Placement/Row.h	/^    double _siteSpacing; \/\/ distance between the beginings of neighboring sites$/;"	m	class:Row
+_title	Gnuplot/GnuplotLivePlotter.h	/^    string _title;$/;"	m	class:GnuplotLivePlotter
+_title	Gnuplot/GnuplotMatrixPlotter.h	/^    string _title;$/;"	m	class:GnuplotMatrixPlotter
+_title	Gnuplot/GnuplotPlotter.h	/^    string _title;$/;"	m	class:GnuplotPlotter
+_top	Placement/Rectangle.h	/^    double _top;$/;"	m	class:Rectangle
+_width	Placement/Module.h	/^    double _width, _height;$/;"	m	class:Module
+_x	Placement/Module.h	/^    double _x, _y; \/\/ low x and low y$/;"	m	class:Module
+_x	Placement/Pin.h	/^    double _x, _y;   \/\/ absolute x and y$/;"	m	class:Pin
+_x	Placement/Row.h	/^    double _x, _y; \/\/ low x and low y$/;"	m	class:Row
+_xOffset	Placement/Pin.h	/^    double _xOffset, _yOffset; \/\/ offsets from the center of the module$/;"	m	class:Pin
+_y	Placement/Module.h	/^    double _x, _y; \/\/ low x and low y$/;"	m	class:Module
+_y	Placement/Pin.h	/^    double _x, _y;   \/\/ absolute x and y$/;"	m	class:Pin
+_y	Placement/Row.h	/^    double _x, _y; \/\/ low x and low y$/;"	m	class:Row
+_yOffset	Placement/Pin.h	/^    double _xOffset, _yOffset; \/\/ offsets from the center of the module$/;"	m	class:Pin
+addCell	Legalizer/Legal.cpp	/^void Cluster::addCell(unsigned moduleIdx, bool isReal)$/;"	f	class:Cluster
+addModule	Placement/Placement.h	/^    void addModule(const Module &module) {_modules.push_back(module);}$/;"	f	class:Placement
+addPin	Placement/Module.h	/^    void addPin(Pin *pPin) {_pPins.push_back(pPin);}$/;"	f	class:Module
+addPin	Placement/Net.h	/^    void addPin(Pin *pPin) {_pPins.push_back(pPin);}$/;"	f	class:Net
+addPin	Placement/Placement.h	/^    void addPin(const Pin &pin) {_pins.push_back(pin),_pins.back().setPinId(_pins.size());}$/;"	f	class:Placement
+addRectangle	Gnuplot/GnuplotLivePlotter.cpp	/^void GnuplotLivePlotter::addRectangle(const Rectangle &rectangle)$/;"	f	class:GnuplotLivePlotter
+addRectangle	Gnuplot/GnuplotPlotter.cpp	/^void GnuplotPlotter::addRectangle(const Rectangle &rectangle)$/;"	f	class:GnuplotPlotter
+addRow	Placement/Placement.h	/^    void addRow(const Row &row) {_rows.push_back(row);}$/;"	f	class:Placement
+area	Placement/Module.h	/^    double area() {return _width * _height;}$/;"	f	class:Module
+auxFilename	PlaceCommon/ParamPlacement.h	/^    string auxFilename;$/;"	m	class:CParamPlacement
+bRunDetail	PlaceCommon/ParamPlacement.h	/^    bool bRunDetail;$/;"	m	class:CParamPlacement
+bRunGlobal	PlaceCommon/ParamPlacement.h	/^    bool bRunGlobal;$/;"	m	class:CParamPlacement
+bRunLegal	PlaceCommon/ParamPlacement.h	/^    bool bRunLegal;$/;"	m	class:CParamPlacement
+bottom	Placement/Rectangle.h	/^    double bottom() const {return _bottom;}$/;"	f	class:Rectangle
+boundaryBottom	Placement/Placement.h	/^    double boundaryBottom() {return _boundaryBottom;}$/;"	f	class:Placement
+boundaryLeft	Placement/Placement.h	/^    double boundaryLeft() {return _boundaryLeft;}$/;"	f	class:Placement
+boundaryRight	Placement/Placement.h	/^    double boundaryRight() {return _boundaryRight;}$/;"	f	class:Placement
+boundaryTop	Placement/Placement.h	/^    double boundaryTop() {return _boundaryTop;}$/;"	f	class:Placement
+centerX	Placement/Module.h	/^    double centerX() {return _x + _width\/2;}$/;"	f	class:Module
+centerX	Placement/Rectangle.h	/^    double centerX() const {return (_left + _right)\/2;}$/;"	f	class:Rectangle
+centerY	Placement/Module.h	/^    double centerY() {return _y + _height\/2;}$/;"	f	class:Module
+centerY	Placement/Rectangle.h	/^    double centerY() const {return (_bottom + _top)\/2;}$/;"	f	class:Rectangle
+check	Legalizer/Legal.cpp	/^bool CLegal::check()$/;"	f	class:CLegal
+clearModules	Placement/Placement.h	/^    void clearModules() {_modules.clear();}$/;"	f	class:Placement
+clearNets	Placement/Placement.h	/^    void clearNets() {_nets.clear();}$/;"	f	class:Placement
+clearObjects	Gnuplot/GnuplotLivePlotter.cpp	/^void GnuplotLivePlotter::clearObjects()$/;"	f	class:GnuplotLivePlotter
+clearObjects	Gnuplot/GnuplotPlotter.cpp	/^void GnuplotPlotter::clearObjects()$/;"	f	class:GnuplotPlotter
+clearPins	Placement/Module.h	/^    void clearPins() {_pPins.clear();}$/;"	f	class:Module
+clearPins	Placement/Net.h	/^    void clearPins() {_pPins.clear();}$/;"	f	class:Net
+clearPins	Placement/Placement.h	/^    void clearPins() {_pins.clear();}$/;"	f	class:Placement
+clearRows	Placement/Placement.h	/^    void clearRows() {_rows.clear();}$/;"	f	class:Placement
+collapse	Legalizer/Legal.cpp	/^void CLegal::collapse(unsigned clusterIdx, vector<Cluster*>& clusters, bool isReal, unsigned& mergeCount, vector< vector<double> >& origInfo)$/;"	f	class:CLegal
+computeHpwl	Placement/Placement.cpp	/^double Placement::computeHpwl()$/;"	f	class:Placement
+computeTotalNetLength	Placement/Placement.cpp	/^double Placement::computeTotalNetLength(int cellid)$/;"	f	class:Placement
+connectPinsWithModulesAndNets	Placement/Placement.cpp	/^void Placement::connectPinsWithModulesAndNets() {$/;"	f	class:Placement
+debug	Gnuplot/GnuplotLivePlotter.cpp	/^void GnuplotLivePlotter::debug()$/;"	f	class:GnuplotLivePlotter
+dtos	PlaceCommon/Util.cpp	/^string dtos(double num)$/;"	f
+fitInCore	Legalizer/Legal.cpp	/^bool CLegal::fitInCore(vector<Cluster*>& clusters, unsigned mergeCount)$/;"	f	class:CLegal
+format	PlaceCommon/Util.cpp	/^string format(const char *fmt, ...)$/;"	f
+gArg	PlaceCommon/arghandler.cpp	/^CArgHandler gArg;	\/\/ global variable$/;"	v
+getCost	Legalizer/Legal.cpp	/^double CLegal::getCost(vector<Cluster*>& clusters, unsigned mergeCount)$/;"	f	class:CLegal
+getCurrentMemoryUsage	PlaceCommon/Util.cpp	/^double getCurrentMemoryUsage()$/;"	f
+getE	Legalizer/Legal.h	/^		double getE() const { return _E; }$/;"	f	class:Cluster
+getFileBasename	PlaceCommon/Util.cpp	/^string getFileBasename(string filePathName)$/;"	f
+getFileName	PlaceCommon/Util.cpp	/^string getFileName(string filePathName)$/;"	f
+getModuleIdx	Legalizer/Legal.h	/^		unsigned getModuleIdx(unsigned i) { return _cells[i]; }$/;"	f	class:Cluster
+getPeakMemoryUsage	PlaceCommon/Util.cpp	/^double getPeakMemoryUsage()$/;"	f
+getQ	Legalizer/Legal.h	/^		double getQ() const { return _Q; }$/;"	f	class:Cluster
+getRowHeight	Placement/Placement.h	/^    double getRowHeight() {return _rowHeight;}$/;"	f	class:Placement
+getW	Legalizer/Legal.h	/^		double getW() const { return _W; }$/;"	f	class:Cluster
+getX	Legalizer/Legal.h	/^		double getX() const { return _X; }$/;"	f	class:Cluster
+gnuplotLivePlotter	Legalizer/Legal.h	/^        GnuplotLivePlotter gnuplotLivePlotter;$/;"	m	class:CLegal
+handleArgument	main.cpp	/^bool handleArgument( const int& argc, char* argv[], CParamPlacement& param )$/;"	f
+height	Placement/Module.h	/^    double height() {return _height;}$/;"	f	class:Module
+height	Placement/Rectangle.h	/^    double height() const {return _top - _bottom;}$/;"	f	class:Rectangle
+height	Placement/Row.h	/^    double height() const {return _height;}$/;"	f	class:Row
+idx	Placement/Module.h	/^	unsigned idx() { return _idx; }$/;"	f	class:Module
+isFixed	Placement/Module.h	/^    bool isFixed() {return _isFixed;} \/\/if fixed module, return true$/;"	f	class:Module
+itos	PlaceCommon/Util.cpp	/^string itos(int num)$/;"	f
+left	Placement/Rectangle.h	/^    double left() const {return _left;}$/;"	f	class:Rectangle
+m_argc	PlaceCommon/arghandler.h	/^        int    m_argc;$/;"	m	class:CArgHandler
+m_argv	PlaceCommon/arghandler.h	/^	char** m_argv;$/;"	m	class:CArgHandler
+m_average_cell_width	Legalizer/Legal.h	/^        double m_average_cell_width;    \/\/Average standard cell width$/;"	m	class:CLegal
+m_bestLocations	Legalizer/Legal.h	/^        vector<CPoint> m_bestLocations;	\/\/Record the best locations$/;"	m	class:CLegal
+m_bestLocations_left	Legalizer/Legal.h	/^        vector<CPoint> m_bestLocations_left;$/;"	m	class:CLegal
+m_best_sites	Legalizer/Legal.h	/^        vector<Row> m_best_sites;       \/\/Record the resulting sites of the best result$/;"	m	class:CLegal
+m_best_sites_left	Legalizer/Legal.h	/^        vector<Row> m_best_sites_left;$/;"	m	class:CLegal
+m_cell_order	Legalizer/Legal.h	/^        vector<unsigned> m_cell_order; \/\/Used as legalization order$/;"	m	class:CLegal
+m_chip_left_bound	Legalizer/Legal.h	/^        double m_chip_left_bound;	\/\/Record the chip left boundary$/;"	m	class:CLegal
+m_chip_right_bound	Legalizer/Legal.h	/^		double m_chip_right_bound;	\/\/Record the chip right boundary$/;"	m	class:CLegal
+m_free_sites	Legalizer/Legal.h	/^        vector<Row> m_free_sites; \/\/Record the unused sites$/;"	m	class:CLegal
+m_globalLocations	Legalizer/Legal.h	/^        vector<CPoint> m_globalLocations;$/;"	m	class:CLegal
+m_interval	Placement/Row.h	/^    vector<double> m_interval;$/;"	m	class:Row
+m_isDev	PlaceCommon/arghandler.h	/^        bool   m_isDev;$/;"	m	class:CArgHandler
+m_left_free_sites	Legalizer/Legal.h	/^        vector<Row> m_left_free_sites;$/;"	m	class:CLegal
+m_macro_ids	Legalizer/Legal.h	/^        vector<int> m_macro_ids;$/;"	m	class:CLegal
+m_macro_shifter_best_positions	Legalizer/Legal.h	/^        vector<CPoint> m_macro_shifter_best_positions;	\/\/Record the best macro positions (left-bottom)$/;"	m	class:CLegal
+m_macro_shifter_orig_positions	Legalizer/Legal.h	/^        vector<CPoint> m_macro_shifter_orig_positions;	\/\/Record the original macro positions (left-bottom)$/;"	m	class:CLegal
+m_max_module_height	Legalizer/Legal.h	/^        double m_max_module_height;$/;"	m	class:CLegal
+m_max_module_width	Legalizer/Legal.h	/^        double m_max_module_width;$/;"	m	class:CLegal
+m_origLocations	Legalizer/Legal.h	/^        vector<CPoint> m_origLocations;	\/\/Record the original locations$/;"	m	class:CLegal
+m_orig_widths	Legalizer/Legal.h	/^        vector<double> m_orig_widths;$/;"	m	class:CLegal
+m_process_list	Legalizer/Legal.h	/^        vector<int> m_process_list;    \/\/CalculateCellOrder() and CalculateNewLocation()$/;"	m	class:CLegal
+m_site_bottom	Legalizer/Legal.h	/^        double m_site_bottom, m_site_height; \/\/Keep the bottom y coordinate of the sites and the$/;"	m	class:CLegal
+m_site_height	Legalizer/Legal.h	/^        double m_site_bottom, m_site_height; \/\/Keep the bottom y coordinate of the sites and the$/;"	m	class:CLegal
+m_sites	Placement/Placement.h	/^    vector<Row> m_sites; \/\/ for Legalization and Detailplace$/;"	m	class:Placement
+m_unlegal_count	Legalizer/Legal.h	/^        int m_unlegal_count;            \/\/Number of unlegalized cells$/;"	m	class:CLegal
+main	main.cpp	/^int main(int argc, char *argv[])$/;"	f
+merge	Legalizer/Legal.cpp	/^void CLegal::merge(unsigned clusterIdx, vector<Cluster*>& clusters, bool isReal, vector< vector<double> >& origInfo)$/;"	f	class:CLegal
+mergeClustersReal	Legalizer/Legal.cpp	/^void CLegal::mergeClustersReal(vector<Cluster*>& clusters)$/;"	f	class:CLegal
+module	Placement/Placement.h	/^    Module& module(unsigned moduleId) {return _modules[moduleId];}$/;"	f	class:Placement
+moduleId	Placement/Pin.h	/^    unsigned moduleId() {return _moduleId;}$/;"	f	class:Pin
+moduleWidth	Legalizer/Legal.h	/^		double moduleWidth(unsigned moduleIdx) { return _placement.module(moduleIdx).width(); }$/;"	f	class:CLegal
+modules_bak	Placement/Placement.h	/^    vector<Module> modules_bak; \/\/for Detailplace$/;"	m	class:Placement
+moveDesignCenter	Placement/Placement.cpp	/^void Placement::moveDesignCenter(double xOffset, double yOffset)$/;"	f	class:Placement
+name	Placement/Module.h	/^    string name() {return _name;}$/;"	f	class:Module
+name	Placement/Placement.h	/^    string name() {return _name;}$/;"	f	class:Placement
+net	Placement/Placement.h	/^    Net& net(unsigned netId) {return _nets[netId];}$/;"	f	class:Placement
+netId	Placement/Pin.h	/^    unsigned netId() {return _netId;}$/;"	f	class:Pin
+numModules	Placement/Placement.h	/^    unsigned numModules() {return _modules.size();}$/;"	f	class:Placement
+numNets	Placement/Placement.h	/^    unsigned numNets() {return _nets.size();}$/;"	f	class:Placement
+numPins	Placement/Module.h	/^    unsigned numPins() {return _pPins.size();}$/;"	f	class:Module
+numPins	Placement/Net.h	/^    unsigned numPins() {return _pPins.size();}$/;"	f	class:Net
+numPins	Placement/Placement.h	/^    unsigned numPins() {return _pins.size();}$/;"	f	class:Placement
+numRows	Placement/Placement.h	/^    unsigned numRows() {return _rows.size();}$/;"	f	class:Placement
+numSites	Placement/Row.h	/^    double numSites() const {return _numSites;}$/;"	f	class:Row
+orient	Placement/Module.h	/^    Orient orient() {return _orient;}$/;"	f	class:Module
+orientString	Placement/Module.h	/^    string orientString() {$/;"	f	class:Module
+outputBookshelfFormat	Placement/Placement.cpp	/^void Placement::outputBookshelfFormat(string filePathName)$/;"	f	class:Placement
+outputGnuplotFigure	Placement/Placement.cpp	/^void Placement::outputGnuplotFigure(string filePathName) {$/;"	f	class:Placement
+outputPdfFigure	Placement/Placement.cpp	/^void Placement::outputPdfFigure(string filePathName) {$/;"	f	class:Placement
+outputPdfFile	Gnuplot/GnuplotPlotter.cpp	/^void GnuplotPlotter::outputPdfFile(string filePathName)$/;"	f	class:GnuplotPlotter
+outputPlotFile	Gnuplot/GnuplotMatrixPlotter.cpp	/^void GnuplotMatrixPlotter::outputPlotFile(string filePathName)$/;"	f	class:GnuplotMatrixPlotter
+outputPlotFile	Gnuplot/GnuplotPlotter.cpp	/^void GnuplotPlotter::outputPlotFile(string filePathName)$/;"	f	class:GnuplotPlotter
+outputPngFigure	Placement/Placement.cpp	/^void Placement::outputPngFigure(string filePathName) {$/;"	f	class:Placement
+outputPngFile	Gnuplot/GnuplotMatrixPlotter.cpp	/^void GnuplotMatrixPlotter::outputPngFile(string filePathName)$/;"	f	class:GnuplotMatrixPlotter
+outputPngFile	Gnuplot/GnuplotPlotter.cpp	/^void GnuplotPlotter::outputPngFile(string filePathName)$/;"	f	class:GnuplotPlotter
+overUpperBound	Legalizer/Legal.cpp	/^bool CLegal::overUpperBound(unsigned moduleIdx, unsigned rowIdx, double bestCost)$/;"	f	class:CLegal
+overlapArea	Placement/Rectangle.h	/^    static double overlapArea(const Rectangle &rect1, const Rectangle &rect2) {$/;"	f	class:Rectangle
+pin	Placement/Module.h	/^    Pin& pin(unsigned index) {return *_pPins[index];}$/;"	f	class:Module
+pin	Placement/Net.h	/^    Pin& pin(unsigned index) {return *_pPins[index];} \/\/ index: 0 ~ (numPins-1), not Pin id$/;"	f	class:Net
+pin	Placement/Placement.h	/^    Pin& pin(unsigned pinId) {return _pins[pinId];}$/;"	f	class:Placement
+pinId	Placement/Pin.h	/^    unsigned pinId() {return _pinId;}$/;"	f	class:Pin
+plFilename	PlaceCommon/ParamPlacement.h	/^    string plFilename;$/;"	m	class:CParamPlacement
+placeRow	Legalizer/Legal.cpp	/^unsigned CLegal::placeRow(unsigned moduleIdx, vector<Cluster*>& clusters, vector< vector<double> >& origInfo, bool isReal)$/;"	f	class:CLegal
+plname	Placement/Placement.h	/^    string plname() {return _loadplname;}$/;"	f	class:Placement
+popBack	Legalizer/Legal.h	/^		void popBack() { _cells.pop_back(); }$/;"	f	class:Cluster
+pushBack	Legalizer/Legal.h	/^		void pushBack(unsigned moduleIdx) { _cells.push_back(moduleIdx); }$/;"	f	class:Cluster
+readAuxFile	Parser/BookshelfParser.cpp	/^bool BookshelfParser::readAuxFile(string filePathName)$/;"	f	class:BookshelfParser
+readBookshelfFormat	Placement/Placement.cpp	/^void Placement::readBookshelfFormat(string filePathName, string plFileName)$/;"	f	class:Placement
+readNetsFile	Parser/BookshelfParser.cpp	/^bool BookshelfParser::readNetsFile(string filePathName)$/;"	f	class:BookshelfParser
+readNodesFile	Parser/BookshelfParser.cpp	/^bool BookshelfParser::readNodesFile(string filePathName)$/;"	f	class:BookshelfParser
+readPlFile	Parser/BookshelfParser.cpp	/^bool BookshelfParser::readPlFile(string filePathName)$/;"	f	class:BookshelfParser
+readSclFile	Parser/BookshelfParser.cpp	/^bool BookshelfParser::readSclFile(string filePathName)$/;"	f	class:BookshelfParser
+recordCurrLocations	Legalizer/Legal.cpp	/^void CLegal::recordCurrLocations(vector<Cluster*>& clusters)$/;"	f	class:CLegal
+recordOrigInfo	Legalizer/Legal.cpp	/^void CLegal::recordOrigInfo(vector<Cluster*>& clusters, vector< vector<double> >& origInfo)$/;"	f	class:CLegal
+recoverCurrLocations	Legalizer/Legal.cpp	/^void CLegal::recoverCurrLocations(vector<Cluster*>& clusters, unsigned mergeCount)$/;"	f	class:CLegal
+recoverFromOrigInfo	Legalizer/Legal.cpp	/^void CLegal::recoverFromOrigInfo(vector<Cluster*>& clusters, vector< vector<double> >& origInfo, unsigned mergeCount)$/;"	f	class:CLegal
+rectangle	Placement/Module.h	/^    Rectangle rectangle() { return Rectangle(_x, _y, _x+_width, _y+_height);}\/\/module rectangle$/;"	f	class:Module
+rectangleChip	Placement/Placement.h	/^    Rectangle rectangleChip() {return _rectangleChip;}  \/\/Chip rectangle$/;"	f	class:Placement
+report	Legalizer/Legal.cpp	/^void CLegal::report()$/;"	f	class:CLegal
+reportClusters	Legalizer/Legal.cpp	/^void CLegal::reportClusters(vector<Cluster*>& clusters)$/;"	f	class:CLegal
+reportCurrLocations	Legalizer/Legal.cpp	/^void CLegal::reportCurrLocations(vector<Cluster*>& clusters)$/;"	f	class:CLegal
+reportOrigInfo	Legalizer/Legal.cpp	/^void CLegal::reportOrigInfo(vector< vector<double> >& origInfo)$/;"	f	class:CLegal
+right	Placement/Rectangle.h	/^    double right() const {return _right;}$/;"	f	class:Rectangle
+row	Placement/Placement.h	/^    Row& row(unsigned rowId) {return _rows[rowId];}$/;"	f	class:Placement
+saveGlobalResult	Legalizer/Legal.cpp	/^void CLegal::saveGlobalResult()$/;"	f	class:CLegal
+seconds	PlaceCommon/Util.h	/^inline double seconds()$/;"	f
+set2BestLocations	Legalizer/Legal.cpp	/^void CLegal::set2BestLocations(vector<Cluster*>& clusters, unsigned rowIdx, unsigned mergeCount)$/;"	f	class:CLegal
+set2BestLocations	Legalizer/Legal.cpp	/^void Cluster::set2BestLocations(unsigned rowIdx)$/;"	f	class:Cluster
+setAutoFit	Gnuplot/GnuplotLivePlotter.h	/^    void setAutoFit(bool autoFit) {_autoFit = autoFit;}$/;"	f	class:GnuplotLivePlotter
+setAutoFit	Gnuplot/GnuplotPlotter.h	/^    void setAutoFit(bool autoFit) {_autoFit = autoFit;}$/;"	f	class:GnuplotPlotter
+setBounds	Placement/Rectangle.h	/^    void setBounds(double left, double bottom, double right, double top) {$/;"	f	class:Rectangle
+setCLegal	Legalizer/Legal.h	/^		static void setCLegal(CLegal* c) { _legal = c; }$/;"	f	class:Cluster
+setCenterPosition	Placement/Module.h	/^    void setCenterPosition(double x, double y) {$/;"	f	class:Module
+setE	Legalizer/Legal.h	/^		void setE(double e) { _E = e; }$/;"	f	class:Cluster
+setHeight	Placement/Module.h	/^    void setHeight(double height) {$/;"	f	class:Module
+setHeight	Placement/Row.h	/^    void setHeight(double height) {$/;"	f	class:Row
+setIdx	Placement/Module.h	/^	void setIdx(unsigned idx) { _idx = idx; }$/;"	f	class:Module
+setIsFixed	Placement/Module.h	/^    void setIsFixed(bool isFixed) {$/;"	f	class:Module
+setIsSymmetric	Placement/Row.h	/^    void setIsSymmetric(bool isSymmetric) {$/;"	f	class:Row
+setLegalResult	Legalizer/Legal.cpp	/^void CLegal::setLegalResult()$/;"	f	class:CLegal
+setMatrix	Gnuplot/GnuplotMatrixPlotter.cpp	/^void GnuplotMatrixPlotter::setMatrix(vector<double> &matrix, unsigned numRows, unsigned numCols)$/;"	f	class:GnuplotMatrixPlotter
+setModuleId	Placement/Pin.h	/^    void setModuleId(unsigned moduleId) {$/;"	f	class:Pin
+setName	Placement/Module.h	/^    void setName(const string &name) {$/;"	f	class:Module
+setNetId	Placement/Pin.h	/^    void setNetId(unsigned netId) {$/;"	f	class:Pin
+setNumModules	Placement/Placement.h	/^    void setNumModules(unsigned size) {_modules.resize(size);}$/;"	f	class:Placement
+setNumNets	Placement/Placement.h	/^    void setNumNets(unsigned size) {_nets.resize(size);}$/;"	f	class:Placement
+setNumPins	Placement/Module.h	/^    void setNumPins(unsigned numPins) {_pPins.resize(numPins);}$/;"	f	class:Module
+setNumPins	Placement/Net.h	/^    void setNumPins(unsigned numPins) {_pPins.resize(numPins);}$/;"	f	class:Net
+setNumPins	Placement/Placement.h	/^    void setNumPins(unsigned size) {_pins.resize(size);}$/;"	f	class:Placement
+setNumRows	Placement/Placement.h	/^    void setNumRows(unsigned size) {_rows.resize(size);}$/;"	f	class:Placement
+setNumSites	Placement/Row.h	/^    void setNumSites(unsigned numSites) {$/;"	f	class:Row
+setOffset	Placement/Pin.h	/^    void setOffset(double xOffset, double yOffset) {$/;"	f	class:Pin
+setOrient	Placement/Module.h	/^    void setOrient(Orient orient) {$/;"	f	class:Module
+setOrient	Placement/Row.h	/^    void setOrient(Orient orient) {$/;"	f	class:Row
+setPinId	Placement/Pin.h	/^    void setPinId(unsigned pinId) {$/;"	f	class:Pin
+setPosition	Placement/Module.h	/^    void setPosition(double x, double y) { \/\/would update the pin positions when you set new position$/;"	f	class:Module
+setPosition	Placement/Pin.h	/^    void setPosition(double x, double y) {$/;"	f	class:Pin
+setPosition	Placement/Row.h	/^    void setPosition(double x, double y) {$/;"	f	class:Row
+setQ	Legalizer/Legal.h	/^		void setQ(double q) { _Q = q; }$/;"	f	class:Cluster
+setSiteSpacing	Placement/Row.h	/^    void setSiteSpacing(double siteSpacing) {$/;"	f	class:Row
+setTitle	Gnuplot/GnuplotLivePlotter.cpp	/^void GnuplotLivePlotter::setTitle(string title)$/;"	f	class:GnuplotLivePlotter
+setTitle	Gnuplot/GnuplotPlotter.cpp	/^void GnuplotPlotter::setTitle(string title)$/;"	f	class:GnuplotPlotter
+setW	Legalizer/Legal.h	/^		void setW(double w) { _W = w; }$/;"	f	class:Cluster
+setWidth	Placement/Module.h	/^    void setWidth(double width) {$/;"	f	class:Module
+setX	Legalizer/Legal.h	/^		void setX(double x) { _X = x; }$/;"	f	class:Cluster
+show	Gnuplot/GnuplotLivePlotter.cpp	/^void GnuplotLivePlotter::show()$/;"	f	class:GnuplotLivePlotter
+siteSpacing	Placement/Row.h	/^    double siteSpacing() const {return _siteSpacing;}$/;"	f	class:Row
+size	Legalizer/Legal.h	/^		unsigned size() const { return _cells.size(); }$/;"	f	class:Cluster
+solve	Legalizer/Legal.cpp	/^bool CLegal::solve()$/;"	f	class:CLegal
+sortModule	Legalizer/Legal.cpp	/^bool sortModule( Module* a, Module* b)$/;"	f
+sortX	Legalizer/Legal.cpp	/^bool sortX(pair<double, unsigned>& a, pair<double, unsigned>& b)$/;"	f
+threadNum	PlaceCommon/ParamPlacement.h	/^    int threadNum;$/;"	m	class:CParamPlacement
+title	Gnuplot/GnuplotLivePlotter.h	/^    string title() {return _title;}$/;"	f	class:GnuplotLivePlotter
+title	Gnuplot/GnuplotPlotter.h	/^    string title() {return _title;}$/;"	f	class:GnuplotPlotter
+top	Placement/Rectangle.h	/^    double top() const {return _top;}$/;"	f	class:Rectangle
+totalDisplacement	Legalizer/Legal.cpp	/^double CLegal::totalDisplacement()$/;"	f	class:CLegal
+undoPlaceRow	Legalizer/Legal.cpp	/^void CLegal::undoPlaceRow(unsigned mergeCount, vector<Cluster*>& clusters, vector< vector<double> >& origInfo)$/;"	f	class:CLegal
+updateDesignStatistics	Placement/Placement.cpp	/^void Placement::updateDesignStatistics()$/;"	f	class:Placement
+updatePinPositions	Placement/Module.h	/^    void updatePinPositions() {$/;"	f	class:Module
+updateX	Legalizer/Legal.cpp	/^void CLegal::updateX(unsigned mergeCount, vector<Cluster*>& clusters)$/;"	f	class:CLegal
+width	Placement/Module.h	/^    double width() {return _width;}$/;"	f	class:Module
+width	Placement/Rectangle.h	/^    double width() const {return _right - _left;}$/;"	f	class:Rectangle
+width	Placement/Row.h	/^    double width() const {return _numSites*_siteSpacing;}$/;"	f	class:Row
+x	PlaceCommon/Util.h	/^        double x, y;$/;"	m	class:CPoint
+x	Placement/Module.h	/^    double x() {return _x;} \/\/x coordinates$/;"	f	class:Module
+x	Placement/Pin.h	/^    double x() {return _x;}$/;"	f	class:Pin
+x	Placement/Row.h	/^    double x() const {return _x;}$/;"	f	class:Row
+xOffset	Placement/Pin.h	/^    double xOffset() {return _xOffset;}$/;"	f	class:Pin
+y	PlaceCommon/Util.h	/^        double x, y;$/;"	m	class:CPoint
+y	Placement/Module.h	/^    double y() {return _y;} \/\/y coordinates \/\/(x,y): lower-left point of the block$/;"	f	class:Module
+y	Placement/Pin.h	/^    double y() {return _y;}$/;"	f	class:Pin
+y	Placement/Row.h	/^    double y() const {return _y;}$/;"	f	class:Row
+yOffset	Placement/Pin.h	/^    double yOffset() {return _yOffset;}$/;"	f	class:Pin
+~CArgHandler	PlaceCommon/arghandler.cpp	/^CArgHandler::~CArgHandler()$/;"	f	class:CArgHandler
+~CLegal	Legalizer/Legal.h	/^       ~CLegal(void){}$/;"	f	class:CLegal
+~Cluster	Legalizer/Legal.h	/^		~Cluster() { _cells.clear(); }$/;"	f	class:Cluster
+~GnuplotLivePlotter	Gnuplot/GnuplotLivePlotter.cpp	/^GnuplotLivePlotter::~GnuplotLivePlotter()$/;"	f	class:GnuplotLivePlotter
