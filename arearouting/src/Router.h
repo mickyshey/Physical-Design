@@ -8,6 +8,8 @@
 #include <cassert>
 #include <cmath>
 
+class Edge;
+
 class CPoint
 {
 public:
@@ -40,10 +42,13 @@ public:
 	const CPoint& getCoordinate() { return _coordinate; }
 	const unsigned& getX() { return _coordinate.x(); }
 	const unsigned& getY() { return _coordinate.y(); }
+	void pushBackOASG(Edge* e) { _OASG.push_back(e); } 
+	const std::vector<Edge*>& getOASG() { return _OASG; }
 private:
 	std::string	_name;
 	CPoint	_coordinate;
 	bool		_isPin;				// false: turning_pin, true: real_pin
+	std::vector<Edge*>	_OASG;
 };
 
 class Edge
@@ -51,11 +56,14 @@ class Edge
 public:
 	Edge() {}
 	// sorted by x coordinate of pin
-	Edge(Pin* a, Pin* b) { 
+	Edge(Pin* a, Pin* b, const unsigned& i, const unsigned& j) { 
 		//if( a -> getCoordinate() < b -> getCoordinate() ) _pins.first = a, _pins.second = b; 
 		//else _pins.first = b; _pins.second = a; }
 		assert(a -> getX() <= b -> getX());
+		assert(i < j);
 		_pins.first = a; _pins.second = b;
+		_pinIndices.first = i; _pinIndices.second = j;
+		_added2OAST = false;
 		_weight = calWeight(a, b); }
 	~Edge() {}
 	
@@ -68,11 +76,16 @@ public:
 		return dX + dY;
 	}
 	const std::pair<Pin*, Pin*>& getPins() { return _pins; }
+	const std::pair<unsigned ,unsigned>& getPinIndices() { return _pinIndices; }
 	const unsigned& getWeight() { return _weight; }
+	void setAdded2OAST() { _added2OAST = true; }
+	bool added2OAST() { return _added2OAST; }
 
 private:
-	unsigned					_weight;
-	std::pair<Pin*, Pin*> 		_pins;
+	unsigned								_weight;
+	std::pair<Pin*, Pin*> 			_pins;
+	std::pair<unsigned, unsigned> _pinIndices;
+	bool		_added2OAST;
 };
 
 class Router
@@ -90,13 +103,15 @@ public:
 	
 	void readInput(const std::string& s);
 
+	// should be modified !!!
 	void OASG();
-	bool isNeighbor(Pin* ori, Pin* p, unsigned& upY, unsigned& downY);
+	bool isNeighbor(Pin* ori, Pin* p, int& upY, int& downY);
 
 	void OAST();
 
 	void reportPin();
 	void reportOASG();
+	void reportOAST();
 
 private:
 	CPoint _boundaryBL;		// bottom left of boundary
@@ -104,6 +119,7 @@ private:
 	unsigned _numPins;
 	std::vector<Pin*>				_pinList;
 	std::vector<Edge*>			_OASG;
+	std::vector<Edge*>			_OAST;
 };
 
 #endif
