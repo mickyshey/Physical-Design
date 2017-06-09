@@ -7,6 +7,7 @@
 #include <vector>
 #include <cassert>
 #include <cmath>
+#include <cstdlib>
 
 class Edge;
 
@@ -14,21 +15,20 @@ class CPoint
 {
 public:
 	CPoint() {}
-	CPoint(unsigned x, unsigned y) { _x = x; _y = y; }
+	CPoint(int x, int y) { _x = x; _y = y; }
 	~CPoint() {}
 	CPoint& operator = (const CPoint& c) { _x = c._x; _y = c._y; return *this; }
-	bool operator < (const CPoint& c) const { return _x < c._x; }
 
 	friend std::ostream& operator << (std::ostream& os, const CPoint& c) {
 		os << "x: " << c._x << ", y: " << c._y; return os;
 	}
 	
-	const unsigned& x() { return _x; }
-	const unsigned& y() { return _y; }
+	const int& x() { return _x; }
+	const int& y() { return _y; }
 
 private:
-	unsigned _x;
-	unsigned _y;
+	int _x;
+	int _y;
 };
 
 class Pin
@@ -40,15 +40,18 @@ public:
 	
 	std::string getName() { return _name; }
 	const CPoint& getCoordinate() { return _coordinate; }
-	const unsigned& getX() { return _coordinate.x(); }
-	const unsigned& getY() { return _coordinate.y(); }
+	const int& getX() { return _coordinate.x(); }
+	const int& getY() { return _coordinate.y(); }
 	void pushBackOASG(Edge* e) { _OASG.push_back(e); } 
+	void pushBackOAST(Edge* e) { _OAST.push_back(e); } 
 	const std::vector<Edge*>& getOASG() { return _OASG; }
+	const std::vector<Edge*>& getOAST() { return _OAST; }
 private:
 	std::string	_name;
 	CPoint	_coordinate;
 	bool		_isPin;				// false: turning_pin, true: real_pin
 	std::vector<Edge*>	_OASG;
+	std::vector<Edge*>	_OAST;
 };
 
 class Edge
@@ -56,33 +59,22 @@ class Edge
 public:
 	Edge() {}
 	// sorted by x coordinate of pin
-	Edge(Pin* a, Pin* b, const unsigned& i, const unsigned& j) { 
-		//if( a -> getCoordinate() < b -> getCoordinate() ) _pins.first = a, _pins.second = b; 
-		//else _pins.first = b; _pins.second = a; }
-		assert(a -> getX() <= b -> getX());
-		assert(i < j);
+	Edge(Pin* a, Pin* b, const int& w) {
 		_pins.first = a; _pins.second = b;
-		_pinIndices.first = i; _pinIndices.second = j;
 		_added2OAST = false;
-		_weight = calWeight(a, b); }
+		_weight = w; }
 	~Edge() {}
 	
-	unsigned calWeight(Pin* a, Pin* b) {
-		unsigned aX = a -> getX(), aY = a -> getY();
-		unsigned bX = b -> getX(), bY = a -> getY();
-		assert(aX <= bX);
-		unsigned dX = bX - aX;
-		unsigned dY = (aY > bY ? aY - bY : bY - aY);
-		return dX + dY;
-	}
 	const std::pair<Pin*, Pin*>& getPins() { return _pins; }
 	const std::pair<unsigned ,unsigned>& getPinIndices() { return _pinIndices; }
-	const unsigned& getWeight() { return _weight; }
+	const int& getWeight() { return _weight; }
 	void setAdded2OAST() { _added2OAST = true; }
 	bool added2OAST() { return _added2OAST; }
+	void setPinIdxFirst(unsigned idx) { _pinIndices.first = idx; }
+	void setPinIdxSecond(unsigned idx) { _pinIndices.second = idx; }
 
 private:
-	unsigned								_weight;
+	int								_weight;
 	std::pair<Pin*, Pin*> 			_pins;
 	std::pair<unsigned, unsigned> _pinIndices;
 	bool		_added2OAST;
@@ -103,15 +95,20 @@ public:
 	
 	void readInput(const std::string& s);
 
-	// should be modified !!!
 	void OASG();
 	bool isNeighbor(Pin* ori, Pin* p, int& upY, int& downY);
 
 	void OAST();
+	void setPinIndices4OAST();
 
 	void reportPin();
 	void reportOASG();
 	void reportOAST();
+	int calWeight(Pin* a, Pin* b) {
+		int aX = a -> getX(), aY = a -> getY();
+		int bX = b -> getX(), bY = b -> getY();
+		return std::abs(bX - aX) + std::abs(bY - aY);
+	}
 
 private:
 	CPoint _boundaryBL;		// bottom left of boundary
