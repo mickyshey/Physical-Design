@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
+#include <queue>
 
 class Edge;
 
@@ -18,6 +19,7 @@ public:
 	CPoint(int x, int y) { _x = x; _y = y; }
 	~CPoint() {}
 	CPoint& operator = (const CPoint& c) { _x = c._x; _y = c._y; return *this; }
+	bool operator == (const CPoint& c) { return (_x == c._x) && (_y == c._y); }
 
 	friend std::ostream& operator << (std::ostream& os, const CPoint& c) {
 		os << "x: " << c._x << ", y: " << c._y; return os;
@@ -38,6 +40,8 @@ public:
 	Pin(std::string n, CPoint c, bool b = true) { _name = n; _coordinate = c; _isPin = b; }
 	~Pin() {}
 	
+	bool operator == (Pin* p) { return _coordinate == p -> _coordinate; }
+
 	std::string getName() { return _name; }
 	const CPoint& getCoordinate() { return _coordinate; }
 	const int& getX() { return _coordinate.x(); }
@@ -58,26 +62,43 @@ class Edge
 {
 public:
 	Edge() {}
-	// sorted by x coordinate of pin
-	Edge(Pin* a, Pin* b, const int& w) {
-		_pins.first = a; _pins.second = b;
+	// sort by x coordinate !! for OARSMT
+	Edge(Pin* a, Pin* b, const int& w = 0) {
+		if( a -> getX() < b -> getX() ) { _pins.first = a; _pins.second = b; }
+		else { _pins.first = b; _pins.second = a; }
+		//_pins.first = a; _pins.second = b;
 		_added2OAST = false;
-		_weight = w; }
+		_visitedInOARST = false;
+		_weight = w; 
+		assert(_maxHeap.empty()); }
 	~Edge() {}
+
+	// for maxHeap comparison
+	struct EdgeComparator_dec {
+		bool operator () (Edge* a, Edge* b) { return a -> getWeight() < b -> getWeight(); }
+	};
+	// typedef
+	typedef std::priority_queue<Edge*, std::vector<Edge*>, EdgeComparator_dec> EdgeMaxHeap;
 	
 	const std::pair<Pin*, Pin*>& getPins() { return _pins; }
 	const std::pair<unsigned ,unsigned>& getPinIndices() { return _pinIndices; }
 	const int& getWeight() { return _weight; }
 	void setAdded2OAST() { _added2OAST = true; }
 	bool added2OAST() { return _added2OAST; }
+	void setVisitedInOARST() { _visitedInOARST = true; }
+	bool visitedInOARST() { return _visitedInOARST; }
 	void setPinIdxFirst(unsigned idx) { _pinIndices.first = idx; }
 	void setPinIdxSecond(unsigned idx) { _pinIndices.second = idx; }
+	void push2MaxHeap(Edge* e) { _maxHeap.push(e); }
+	EdgeMaxHeap& getMaxHeap() { return _maxHeap; }
 
 private:
 	int								_weight;
 	std::pair<Pin*, Pin*> 			_pins;
-	std::pair<unsigned, unsigned> _pinIndices;
-	bool		_added2OAST;
+	std::pair<unsigned, unsigned> _pinIndices;			// in OAST
+	bool		_added2OAST;										// in OAST
+	bool		_visitedInOARST;									// in OARST
+	EdgeMaxHeap	_maxHeap;										// in OARST
 };
 
 class Router
@@ -101,9 +122,21 @@ public:
 	void OAST();
 	void setPinIndices4OAST();
 
+	void OARST();
+	void makeStraight(Edge* e, Edge* neighbor);
+	Pin* getCommon(Edge* e, Edge* neighbor, std::pair<Pin*, Pin*>& endPins);
+
+	void OARSMT();
+
+	long long getCost();
 	void reportPin();
 	void reportOASG();
 	void reportOAST();
+	void reportOARST();
+	void reportTurningPinsOARST();
+	void writeOASG();
+	void writeOAST();
+	void writeOARST();
 	int calWeight(Pin* a, Pin* b) {
 		int aX = a -> getX(), aY = a -> getY();
 		int bX = b -> getX(), bY = b -> getY();
@@ -117,6 +150,8 @@ private:
 	std::vector<Pin*>				_pinList;
 	std::vector<Edge*>			_OASG;
 	std::vector<Edge*>			_OAST;
+	std::vector<Pin*>				_turningPinsOARST;
+	std::vector<Edge*>			_OARST;
 };
 
 #endif

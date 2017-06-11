@@ -9,6 +9,7 @@
 #include <set>
 #include <iterator>
 #include <climits>
+#include <iomanip>
 
 #include "Router.h"
 #include "Util.h"
@@ -28,10 +29,18 @@ struct sortXPlusY {
 struct sortXMinusY {
 	bool operator () (Pin* a, Pin* b) { return (a -> getX() - a -> getY()) < (b -> getX() - b -> getY()); }
 };
+struct sortEdgeXcoordinate {
+	bool operator () (Edge* a, Edge* b) { 
+		assert(a -> getPins().first -> getX() <= a -> getPins().second -> getX());
+		assert(b -> getPins().first -> getX() <= b -> getPins().second -> getX());
+		return (a -> getPins().first -> getX() < b -> getPins().first -> getX());
+	}
+};
 struct sortEdge {
 	bool operator () (Edge* a, Edge* b) { return a -> getWeight() < b -> getWeight(); }
 };
-struct comparator {
+// for minHeap comparison
+struct EdgeComparator {
 	bool operator () (Edge* a, Edge* b) { return a -> getWeight() > b -> getWeight(); }
 };
 
@@ -238,6 +247,7 @@ void Router::OASG()
 	delete dummy1; delete dummy3;
 	//reportOASG();
 	std::cout << "OASG: " << (double)(clock() - start) / CLOCKS_PER_SEC << std::endl;
+	writeOASG();
 }
 
 bool Router::isNeighbor(Pin* ori, Pin* p, int& upY, int& downY)
@@ -274,7 +284,7 @@ void Router::OAST() {
 	//reportPin();
 	//reportOASG();
 
-	std::priority_queue<Edge*, std::vector<Edge*>, comparator> minHeap;
+	std::priority_queue<Edge*, std::vector<Edge*>, EdgeComparator> minHeap;
 	std::vector<bool> visited(_numPins, false);
 
 	unsigned i = 0;
@@ -299,9 +309,22 @@ void Router::OAST() {
 			//std::cout << "current: " << current << ", next: " << next << std::endl;
 			if( !visited[next] ) {
 				_OAST.push_back(minEdge);
-				std::pair<Pin*, Pin*> pins = minEdge -> getPins();
-				pins.first -> pushBackOAST(minEdge);
-				pins.second -> pushBackOAST(minEdge);
+				Pin* p = minEdge -> getPins().first;
+				std::vector<Edge*> OAST = p -> getOAST();
+				// add neighboring edge to maxHeap
+				for( unsigned j = 0, n = OAST.size(); j < n; ++j ) {
+					OAST[j] -> push2MaxHeap(minEdge);
+					minEdge -> push2MaxHeap(OAST[j]);
+				}
+				p -> pushBackOAST(minEdge);			
+
+				p = minEdge -> getPins().second;
+				OAST = p -> getOAST();
+				for( unsigned j = 0, n = OAST.size(); j < n; ++j ) {
+					OAST[j] -> push2MaxHeap(minEdge);
+					minEdge -> push2MaxHeap(OAST[j]);
+				}
+				p -> pushBackOAST(minEdge);			
 			}
 			current = next;
 			++i;
@@ -316,15 +339,29 @@ void Router::OAST() {
 			//std::cout << "current: " << current << ", next: " << next << std::endl;
 			if( !visited[next] ) {
 				_OAST.push_back(minEdge);
-				std::pair<Pin*, Pin*> pins = minEdge -> getPins();
-				pins.first -> pushBackOAST(minEdge);
-				pins.second -> pushBackOAST(minEdge);
+				Pin* p = minEdge -> getPins().first;
+				std::vector<Edge*> OAST = p -> getOAST();
+				for( unsigned j = 0, n = OAST.size(); j < n; ++j ) {
+					OAST[j] -> push2MaxHeap(minEdge);
+					minEdge -> push2MaxHeap(OAST[j]);
+				}
+				p -> pushBackOAST(minEdge);			
+
+				p = minEdge -> getPins().second;
+				OAST = p -> getOAST();
+				for( unsigned j = 0, n = OAST.size(); j < n; ++j ) {
+					OAST[j] -> push2MaxHeap(minEdge);
+					minEdge -> push2MaxHeap(OAST[j]);
+				}
+				p -> pushBackOAST(minEdge);			
 			}
 			current = next;
 		}
 	}
 	//reportOAST();
 	std::cout << "OAST: " << (double)(clock() - start) / CLOCKS_PER_SEC << std::endl;
+	writeOAST();
+	std::cout << "cost: " << getCost() << std::endl;
 }
 
 void Router::setPinIndices4OAST()
@@ -341,12 +378,208 @@ void Router::setPinIndices4OAST()
 	}
 }
 
+void Router::OARST()
+{
+	clock_t start = clock();
+/*
+	reportPin();
+	reportOAST();
+	unsigned count = 0;
+	for( unsigned i = 0, n = _numPins; i < n; ++i ) {
+		std::cout << "pin: : " << _pinList[i] -> getName() << ", OAST: " << _pinList[i] -> getOAST().size() << std::endl;
+		if( _pinList[i] -> getOAST().size() > 2 ) ++count;
+	}
+	std::cout << "count: " << count << std::endl;
+*/
+	std::sort(_OAST.begin(), _OAST.end(), EdgeComparator());
+	//reportPin();
+	//reportOAST();
+	for( unsigned i = 0, n = _OAST.size(); i < n; ++i ) {
+		Edge* e = _OAST[i];
+		Edge* neighbor = NULL;
+		bool oneSlant = false;
+		if( e -> visitedInOARST() ) continue;
+		auto maxHeap = e -> getMaxHeap();			// potential problem !!!!
+		//std::cout << "size of maxHeap: " << maxHeap.size() << std::endl;
+		// get the longest neighboring edge of e
+		do {
+			neighbor = maxHeap.top();
+			//std::cout << "getting top: " << neighbor -> getWeight() << std::endl;
+			maxHeap.pop();
+			if( !maxHeap.size() && neighbor -> visitedInOARST() ) { oneSlant = true; break; }
+		} while( neighbor -> visitedInOARST() );
+/*
+		if( oneSlant )
+			std::cout << "[" << i << "] only one slant edge ..." << std::endl;
+		else
+			std::cout << "[" << i << "] longest unvisited neightboring edge weight: " << neighbor -> getWeight() << std::endl;
+*/
+		makeStraight(e, neighbor);
+		//e -> setVisitedInOARST();					// these should do according to conditions
+		//neighbor -> setVisitedInOARST();
+	}
+	reportPin();
+	reportOAST();
+	reportOARST();
+	std::cout << "OARST: " << (double)(clock() - start) / CLOCKS_PER_SEC << std::endl;
+	writeOARST();
+}
+
+void Router::makeStraight(Edge* e, Edge* neighbor)
+{
+	assert(!e -> visitedInOARST());
+	if( neighbor -> visitedInOARST() ) {
+		//std::cout << "straighten the only one slant edge e ..." << std::endl;
+		std::pair<Pin*, Pin*> pins = e -> getPins();
+		Pin* turning = new Pin("only_slant_t", CPoint(pins.first -> getX(), pins.second -> getY()), false);
+		Edge* e1 = new Edge(turning, pins.first); Edge* e2 = new Edge(turning, pins.second);
+		_OARST.push_back(e1); _OARST.push_back(e2);
+		_turningPinsOARST.push_back(turning);
+		e -> setVisitedInOARST();
+		return;
+	}
+	std::pair<Pin*, Pin*> endPins;
+	Pin* common = getCommon(e, neighbor, endPins);
+	//std::cout << "common pin: " << common -> getName() << ", end1: " << endPins.first -> getName() << ", end2: " << endPins.second -> getName() << std::endl;
+	// check the relation between endPins
+	int dX1 = endPins.first -> getX() - common -> getX(), dX2 = endPins.second -> getX() - common -> getX();
+	int dY1 = endPins.first -> getY() - common -> getY(), dY2 = endPins.second -> getY() - common -> getY();
+	int dX = dX1 * dX2;
+	int dY = dY1 * dY2;
+	assert(dX >= -INT_MAX && dX <= INT_MAX); assert(dY >= -INT_MAX && dY <= INT_MAX);
+
+	// Case 1
+	if( dX < 0 && dY < 0 ) {
+		//std::cout << "Case 1 ..." << std::endl;
+		// find the smaller-weighted edge to straighten, may cause some problems , TODO
+		//Edge* smaller = (e -> getWeight() < neighbor -> getWeight() ? e : neighbor);
+		Edge* smaller = e;
+		std::pair<Pin*, Pin*> pins = smaller -> getPins();
+		Pin* turning = new Pin(common -> getName() + "_t", CPoint(pins.first -> getX(), pins.second -> getY()), false);
+		Edge* e1 = new Edge(turning, pins.first); Edge* e2 = new Edge(turning, pins.second);
+		_OARST.push_back(e1); _OARST.push_back(e2);
+		_turningPinsOARST.push_back(turning);
+		smaller -> setVisitedInOARST();
+	}
+	// Case 3
+	else if( dX > 0 && dY > 0 ) {
+		//std::cout << "Case 3 ..." << std::endl;
+		int turningX = (std::abs(dX1) < std::abs(dX2) ? endPins.first -> getX() : endPins.second -> getX());
+		int turningY = (std::abs(dY1) < std::abs(dY2) ? endPins.first -> getY() : endPins.second -> getY());
+		Pin* turning1 = new Pin(common -> getName() + "_t1", CPoint(turningX, turningY), false);
+		Pin* turning2 = new Pin(common -> getName() + "_t2", CPoint(common -> getX(), turningY), false);
+		Edge* e1 = new Edge(turning1, endPins.first); Edge* e2 = new Edge(turning1, endPins.second);
+		Edge* e3 = new Edge(turning2, common);			 Edge* e4 = new Edge(turning2, turning1);
+		_OARST.push_back(e1); _OARST.push_back(e2); _OARST.push_back(e3); _OARST.push_back(e4);
+		_turningPinsOARST.push_back(turning1); _turningPinsOARST.push_back(turning2);
+		e -> setVisitedInOARST();					// these should do according to conditions
+		neighbor -> setVisitedInOARST();
+	}	
+	// Case 4
+	else if( dX == 0 || dY == 0 ) {
+		//std::cout << "Case 4 ..." << std::endl;
+		// find the slant edge to straighten
+		std::pair<Pin*, Pin*> pins;
+		Edge* rec = (dX1 == 0 || dY1 == 0 ? e : neighbor);
+		pins.first = (dX1 == 0 || dY1 == 0 ? endPins.second : endPins.first);
+		pins.second = common;
+		Pin* turning = new Pin(common -> getName() + "_t", CPoint(pins.first -> getX(), pins.second -> getY()), false);
+		Edge* e1 = new Edge(turning, pins.first); Edge* e2 = new Edge(turning, pins.second);
+		_OARST.push_back(rec); _OARST.push_back(e1); _OARST.push_back(e2);
+		_turningPinsOARST.push_back(turning);
+		e -> setVisitedInOARST();
+		neighbor -> setVisitedInOARST();
+	}
+	// Case 2
+	else {
+		//std::cout << "Case 2 ..." << std::endl;
+		if( dX < 0 ) {
+			assert(dY > 0);
+			Pin* turning1 = new Pin(common -> getName() + "_t1", CPoint(common -> getX(), endPins.first -> getY()), false);
+			Pin* turning2 = new Pin(common -> getName() + "_t2", CPoint(common -> getX(), endPins.second -> getY()), false);
+			//std::cout << "t1: " << turning1 -> getCoordinate() << std::endl;
+			//std::cout << "t2: " << turning2 -> getCoordinate() << std::endl;
+			Edge* e1 = new Edge(turning1, common); Edge* e2 = new Edge(turning1, endPins.first);
+			Edge* e3 = new Edge(turning2, common); Edge* e4 = new Edge(turning2, endPins.second);
+			_OARST.push_back(e1); _OARST.push_back(e2); _OARST.push_back(e3); _OARST.push_back(e4);
+			_turningPinsOARST.push_back(turning1); _turningPinsOARST.push_back(turning2);
+		}
+		else {
+			assert(dY < 0);
+			Pin* turning1 = new Pin(common -> getName() + "_t1", CPoint(endPins.first -> getX(), common -> getY()), false);
+			Pin* turning2 = new Pin(common -> getName() + "_t2", CPoint(endPins.second -> getX(), common -> getY()), false);
+			//std::cout << "t1: " << turning1 -> getCoordinate() << std::endl;
+			//std::cout << "t2: " << turning2 -> getCoordinate() << std::endl;
+			Edge* e1 = new Edge(turning1, common); Edge* e2 = new Edge(turning1, endPins.first);
+			Edge* e3 = new Edge(turning2, common); Edge* e4 = new Edge(turning2, endPins.second);
+			_OARST.push_back(e1); _OARST.push_back(e2); _OARST.push_back(e3); _OARST.push_back(e4);
+			_turningPinsOARST.push_back(turning1); _turningPinsOARST.push_back(turning2);
+		}
+		e -> setVisitedInOARST();					// these should do according to conditions
+		neighbor -> setVisitedInOARST();
+	}
+
+	//reportTurningPins();
+	//reportOARST();
+}
+
+// Note: e/neighbor is always stored in endPins.first/endPins.second
+Pin* Router::getCommon(Edge* e, Edge* neighbor, std::pair<Pin*, Pin*>& endPins)
+{
+	std::pair<Pin*, Pin*> pinsE = e -> getPins(), pinsN = neighbor -> getPins();
+	if( pinsE.first == pinsN.first ) {
+		endPins.first = pinsE.second; endPins.second = pinsN.second;
+		return pinsE.first;
+	}
+	else if( pinsE.first == pinsN.second ) {
+		endPins.first = pinsE.second; endPins.second = pinsN.first;
+		return pinsE.first;
+	}
+	else if( pinsE.second == pinsN.first ) {
+		endPins.first = pinsE.first; endPins.second = pinsN.second;
+		return pinsE.second;
+	}
+	else {
+		assert(pinsE.second == pinsN.second);
+		endPins.first = pinsE.first; endPins.second = pinsN.first;
+		return pinsE.second;
+	}
+}
+
+void Router::OARSMT()
+{
+	clock_t start = clock();
+	std::sort(_OARST.begin(), _OARST.end(), sortEdgeXcoordinate());
+	reportOARST();
+	for( unsigned i = 0, n = _OARST.size(); i < n; ++i ) {
+		std::pair<Pin*, Pin*> pins = _OARST[i] -> getPins();
+		for( unsigned j = i + 1, j < n; ++j ) {
+			std::pair<Pin*, Pin*> nextPins = _OARST[j] -> getPins();
+			if( pins.second -> getX() < nextPins.first -> getX() ) break;
+		} 
+	}
+	
+	std::cout << "OARSMT: " << (double)(clock() - start) / CLOCKS_PER_SEC << std::endl;
+}
+
+// currently get for OAST
+long long Router::getCost()	
+{
+	long long cost = 0;
+	for( unsigned i = 0, n = _OAST.size(); i < n; ++i ) {
+		std::pair<Pin*, Pin*> pins = _OAST[i] -> getPins();
+		cost += calWeight(pins.first, pins.second);
+	}
+	return cost;
+}
+
 void Router::reportPin()
 {
 	std::cout << "info of PINs: " << std::endl;
 	for( unsigned i = 0, n = _numPins; i < n; ++i ) {
 		std::cout << "name: " << _pinList[i] -> getName() << ", " << _pinList[i] -> getCoordinate() << std::endl;
 	}
+	std::cout << std::endl;
 }
 
 void Router::reportOASG()
@@ -358,7 +591,7 @@ void Router::reportOASG()
 		std::cout << "[" << i << "]: " << pins.first -> getName() << "(" << pinIndices.first << "), " << pins.second -> getName() << "(" << pinIndices.second << "), weight: " << _OASG[i] -> getWeight() << std::endl;
 	}
 	std::cout << std::endl;
-	std::cout << "size of OASG: " << _OASG.size() << std::endl;
+	std::cout << "size of OASG: " << _OASG.size() << std::endl << std::endl;
 }
 
 void Router::reportOAST()
@@ -370,5 +603,77 @@ void Router::reportOAST()
 		std::cout << "[" << i << "]: " << pins.first -> getName() << "(" << pinIndices.first << "), " << pins.second -> getName() << "(" << pinIndices.second << "), weight: " << _OAST[i] -> getWeight() << std::endl;
 	}
 	std::cout << std::endl;
-	std::cout << "size of OAST: " << _OAST.size() << std::endl;
+	std::cout << "size of OAST: " << _OAST.size() << std::endl << std::endl;
+}
+
+void Router::reportOARST()
+{
+	std::cout << "info of OARST: " << std::endl;
+	for( unsigned i = 0, n = _OARST.size(); i < n; ++i ) {
+		std::pair<Pin*, Pin*> pins = _OARST[i] -> getPins();
+		std::cout << "[" << i << "]: " << pins.first -> getName() << ", " << pins.second -> getName() << ", (" << pins.first -> getX() << ", " << pins.first -> getY() << ") - (" << pins.second -> getX() << ", " << pins.second -> getY() << ")" << std::endl;
+	}
+	std::cout << std::endl;
+	std::cout << "size of OARST: " << _OARST.size() << std::endl << std::endl;
+}
+
+void Router::reportTurningPinsOARST()
+{
+	std::cout << "info of turning PINs: " << std::endl;
+	for( unsigned i = 0, n = _turningPinsOARST.size(); i < n; ++i ) {
+		std::cout << "name: " << _turningPinsOARST[i] -> getName() << ", " << _turningPinsOARST[i] -> getCoordinate() << std::endl;
+	}
+	std::cout << std::endl;
+	std::cout << "size of turning PINs: " << _turningPinsOARST.size() << std::endl << std::endl;
+}
+
+void Router::writeOASG()
+{
+	std::ofstream file;
+	file.open("OASG.plt");
+	file << "set title \"OASG.plt\"" << std::endl;
+	file << "set size ratio -1" << std::endl;
+	file << "set xrange[" << _boundaryBL.x() << ":" << _boundaryTR.x() << "]" << std::endl;
+	file << "set yrange[" << _boundaryBL.y() << ":" << _boundaryTR.y() << "]" << std::endl;
+	file << "plot \'-\' with linespoints pt 7 ps 1" << std::endl;
+	for( unsigned i = 0, n = _OASG.size(); i < n; ++i ) {
+		std::pair<Pin*, Pin*> pins = _OASG[i] -> getPins();
+		file << pins.first -> getX() << " " << pins.first -> getY() << std::endl << pins.second -> getX() << " " << pins.second -> getY() << std::endl << std::endl;
+	}
+	file << "EOF" << std::endl;
+	file << "pause -1 \'Press any key\'" << std::endl;
+}
+
+void Router::writeOAST()
+{
+	std::ofstream file;
+	file.open("OAST.plt");
+	file << "set title \"OAST.plt\"" << std::endl;
+	file << "set size ratio -1" << std::endl;
+	file << "set xrange[" << _boundaryBL.x() << ":" << _boundaryTR.x() << "]" << std::endl;
+	file << "set yrange[" << _boundaryBL.y() << ":" << _boundaryTR.y() << "]" << std::endl;
+	file << "plot \'-\' with linespoints pt 7 ps 1" << std::endl;
+	for( unsigned i = 0, n = _OAST.size(); i < n; ++i ) {
+		std::pair<Pin*, Pin*> pins = _OAST[i] -> getPins();
+		file << pins.first -> getX() << " " << pins.first -> getY() << std::endl << pins.second -> getX() << " " << pins.second -> getY() << std::endl << std::endl;
+	}
+	file << "EOF" << std::endl;
+	file << "pause -1 \'Press any key\'" << std::endl;
+}
+
+void Router::writeOARST()
+{
+	std::ofstream file;
+	file.open("OARST.plt");
+	file << "set title \"OARST.plt\"" << std::endl;
+	file << "set size ratio -1" << std::endl;
+	file << "set xrange[" << _boundaryBL.x() << ":" << _boundaryTR.x() << "]" << std::endl;
+	file << "set yrange[" << _boundaryBL.y() << ":" << _boundaryTR.y() << "]" << std::endl;
+	file << "plot \'-\' with linespoints pt 7 ps 1" << std::endl;
+	for( unsigned i = 0, n = _OARST.size(); i < n; ++i ) {
+		std::pair<Pin*, Pin*> pins = _OARST[i] -> getPins();
+		file << pins.first -> getX() << " " << pins.first -> getY() << std::endl << pins.second -> getX() << " " << pins.second -> getY() << std::endl << std::endl;
+	}
+	file << "EOF" << std::endl;
+	file << "pause -1 \'Press any key\'" << std::endl;
 }

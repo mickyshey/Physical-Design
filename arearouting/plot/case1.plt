@@ -2,7 +2,7 @@ set title "case1"
 set size ratio -1
 set xrange[0:100]
 set yrange[0:100]
-plot '-' with points pt 7 ps 1
+plot '-' with linespoints pt 7 ps 1
 94 60
 21 29
 8 37

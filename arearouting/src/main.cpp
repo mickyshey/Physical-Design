@@ -9,4 +9,6 @@ int main(int argc, char** argv)
 	router.readInput(argv[1]);
 	router.OASG();
 	router.OAST();
+	router.OARST();
+	router.OARSMT();
 }
