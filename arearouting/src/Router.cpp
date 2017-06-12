@@ -9,7 +9,9 @@
 #include <set>
 #include <iterator>
 #include <climits>
-#include <iomanip>
+#include <unordered_map>
+#include <functional>
+#include <utility>
 
 #include "Router.h"
 #include "Util.h"
@@ -29,19 +31,19 @@ struct sortXPlusY {
 struct sortXMinusY {
 	bool operator () (Pin* a, Pin* b) { return (a -> getX() - a -> getY()) < (b -> getX() - b -> getY()); }
 };
-struct sortEdgeXcoordinate {
-	bool operator () (Edge* a, Edge* b) { 
-		assert(a -> getPins().first -> getX() <= a -> getPins().second -> getX());
-		assert(b -> getPins().first -> getX() <= b -> getPins().second -> getX());
-		return (a -> getPins().first -> getX() < b -> getPins().first -> getX());
-	}
-};
 struct sortEdge {
 	bool operator () (Edge* a, Edge* b) { return a -> getWeight() < b -> getWeight(); }
 };
 // for minHeap comparison
 struct EdgeComparator {
 	bool operator () (Edge* a, Edge* b) { return a -> getWeight() > b -> getWeight(); }
+};
+
+struct CPointHash {
+	size_t operator () (const CPoint& c) const {
+		return (std::hash<int>() (c.x())
+					^ (std::hash<int>() (c.y())) << 1);
+	}
 };
 
 void Router::readInput(const std::string& inputFile)
@@ -361,7 +363,6 @@ void Router::OAST() {
 	//reportOAST();
 	std::cout << "OAST: " << (double)(clock() - start) / CLOCKS_PER_SEC << std::endl;
 	writeOAST();
-	std::cout << "cost: " << getCost() << std::endl;
 }
 
 void Router::setPinIndices4OAST()
@@ -415,12 +416,10 @@ void Router::OARST()
 			std::cout << "[" << i << "] longest unvisited neightboring edge weight: " << neighbor -> getWeight() << std::endl;
 */
 		makeStraight(e, neighbor);
-		//e -> setVisitedInOARST();					// these should do according to conditions
-		//neighbor -> setVisitedInOARST();
 	}
-	reportPin();
-	reportOAST();
-	reportOARST();
+	//reportPin();
+	//reportOAST();
+	//reportOARST();
 	std::cout << "OARST: " << (double)(clock() - start) / CLOCKS_PER_SEC << std::endl;
 	writeOARST();
 }
@@ -430,6 +429,11 @@ void Router::makeStraight(Edge* e, Edge* neighbor)
 	assert(!e -> visitedInOARST());
 	if( neighbor -> visitedInOARST() ) {
 		//std::cout << "straighten the only one slant edge e ..." << std::endl;
+		if( isHorizontal(e) || isVertical(e) ) {
+			_OARST.push_back(e);
+			e -> setVisitedInOARST();
+			return;
+		}
 		std::pair<Pin*, Pin*> pins = e -> getPins();
 		Pin* turning = new Pin("only_slant_t", CPoint(pins.first -> getX(), pins.second -> getY()), false);
 		Edge* e1 = new Edge(turning, pins.first); Edge* e2 = new Edge(turning, pins.second);
@@ -440,13 +444,17 @@ void Router::makeStraight(Edge* e, Edge* neighbor)
 	}
 	std::pair<Pin*, Pin*> endPins;
 	Pin* common = getCommon(e, neighbor, endPins);
-	//std::cout << "common pin: " << common -> getName() << ", end1: " << endPins.first -> getName() << ", end2: " << endPins.second -> getName() << std::endl;
+	//if( common -> getName() == "p63" ) 
+	//	std::cout << "common pin: " << common -> getName() << ", end1: " << endPins.first -> getName() << ", end2: " << endPins.second -> getName() << std::endl;
 	// check the relation between endPins
 	int dX1 = endPins.first -> getX() - common -> getX(), dX2 = endPins.second -> getX() - common -> getX();
 	int dY1 = endPins.first -> getY() - common -> getY(), dY2 = endPins.second -> getY() - common -> getY();
-	int dX = dX1 * dX2;
-	int dY = dY1 * dY2;
-	assert(dX >= -INT_MAX && dX <= INT_MAX); assert(dY >= -INT_MAX && dY <= INT_MAX);
+	long double dX = (long double)dX1 * (long double)dX2;
+	long double dY = (long double)dY1 * (long double)dY2;
+	//if( common -> getName() == "p63" ) {
+	//	std::cout << "dX1: " << dX1 << ", dY1: " << dY1 << ", dX2: " << dX2 << ", dY2: " << dY2 << std::endl;
+	//	std::cout << "dX: " << dX << ", dY: " << dY << std::endl;
+	//}
 
 	// Case 1
 	if( dX < 0 && dY < 0 ) {
@@ -466,27 +474,52 @@ void Router::makeStraight(Edge* e, Edge* neighbor)
 		//std::cout << "Case 3 ..." << std::endl;
 		int turningX = (std::abs(dX1) < std::abs(dX2) ? endPins.first -> getX() : endPins.second -> getX());
 		int turningY = (std::abs(dY1) < std::abs(dY2) ? endPins.first -> getY() : endPins.second -> getY());
-		Pin* turning1 = new Pin(common -> getName() + "_t1", CPoint(turningX, turningY), false);
-		Pin* turning2 = new Pin(common -> getName() + "_t2", CPoint(common -> getX(), turningY), false);
-		Edge* e1 = new Edge(turning1, endPins.first); Edge* e2 = new Edge(turning1, endPins.second);
-		Edge* e3 = new Edge(turning2, common);			 Edge* e4 = new Edge(turning2, turning1);
-		_OARST.push_back(e1); _OARST.push_back(e2); _OARST.push_back(e3); _OARST.push_back(e4);
-		_turningPinsOARST.push_back(turning1); _turningPinsOARST.push_back(turning2);
+		// special case
+		if( dX1 == dX2 || dY1 == dY2 ) {
+			Pin* turning1;
+			if( dX1 == dX2 )
+				turning1 = (std::abs(dY1) < std::abs(dY2) ? endPins.first : endPins.second);
+			else turning1 = (std::abs(dX1) < std::abs(dX2) ? endPins.first : endPins.second);
+			Pin* turning2 = new Pin(common -> getName() + "_t2", CPoint(common -> getX(), turningY), false);
+			Edge* e1 = new Edge(turning1, endPins.second);
+			Edge* e2 = new Edge(turning2, common); Edge* e3 = new Edge(turning2, turning1);
+			_OARST.push_back(e1); _OARST.push_back(e2); _OARST.push_back(e3);
+			_turningPinsOARST.push_back(turning2);
+		}
+		else {
+			Pin* turning1 = new Pin(common -> getName() + "_t1", CPoint(turningX, turningY), false);
+			Pin* turning2 = new Pin(common -> getName() + "_t2", CPoint(common -> getX(), turningY), false);
+			Edge* e1 = new Edge(turning1, endPins.first); Edge* e2 = new Edge(turning1, endPins.second);
+			Edge* e3 = new Edge(turning2, common);			 Edge* e4 = new Edge(turning2, turning1);
+			_OARST.push_back(e1); _OARST.push_back(e2); _OARST.push_back(e3); _OARST.push_back(e4);
+			_turningPinsOARST.push_back(turning1); _turningPinsOARST.push_back(turning2);
+		}
 		e -> setVisitedInOARST();					// these should do according to conditions
 		neighbor -> setVisitedInOARST();
 	}	
+	// Case 5: both edges are in rectilinear form
+	else if( dX == 0 && dY == 0 ) {
+		_OARST.push_back(e); _OARST.push_back(neighbor);
+		e -> setVisitedInOARST(); neighbor -> setVisitedInOARST();
+	}
 	// Case 4
 	else if( dX == 0 || dY == 0 ) {
 		//std::cout << "Case 4 ..." << std::endl;
+		//special case
+		if( (dX1 == 0 && dX2 == 0) || (dY1 == 0 && dY2 == 0) ) {
+			_OARST.push_back(e); _OARST.push_back(neighbor);
+		}
 		// find the slant edge to straighten
-		std::pair<Pin*, Pin*> pins;
-		Edge* rec = (dX1 == 0 || dY1 == 0 ? e : neighbor);
-		pins.first = (dX1 == 0 || dY1 == 0 ? endPins.second : endPins.first);
-		pins.second = common;
-		Pin* turning = new Pin(common -> getName() + "_t", CPoint(pins.first -> getX(), pins.second -> getY()), false);
-		Edge* e1 = new Edge(turning, pins.first); Edge* e2 = new Edge(turning, pins.second);
-		_OARST.push_back(rec); _OARST.push_back(e1); _OARST.push_back(e2);
-		_turningPinsOARST.push_back(turning);
+		else {
+			std::pair<Pin*, Pin*> pins;
+			Edge* rec = (dX1 == 0 || dY1 == 0 ? e : neighbor);
+			pins.first = (dX1 == 0 || dY1 == 0 ? endPins.second : endPins.first);
+			pins.second = common;
+			Pin* turning = new Pin(common -> getName() + "_t", CPoint(pins.first -> getX(), pins.second -> getY()), false);
+			Edge* e1 = new Edge(turning, pins.first); Edge* e2 = new Edge(turning, pins.second);
+			_OARST.push_back(rec); _OARST.push_back(e1); _OARST.push_back(e2);
+			_turningPinsOARST.push_back(turning);
+		}
 		e -> setVisitedInOARST();
 		neighbor -> setVisitedInOARST();
 	}
@@ -495,31 +528,58 @@ void Router::makeStraight(Edge* e, Edge* neighbor)
 		//std::cout << "Case 2 ..." << std::endl;
 		if( dX < 0 ) {
 			assert(dY > 0);
-			Pin* turning1 = new Pin(common -> getName() + "_t1", CPoint(common -> getX(), endPins.first -> getY()), false);
-			Pin* turning2 = new Pin(common -> getName() + "_t2", CPoint(common -> getX(), endPins.second -> getY()), false);
-			//std::cout << "t1: " << turning1 -> getCoordinate() << std::endl;
-			//std::cout << "t2: " << turning2 -> getCoordinate() << std::endl;
-			Edge* e1 = new Edge(turning1, common); Edge* e2 = new Edge(turning1, endPins.first);
-			Edge* e3 = new Edge(turning2, common); Edge* e4 = new Edge(turning2, endPins.second);
-			_OARST.push_back(e1); _OARST.push_back(e2); _OARST.push_back(e3); _OARST.push_back(e4);
-			_turningPinsOARST.push_back(turning1); _turningPinsOARST.push_back(turning2);
+			//special case
+			if( dY1 == dY2 ) {
+				Pin* turning1 = new Pin(common -> getName() + "_t1", CPoint(common -> getX(), endPins.first -> getY()), false);
+				Edge* e1 = new Edge(turning1, common);
+				Edge* e2 = new Edge(turning1, endPins.first); Edge* e3 = new Edge(turning1, endPins.second);
+				_OARST.push_back(e1); _OARST.push_back(e2); _OARST.push_back(e3);
+				_turningPinsOARST.push_back(turning1);
+			}
+			else {
+				Pin* turning1 = new Pin(common -> getName() + "_t1", CPoint(common -> getX(), endPins.first -> getY()), false);
+				Pin* turning2 = new Pin(common -> getName() + "_t2", CPoint(common -> getX(), endPins.second -> getY()), false);
+				//std::cout << "t1: " << turning1 -> getCoordinate() << std::endl;
+				//std::cout << "t2: " << turning2 -> getCoordinate() << std::endl;
+				//Edge* e1 = new Edge(turning1, common); Edge* e2 = new Edge(turning1, endPins.first);
+				//Edge* e3 = new Edge(turning2, common); Edge* e4 = new Edge(turning2, endPins.second);
+				Edge* e1;
+				if( std::abs(dY1) < std::abs(dY2) ) e1 = new Edge(turning1, common);
+				else e1 = new Edge(turning2, common);
+				Edge* e2 = new Edge(turning1, turning2); Edge* e3 = new Edge(turning1, endPins.first); Edge* e4 = new Edge(turning2, endPins.second);
+				_OARST.push_back(e1); _OARST.push_back(e2); _OARST.push_back(e3); _OARST.push_back(e4);
+				_turningPinsOARST.push_back(turning1); _turningPinsOARST.push_back(turning2);
+			}
 		}
 		else {
 			assert(dY < 0);
-			Pin* turning1 = new Pin(common -> getName() + "_t1", CPoint(endPins.first -> getX(), common -> getY()), false);
-			Pin* turning2 = new Pin(common -> getName() + "_t2", CPoint(endPins.second -> getX(), common -> getY()), false);
-			//std::cout << "t1: " << turning1 -> getCoordinate() << std::endl;
-			//std::cout << "t2: " << turning2 -> getCoordinate() << std::endl;
-			Edge* e1 = new Edge(turning1, common); Edge* e2 = new Edge(turning1, endPins.first);
-			Edge* e3 = new Edge(turning2, common); Edge* e4 = new Edge(turning2, endPins.second);
-			_OARST.push_back(e1); _OARST.push_back(e2); _OARST.push_back(e3); _OARST.push_back(e4);
-			_turningPinsOARST.push_back(turning1); _turningPinsOARST.push_back(turning2);
+			if( dX1 == dX2 ) {
+				Pin* turning1 = new Pin(common -> getName() + "_t1", CPoint(endPins.first -> getX(), common -> getY()), false);
+				Edge* e1 = new Edge(turning1, common);
+				Edge* e2 = new Edge(turning1, endPins.first); Edge* e3 = new Edge(turning1, endPins.second);
+				_OARST.push_back(e1); _OARST.push_back(e2); _OARST.push_back(e3);
+				_turningPinsOARST.push_back(turning1);
+			}
+			else {
+				Pin* turning1 = new Pin(common -> getName() + "_t1", CPoint(endPins.first -> getX(), common -> getY()), false);
+				Pin* turning2 = new Pin(common -> getName() + "_t2", CPoint(endPins.second -> getX(), common -> getY()), false);
+				//std::cout << "t1: " << turning1 -> getCoordinate() << std::endl;
+				//std::cout << "t2: " << turning2 -> getCoordinate() << std::endl;
+				//Edge* e1 = new Edge(turning1, common); Edge* e2 = new Edge(turning1, endPins.first);
+				//Edge* e3 = new Edge(turning2, common); Edge* e4 = new Edge(turning2, endPins.second);
+				Edge* e1;
+				if( std::abs(dX1) < std::abs(dX2) ) e1 = new Edge(turning1, common);
+				else e1 = new Edge(turning2, common);
+				Edge* e2 = new Edge(turning1, turning2); Edge* e3 = new Edge(turning1, endPins.first); Edge* e4 = new Edge(turning2, endPins.second);
+				_OARST.push_back(e1); _OARST.push_back(e2); _OARST.push_back(e3); _OARST.push_back(e4);
+				_turningPinsOARST.push_back(turning1); _turningPinsOARST.push_back(turning2);
+			}
 		}
 		e -> setVisitedInOARST();					// these should do according to conditions
 		neighbor -> setVisitedInOARST();
 	}
 
-	//reportTurningPins();
+	//reportTurningPinsOARST();
 	//reportOARST();
 }
 
@@ -548,26 +608,308 @@ Pin* Router::getCommon(Edge* e, Edge* neighbor, std::pair<Pin*, Pin*>& endPins)
 
 void Router::OARSMT()
 {
-	clock_t start = clock();
+	// should be deleted
 	std::sort(_OARST.begin(), _OARST.end(), sortEdgeXcoordinate());
-	reportOARST();
-	for( unsigned i = 0, n = _OARST.size(); i < n; ++i ) {
-		std::pair<Pin*, Pin*> pins = _OARST[i] -> getPins();
-		for( unsigned j = i + 1, j < n; ++j ) {
-			std::pair<Pin*, Pin*> nextPins = _OARST[j] -> getPins();
-			if( pins.second -> getX() < nextPins.first -> getX() ) break;
-		} 
-	}
-	
+	//reportOARST();
+	//*****************
+	clock_t start = clock();
+	std::unordered_map<CPoint, Pin*, CPointHash>	hashPin;
+	std::unordered_map<std::pair<Pin*, Pin*>, Edge*, pairHashPin> hashEdge;
+	std::multiset<Edge*, sortEdgeXcoordinate> edgeSet;
+// should be modified !!
+// TODO
+	for( unsigned i = 0, n = _OARST.size(); i < n; ++i ) edgeSet.insert(_OARST[i]);
+
+	removeOverlappingEdges(edgeSet, hashEdge);
+
 	std::cout << "OARSMT: " << (double)(clock() - start) / CLOCKS_PER_SEC << std::endl;
+
+	_OARSMT.clear();
+	for( auto it = edgeSet.begin(); it != edgeSet.end(); ++it ) _OARSMT.push_back((*it));
+	assert(_OARSMT.size() == edgeSet.size());
+	std::cout << "OARST cost: " << getCostOARST() << std::endl;
+	std::cout << "OARSMT cost: " << getCostOARSMT() << std::endl;
+	writeOARSMT();
 }
 
-// currently get for OAST
-long long Router::getCost()	
+void Router::removeOverlappingEdges(std::multiset<Edge*, sortEdgeXcoordinate>& edgeSet, std::unordered_map<std::pair<Pin*, Pin*>, Edge*, pairHashPin>& hashEdge)
+{
+	auto it = edgeSet.begin();
+	while( it != edgeSet.end() ) {
+		bool revised = false;
+		if( (*it) -> visitedInOARSMT() ) { ++it; continue; }
+		//std::cout << "start from: " << std::distance(edgeSet.begin(), it) << std::endl;
+/*
+		// report edgeSet
+		std::cout << "info of edgeSet: " << std::endl;
+		for( auto itt = edgeSet.begin(); itt != edgeSet.end(); ++itt ) {
+			std::pair<Pin*, Pin*> pins = (*itt) -> getPins();
+			std::cout << "[" << std::distance(edgeSet.begin(), itt) << "]: " << pins.first -> getName() << ", " << pins.second -> getName() << ", (" << pins.first -> getX() << ", " << pins.first -> getY() << ") - (" << pins.second -> getX() << ", " << pins.second -> getY() << ")" << std::endl;
+		}
+		std::cout << std::endl;
+		std::cout << "size of edgeSet: " << edgeSet.size() << std::endl << std::endl;
+		// end of report
+*/
+		// itNext = it + 1
+		auto itNext = it;
+		++itNext;
+		while( itNext != edgeSet.end() ) {
+			Edge* e = (*it);	Edge* nextE = (*itNext);
+			std::pair<Pin*, Pin*> pins = e -> getPins();
+			std::pair<Pin*, Pin*> nextPins = nextE -> getPins();
+			// delete the identical edge
+			if( pins.first -> operator ==(nextPins.first) && pins.second -> operator ==(nextPins.second) ) {
+				//std::cout << "identical edges deleted: it: " << std::distance(edgeSet.begin(), it) << ", itNext: " << std::distance(edgeSet.begin(), itNext) << std::endl;
+				auto tmpItNext = itNext;
+				--itNext;
+				edgeSet.erase(tmpItNext);
+				++itNext;
+				if( itNext == edgeSet.end() ) { (*it) -> setVisitedInOARSMT(); break; }
+				else continue;
+			}
+			/********************/
+			// speed up heuristic
+			if( pins.second -> getX() < nextPins.first -> getX() ) {
+				(*it) -> setVisitedInOARSMT();
+				break;
+			}
+			// end of speed up heuristic
+			/********************/
+			//std::cout << "it: " << std::distance(edgeSet.begin(), it) << ", itNext: " << std::distance(edgeSet.begin(), itNext) << std::endl;
+			if( isHorizontal(e) && isHorizontal(nextE) ) {
+				if( pins.first -> getY() == nextPins.first -> getY() ) {
+					//std::cout << "both edges are horizontal and have same y..." << std::endl;
+					std::vector<Pin*> vPins(4);
+					std::vector<Edge*> tmpEdges;
+					vPins[0] = pins.first; vPins[1] = pins.second; vPins[2] = nextPins.first; vPins[3] = nextPins.second;
+					sort(vPins.begin(), vPins.end(), sortX());
+					if( vPins[1] -> getX() == vPins[2] -> getX() ) {
+						// do nothing
+						//insert2HashEdge(vPins[0], vPins[1], hashEdge);
+					}
+					else {
+						for( unsigned k = 0; k < 3; ++k ) {
+							if( vPins[k] -> getX() == vPins[k + 1] -> getX() ) continue;
+							Edge* tmpEdge = insert2HashEdge(vPins[k], vPins[k + 1], hashEdge);
+							tmpEdges.push_back(tmpEdge);
+						}
+						// delete the two overlapping edges and insert the revised edges
+						auto tmpIt = it; auto tmpItNext = itNext;
+						--it; --itNext;
+						edgeSet.erase(tmpItNext); edgeSet.erase(tmpIt);
+						for( unsigned k = 0; k < tmpEdges.size(); ++k ) edgeSet.insert(it, tmpEdges[k]);
+						// update it and break to the outer while loop
+						it = edgeSet.lower_bound(e);
+						//std::cout << "lower bound: " << std::distance(edgeSet.begin(), it) << std::endl;
+						revised = true;
+						break;
+					}
+				}
+			}
+			else if( isVertical(e) && isVertical(nextE) ) {
+				assert(pins.first -> getX() == nextPins.first -> getX());
+				if( overlapWithY(pins, nextPins) ) {
+					//std::cout << "pin: " << pins.first -> getName() << ", " << pins.second -> getName() << ", nextPin: " << nextPins.first -> getName() << ", " << nextPins.second -> getName() << std::endl;
+					//std::cout << "firstX: " << pins.first -> getX() << ", nextX: " << nextPins.first -> getX() << std::endl;
+					//std::cout << "both edges are vertical and have same x..." << std::endl;
+					std::vector<Pin*> vPins(4);
+					std::vector<Edge*> tmpEdges;
+					vPins[0] = pins.first; vPins[1] = pins.second; vPins[2] = nextPins.first; vPins[3] = nextPins.second;
+					sort(vPins.begin(), vPins.end(), sortY());
+					if( vPins[1] -> getY() == vPins[2] -> getY() ) {}
+					else {
+						for( unsigned k = 0; k < 3; ++k ) {
+							if( vPins[k] -> getY() == vPins[k + 1] -> getY() ) continue;
+							Edge* tmpEdge = insert2HashEdge(vPins[k], vPins[k + 1], hashEdge);
+							tmpEdges.push_back(tmpEdge);
+						}
+						// delete the two overlapping edges and insert the revised edges
+						auto tmpIt = it; auto tmpItNext = itNext;
+						--it; --itNext;
+						edgeSet.erase(tmpItNext); edgeSet.erase(tmpIt);
+						for( unsigned k = 0; k < tmpEdges.size(); ++k ) edgeSet.insert(it, tmpEdges[k]);
+						// update it and break to the outer while loop
+						it = edgeSet.lower_bound(e);
+						//std::cout << "lower bound: " << std::distance(edgeSet.begin(), it) << std::endl;
+						revised = true;
+						break;
+					}
+				}
+			}
+
+			else {
+				Edge* horizontal;
+				Edge* vertical;
+				if( isHorizontal(e) ) {
+					horizontal = e; vertical = nextE;
+				}
+				else {
+					horizontal = nextE; vertical = e;
+				}
+				assert(isHorizontal(horizontal)); assert(isVertical(vertical));
+				std::pair<Pin*, Pin*> Hpins = horizontal -> getPins();
+				std::pair<Pin*, Pin*> Vpins = vertical -> getPins();
+				if( Vpins.first -> getX() >= Hpins.first -> getX() && Vpins.first -> getX() <= Hpins.second -> getX() ) {
+				int downY = (Vpins.first -> getY() < Vpins.second -> getY() ? Vpins.first -> getY() : Vpins.second -> getY());
+				int upY = (Vpins.first -> getY() > Vpins.second -> getY() ? Vpins.first -> getY() : Vpins.second -> getY());
+					// overlapping condition
+					if( Hpins.first -> getY() >= downY && Hpins.first -> getY() <= upY ) {
+						//std::cout << "pin: " << pins.first -> getName() << ", " << pins.second -> getName() << ", nextPin: " << nextPins.first -> getName() << ", " << nextPins.second -> getName() << std::endl;
+						//std::cout << "cross-like edges ..." << std::endl;
+						std::vector<Pin*> vPins(4);
+						vPins[0] = Hpins.first; vPins[1] = Hpins.second; vPins[2] = Vpins.first; vPins[3] = Vpins.second;
+						sort(vPins.begin(), vPins.end(), sortX());
+						unsigned count = 0;
+						for( unsigned k = 0; k < 3; ++k ) {
+							if( vPins[k] -> getX() == vPins[k + 1] -> getX() ) ++count;
+						}
+						assert(count == 1 || count == 2);
+						std::vector<Edge*> tmpEdges;
+						if( count == 1 ) {
+							if( Hpins.first -> getY() == Vpins.first -> getY() ) {
+								Edge* e1 = insert2HashEdge(Hpins.first, Vpins.first, hashEdge);
+								Edge* e2 = insert2HashEdge(Hpins.second, Vpins.first, hashEdge);
+								Edge* e3 = insert2HashEdge(Vpins.first, Vpins.second, hashEdge);
+								tmpEdges.push_back(e1); tmpEdges.push_back(e2); tmpEdges.push_back(e3);
+							}
+							else if( Hpins.first -> getY() == Vpins.second -> getY() ) {
+								Edge* e1 = insert2HashEdge(Hpins.first, Vpins.second, hashEdge);
+								Edge* e2 = insert2HashEdge(Hpins.second, Vpins.second, hashEdge);
+								Edge* e3 = insert2HashEdge(Vpins.first, Vpins.second, hashEdge);
+								tmpEdges.push_back(e1); tmpEdges.push_back(e2); tmpEdges.push_back(e3);
+							}
+							else {
+								Pin* p = new Pin("cross pin", CPoint(Vpins.first -> getX(), Hpins.first -> getY()), false);
+								Edge* e1 = insert2HashEdge(Hpins.first, p, hashEdge);
+								Edge* e2 = insert2HashEdge(Hpins.second, p, hashEdge);
+								Edge* e3 = insert2HashEdge(Vpins.first, p, hashEdge);
+								Edge* e4 = insert2HashEdge(Vpins.second, p, hashEdge);
+								_turningPinsOARSMT.push_back(p);
+								tmpEdges.push_back(e1); tmpEdges.push_back(e2); tmpEdges.push_back(e3); tmpEdges.push_back(e4);
+							}
+						}
+						else {
+							if( Hpins.first -> getY() > Vpins.first -> getY() && Hpins.first -> getY() < Vpins.second -> getY() ) {
+								assert(Vpins.first -> getX() == Hpins.first -> getX() || Vpins.first -> getX() == Hpins.second -> getX());
+								if( Vpins.first -> getX() == Hpins.first -> getX() ) {
+									Edge* e1 = insert2HashEdge(Hpins.first, Vpins.first, hashEdge);
+									Edge* e2 = insert2HashEdge(Hpins.first, Vpins.second, hashEdge);
+									Edge* e3 = insert2HashEdge(Hpins.first, Hpins.second, hashEdge);
+									tmpEdges.push_back(e1); tmpEdges.push_back(e2); tmpEdges.push_back(e3);
+								}
+								else {
+									Edge* e1 = insert2HashEdge(Hpins.second, Vpins.first, hashEdge);
+									Edge* e2 = insert2HashEdge(Hpins.second, Vpins.second, hashEdge);
+									Edge* e3 = insert2HashEdge(Hpins.first, Hpins.second, hashEdge);
+									tmpEdges.push_back(e1); tmpEdges.push_back(e2); tmpEdges.push_back(e3);
+								}
+							}
+							else {
+								//Edge* e1 = insert2HashEdge(Hpins.first, Hpins.second, hashEdge);
+								//Edge* e2 = insert2HashEdge(Vpins.first, Vpins.second, hashEdge);
+								//tmpEdges.push_back(e1); tmpEdges.push_back(e2);
+								assert(!tmpEdges.size());
+							}
+						}
+						// delete the two overlapping edges and insert the revised edges
+						if( tmpEdges.size() ) {
+							auto tmpIt = it; auto tmpItNext = itNext;
+							--it; --itNext;
+							edgeSet.erase(tmpItNext); edgeSet.erase(tmpIt);
+							for( unsigned k = 0; k < tmpEdges.size(); ++k ) edgeSet.insert(it, tmpEdges[k]);
+							// update it and break to the outer while loop
+							it = edgeSet.lower_bound(e);
+							//std::cout << "lower bound: " << std::distance(edgeSet.begin(), it) << std::endl;
+							revised = true;
+							break;
+						}
+					}
+				}
+			}
+			++itNext;
+			if( itNext == edgeSet.end() ) { (*it) -> setVisitedInOARSMT(); break; }
+		}
+		if( !revised ) ++it;
+	}
+}
+
+Edge* Router::insert2HashEdge(Pin* a, Pin* b, std::unordered_map<std::pair<Pin*, Pin*>, Edge*, pairHashPin>& hashEdge)
+{
+	std::pair<Pin*, Pin*> pins;
+	comparePins(a, b, pins);
+	if( hashEdge.find({pins.first, pins.second}) == hashEdge.end() ) {
+		//std::cout << "adding edge: " << pins.first -> getName() << ", " << pins.second -> getName() << std::endl;
+		Edge* e = new Edge(pins.first, pins.second);
+		hashEdge.insert({{pins.first, pins.second}, e});
+		return e;
+	}
+	else {
+		//std::cout << "edge already exist ..." << std::endl;
+		return hashEdge.at({pins.first, pins.second});
+	}
+}
+
+void Router::comparePins(Pin* a, Pin* b, std::pair<Pin*, Pin*>& pins)
+{
+	assert(a -> getX() == b -> getX() || a -> getY() == b -> getY());
+	if( a -> getX() < b -> getX() ) pins = {a, b};
+	else if( a -> getY() < b -> getY() ) pins = {a, b};
+	else pins = {b, a};
+}
+
+bool Router::overlapWithY(std::pair<Pin*, Pin*>& pins, std::pair<Pin*, Pin*>& nextPins) {
+	// use pins to decide
+	int firstY = pins.first -> getY(), secondY = pins.second -> getY();
+	int upY = std::max(nextPins.first -> getY(), nextPins.second -> getY());
+	int downY = std::min(nextPins.first -> getY(), nextPins.second -> getY());
+	if( firstY >= downY && firstY <= upY ) return true;
+	else if( secondY >= downY && secondY <= upY ) return true;
+	else {
+		if( firstY > secondY ) { firstY = pins.second -> getY(); secondY = pins.first -> getY(); }
+		assert(firstY < secondY);
+		assert(firstY != downY); assert(firstY != upY);
+		assert(secondY != downY); assert(secondY != upY);
+		return(firstY < downY && secondY > upY);
+	}
+}
+
+bool Router::isHorizontal(Edge* e)
+{
+	std::pair<Pin*, Pin*> pins = e -> getPins();
+	return (pins.first -> getY() == pins.second -> getY());
+}
+
+bool Router::isVertical(Edge* e)
+{
+	std::pair<Pin*, Pin*> pins = e -> getPins();
+	return (pins.first -> getX() == pins.second -> getX());
+}
+
+long long Router::getCostOAST()	
 {
 	long long cost = 0;
 	for( unsigned i = 0, n = _OAST.size(); i < n; ++i ) {
 		std::pair<Pin*, Pin*> pins = _OAST[i] -> getPins();
+		cost += calWeight(pins.first, pins.second);
+	}
+	return cost;
+}
+
+long long Router::getCostOARST()	
+{
+	long long cost = 0;
+	for( unsigned i = 0, n = _OARST.size(); i < n; ++i ) {
+		std::pair<Pin*, Pin*> pins = _OARST[i] -> getPins();
+		cost += calWeight(pins.first, pins.second);
+	}
+	return cost;
+}
+
+long long Router::getCostOARSMT()	
+{
+	long long cost = 0;
+	for( unsigned i = 0, n = _OARSMT.size(); i < n; ++i ) {
+		std::pair<Pin*, Pin*> pins = _OARSMT[i] -> getPins();
 		cost += calWeight(pins.first, pins.second);
 	}
 	return cost;
@@ -615,6 +957,17 @@ void Router::reportOARST()
 	}
 	std::cout << std::endl;
 	std::cout << "size of OARST: " << _OARST.size() << std::endl << std::endl;
+}
+
+void Router::reportOARSMT()
+{
+	std::cout << "info of OARSMT: " << std::endl;
+	for( unsigned i = 0, n = _OARSMT.size(); i < n; ++i ) {
+		std::pair<Pin*, Pin*> pins = _OARSMT[i] -> getPins();
+		std::cout << "[" << i << "]: " << pins.first -> getName() << ", " << pins.second -> getName() << ", (" << pins.first -> getX() << ", " << pins.first -> getY() << ") - (" << pins.second -> getX() << ", " << pins.second -> getY() << ")" << std::endl;
+	}
+	std::cout << std::endl;
+	std::cout << "size of OARSMT: " << _OARSMT.size() << std::endl << std::endl;
 }
 
 void Router::reportTurningPinsOARST()
@@ -672,6 +1025,23 @@ void Router::writeOARST()
 	file << "plot \'-\' with linespoints pt 7 ps 1" << std::endl;
 	for( unsigned i = 0, n = _OARST.size(); i < n; ++i ) {
 		std::pair<Pin*, Pin*> pins = _OARST[i] -> getPins();
+		file << pins.first -> getX() << " " << pins.first -> getY() << std::endl << pins.second -> getX() << " " << pins.second -> getY() << std::endl << std::endl;
+	}
+	file << "EOF" << std::endl;
+	file << "pause -1 \'Press any key\'" << std::endl;
+}
+
+void Router::writeOARSMT()
+{
+	std::ofstream file;
+	file.open("OARSMT.plt");
+	file << "set title \"OARSMT.plt\"" << std::endl;
+	file << "set size ratio -1" << std::endl;
+	file << "set xrange[" << _boundaryBL.x() << ":" << _boundaryTR.x() << "]" << std::endl;
+	file << "set yrange[" << _boundaryBL.y() << ":" << _boundaryTR.y() << "]" << std::endl;
+	file << "plot \'-\' with linespoints pt 7 ps 1" << std::endl;
+	for( unsigned i = 0, n = _OARSMT.size(); i < n; ++i ) {
+		std::pair<Pin*, Pin*> pins = _OARSMT[i] -> getPins();
 		file << pins.first -> getX() << " " << pins.first -> getY() << std::endl << pins.second -> getX() << " " << pins.second -> getY() << std::endl << std::endl;
 	}
 	file << "EOF" << std::endl;

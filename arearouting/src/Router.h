@@ -9,6 +9,8 @@
 #include <cmath>
 #include <cstdlib>
 #include <queue>
+#include <unordered_map>
+#include <set>
 
 class Edge;
 
@@ -25,8 +27,8 @@ public:
 		os << "x: " << c._x << ", y: " << c._y; return os;
 	}
 	
-	const int& x() { return _x; }
-	const int& y() { return _y; }
+	const int& x() const { return _x; }
+	const int& y() const { return _y; }
 
 private:
 	int _x;
@@ -69,6 +71,7 @@ public:
 		//_pins.first = a; _pins.second = b;
 		_added2OAST = false;
 		_visitedInOARST = false;
+		_visitedInOARSMT = false;
 		_weight = w; 
 		assert(_maxHeap.empty()); }
 	~Edge() {}
@@ -87,6 +90,8 @@ public:
 	bool added2OAST() { return _added2OAST; }
 	void setVisitedInOARST() { _visitedInOARST = true; }
 	bool visitedInOARST() { return _visitedInOARST; }
+	void setVisitedInOARSMT() { _visitedInOARSMT = true; }
+	bool visitedInOARSMT() { return _visitedInOARSMT; }
 	void setPinIdxFirst(unsigned idx) { _pinIndices.first = idx; }
 	void setPinIdxSecond(unsigned idx) { _pinIndices.second = idx; }
 	void push2MaxHeap(Edge* e) { _maxHeap.push(e); }
@@ -99,6 +104,23 @@ private:
 	bool		_added2OAST;										// in OAST
 	bool		_visitedInOARST;									// in OARST
 	EdgeMaxHeap	_maxHeap;										// in OARST
+	bool		_visitedInOARSMT;
+};
+
+struct pairHashPin {
+	size_t operator () (const std::pair<Pin*, Pin*>& pins) const {
+		return (std::hash<int>() (pins.first -> getX())
+					^ (std::hash<int>() (pins.first -> getY())) << 1
+					^ (std::hash<int>() (pins.second -> getX())) << 2
+					^ (std::hash<int>() (pins.second -> getY())) >> 1);
+	}
+};
+struct sortEdgeXcoordinate {
+	bool operator () (Edge* a, Edge* b) { 
+		assert(a -> getPins().first -> getX() <= a -> getPins().second -> getX());
+		assert(b -> getPins().first -> getX() <= b -> getPins().second -> getX());
+		return (a -> getPins().first -> getX() < b -> getPins().first -> getX());
+	}
 };
 
 class Router
@@ -127,16 +149,26 @@ public:
 	Pin* getCommon(Edge* e, Edge* neighbor, std::pair<Pin*, Pin*>& endPins);
 
 	void OARSMT();
+	void removeOverlappingEdges(std::multiset<Edge*, sortEdgeXcoordinate>& edgeSet, std::unordered_map<std::pair<Pin*, Pin*>, Edge*, pairHashPin>& hashEdge);
+	bool isHorizontal(Edge* e);
+	bool isVertical(Edge* e);
+	Edge* insert2HashEdge(Pin* a, Pin* b, std::unordered_map<std::pair<Pin*, Pin*>, Edge*, pairHashPin>& hashEdge);
+	void comparePins(Pin* a, Pin* b, std::pair<Pin*, Pin*>& pins);
+	bool overlapWithY(std::pair<Pin*, Pin*>& pins, std::pair<Pin*, Pin*>& nextPins);
 
-	long long getCost();
+	long long getCostOAST();
+	long long getCostOARST();
+	long long getCostOARSMT();
 	void reportPin();
 	void reportOASG();
 	void reportOAST();
 	void reportOARST();
+	void reportOARSMT();
 	void reportTurningPinsOARST();
 	void writeOASG();
 	void writeOAST();
 	void writeOARST();
+	void writeOARSMT();
 	int calWeight(Pin* a, Pin* b) {
 		int aX = a -> getX(), aY = a -> getY();
 		int bX = b -> getX(), bY = b -> getY();
@@ -151,7 +183,9 @@ private:
 	std::vector<Edge*>			_OASG;
 	std::vector<Edge*>			_OAST;
 	std::vector<Pin*>				_turningPinsOARST;
+	std::vector<Pin*>				_turningPinsOARSMT;
 	std::vector<Edge*>			_OARST;
+	std::vector<Edge*>			_OARSMT;
 };
 
 #endif
