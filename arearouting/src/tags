@@ -7,76 +7,176 @@
 CPoint	Router.h	/^	CPoint() {}$/;"	f	class:CPoint
 CPoint	Router.h	/^	CPoint(int x, int y) { _x = x; _y = y; }$/;"	f	class:CPoint
 CPoint	Router.h	/^class CPoint$/;"	c
+CPoint	Router_v1.h	/^	CPoint() {}$/;"	f	class:CPoint
+CPoint	Router_v1.h	/^	CPoint(int x, int y) { _x = x; _y = y; }$/;"	f	class:CPoint
+CPoint	Router_v1.h	/^class CPoint$/;"	c
 CPointHash	Router.h	/^struct CPointHash {$/;"	s
+CPointHash	Router_v1.h	/^struct CPointHash {$/;"	s
 Edge	Router.h	/^	Edge() {}$/;"	f	class:Edge
 Edge	Router.h	/^	Edge(Pin* a, Pin* b, const int& w = 0) {$/;"	f	class:Edge
 Edge	Router.h	/^class Edge$/;"	c
+Edge	Router_v1.h	/^	Edge() {}$/;"	f	class:Edge
+Edge	Router_v1.h	/^	Edge(Pin* a, Pin* b, const int& w = 0) {$/;"	f	class:Edge
+Edge	Router_v1.h	/^class Edge$/;"	c
 EdgeComparator	Router.cpp	/^struct EdgeComparator {$/;"	s	file:
+EdgeComparator	Router_v1.cpp	/^struct EdgeComparator {$/;"	s	file:
 EdgeMaxHeap	Router.h	/^	typedef std::priority_queue<Edge*, std::vector<Edge*>, MaxHeapComparator> EdgeMaxHeap;$/;"	t	class:Edge
+EdgeMaxHeap	Router_v1.h	/^	typedef std::priority_queue<Edge*, std::vector<Edge*>, MaxHeapComparator> EdgeMaxHeap;$/;"	t	class:Edge
+LShapedRefinement	Router.cpp	/^void Router::LShapedRefinement(std::multiset<Edge*, sortEdgeXcoordinate>& edgeSet)$/;"	f	class:Router
 MaxHeapComparator	Router.h	/^	struct MaxHeapComparator {$/;"	s	class:Edge
+MaxHeapComparator	Router_v1.h	/^	struct MaxHeapComparator {$/;"	s	class:Edge
 MinHeapComparator	Router.cpp	/^struct MinHeapComparator {$/;"	s	file:
+MinHeapComparator	Router_v1.cpp	/^struct MinHeapComparator {$/;"	s	file:
 OARSMT	Router.cpp	/^void Router::OARSMT()$/;"	f	class:Router
+OARSMT	Router_v1.cpp	/^void Router::OARSMT()$/;"	f	class:Router
 OARST	Router.cpp	/^void Router::OARST()$/;"	f	class:Router
+OARST	Router_v1.cpp	/^void Router::OARST()$/;"	f	class:Router
 OASG	Router.cpp	/^void Router::OASG()$/;"	f	class:Router
+OASG	Router_v1.cpp	/^void Router::OASG()$/;"	f	class:Router
 OAST	Router.cpp	/^void Router::OAST() {$/;"	f	class:Router
+OAST	Router_v1.cpp	/^void Router::OAST() {$/;"	f	class:Router
 Pin	Router.h	/^	Pin() {}$/;"	f	class:Pin
-Pin	Router.h	/^	Pin(std::string n, CPoint c, bool b = true) { _name = n; _coordinate = c; _isPin = b; }$/;"	f	class:Pin
+Pin	Router.h	/^	Pin(std::string n, CPoint c, bool b = true) { _name = n; _coordinate = c; _isPin = b; _visitedInBFS = false; }$/;"	f	class:Pin
 Pin	Router.h	/^class Pin$/;"	c
+Pin	Router_v1.h	/^	Pin() {}$/;"	f	class:Pin
+Pin	Router_v1.h	/^	Pin(std::string n, CPoint c, bool b = true) { _name = n; _coordinate = c; _isPin = b; _visitedInBFS = false; }$/;"	f	class:Pin
+Pin	Router_v1.h	/^class Pin$/;"	c
 ROUTER_H	Router.h	4;"	d
+ROUTER_H	Router_v1.h	4;"	d
 Router	Router.h	/^	Router() {}$/;"	f	class:Router
 Router	Router.h	/^class Router$/;"	c
+Router	Router_v1.h	/^	Router() {}$/;"	f	class:Router
+Router	Router_v1.h	/^class Router$/;"	c
 UTIL_h	Util.h	4;"	d
 _OARSMT	Router.h	/^	std::vector<Edge*>			_OARSMT;$/;"	m	class:Router
+_OARSMT	Router.h	/^	std::vector<Edge*>	_OARSMT;$/;"	m	class:Pin
+_OARSMT	Router_v1.h	/^	std::vector<Edge*>			_OARSMT;$/;"	m	class:Router
+_OARSMT	Router_v1.h	/^	std::vector<Edge*>	_OARSMT;$/;"	m	class:Pin
 _OARST	Router.h	/^	std::vector<Edge*>			_OARST;$/;"	m	class:Router
+_OARST	Router_v1.h	/^	std::vector<Edge*>			_OARST;$/;"	m	class:Router
 _OASG	Router.h	/^	std::vector<Edge*>			_OASG;$/;"	m	class:Router
 _OASG	Router.h	/^	std::vector<Edge*>	_OASG;$/;"	m	class:Pin
+_OASG	Router_v1.h	/^	std::vector<Edge*>			_OASG;$/;"	m	class:Router
+_OASG	Router_v1.h	/^	std::vector<Edge*>	_OASG;$/;"	m	class:Pin
 _OAST	Router.h	/^	std::vector<Edge*>			_OAST;$/;"	m	class:Router
 _OAST	Router.h	/^	std::vector<Edge*>	_OAST;$/;"	m	class:Pin
+_OAST	Router_v1.h	/^	std::vector<Edge*>			_OAST;$/;"	m	class:Router
+_OAST	Router_v1.h	/^	std::vector<Edge*>	_OAST;$/;"	m	class:Pin
 _added2OAST	Router.h	/^	bool		_added2OAST;										\/\/ in OAST$/;"	m	class:Edge
+_added2OAST	Router_v1.h	/^	bool		_added2OAST;										\/\/ in OAST$/;"	m	class:Edge
 _boundaryBL	Router.h	/^	CPoint _boundaryBL;		\/\/ bottom left of boundary$/;"	m	class:Router
+_boundaryBL	Router_v1.h	/^	CPoint _boundaryBL;		\/\/ bottom left of boundary$/;"	m	class:Router
 _boundaryTR	Router.h	/^	CPoint _boundaryTR;		\/\/ top right of boundary$/;"	m	class:Router
+_boundaryTR	Router_v1.h	/^	CPoint _boundaryTR;		\/\/ top right of boundary$/;"	m	class:Router
 _coordinate	Router.h	/^	CPoint	_coordinate;$/;"	m	class:Pin
+_coordinate	Router_v1.h	/^	CPoint	_coordinate;$/;"	m	class:Pin
+_edgeSet	Router.h	/^	std::multiset<Edge*, sortEdgeXcoordinate> _edgeSet;$/;"	m	class:Router
+_fromPin	Router.h	/^	Pin*	_fromPin;$/;"	m	class:Pin
+_fromPin	Router_v1.h	/^	Pin*	_fromPin;$/;"	m	class:Pin
+_hashPin	Router.h	/^	std::unordered_map<CPoint, Pin*, CPointHash>	_hashPin;	\/\/ keep all turningPins$/;"	m	class:Router
+_hashPin	Router_v1.h	/^	std::unordered_map<CPoint, Pin*, CPointHash>	_hashPin;$/;"	m	class:Router
 _isPin	Router.h	/^	bool		_isPin;				\/\/ false: turning_pin, true: real_pin$/;"	m	class:Pin
+_isPin	Router_v1.h	/^	bool		_isPin;				\/\/ false: turning_pin, true: real_pin$/;"	m	class:Pin
 _maxHeap	Router.h	/^	EdgeMaxHeap	_maxHeap;										\/\/ in OARST$/;"	m	class:Edge
+_maxHeap	Router_v1.h	/^	EdgeMaxHeap	_maxHeap;										\/\/ in OARST$/;"	m	class:Edge
 _name	Router.h	/^	std::string	_name;$/;"	m	class:Pin
+_name	Router_v1.h	/^	std::string	_name;$/;"	m	class:Pin
 _numPins	Router.h	/^	unsigned _numPins;$/;"	m	class:Router
+_numPins	Router_v1.h	/^	unsigned _numPins;$/;"	m	class:Router
 _pinIndices	Router.h	/^	std::pair<unsigned, unsigned> _pinIndices;			\/\/ in OAST$/;"	m	class:Edge
+_pinIndices	Router_v1.h	/^	std::pair<unsigned, unsigned> _pinIndices;			\/\/ in OAST$/;"	m	class:Edge
 _pinList	Router.h	/^	std::vector<Pin*>				_pinList;$/;"	m	class:Router
+_pinList	Router_v1.h	/^	std::vector<Pin*>				_pinList;$/;"	m	class:Router
 _pins	Router.h	/^	std::pair<Pin*, Pin*> 			_pins;$/;"	m	class:Edge
-_turningPinsOARSMT	Router.h	/^	std::vector<Pin*>				_turningPinsOARSMT;$/;"	m	class:Router
-_turningPinsOARST	Router.h	/^	std::vector<Pin*>				_turningPinsOARST;$/;"	m	class:Router
+_pins	Router_v1.h	/^	std::pair<Pin*, Pin*> 			_pins;$/;"	m	class:Edge
+_turningPins	Router.h	/^	std::vector<Pin*>				_turningPins;$/;"	m	class:Router
+_turningPins	Router_v1.h	/^	std::vector<Pin*>				_turningPins;$/;"	m	class:Router
+_visitedInBFS	Router.h	/^	bool		_visitedInBFS;$/;"	m	class:Pin
+_visitedInBFS	Router_v1.h	/^	bool		_visitedInBFS;$/;"	m	class:Pin
 _visitedInOARSMT	Router.h	/^	bool		_visitedInOARSMT;$/;"	m	class:Edge
+_visitedInOARSMT	Router_v1.h	/^	bool		_visitedInOARSMT;$/;"	m	class:Edge
 _visitedInOARST	Router.h	/^	bool		_visitedInOARST;									\/\/ in OARST$/;"	m	class:Edge
+_visitedInOARST	Router_v1.h	/^	bool		_visitedInOARST;									\/\/ in OARST$/;"	m	class:Edge
 _weight	Router.h	/^	int								_weight;$/;"	m	class:Edge
+_weight	Router_v1.h	/^	int								_weight;$/;"	m	class:Edge
 _x	Router.h	/^	int _x;$/;"	m	class:CPoint
+_x	Router_v1.h	/^	int _x;$/;"	m	class:CPoint
 _y	Router.h	/^	int _y;$/;"	m	class:CPoint
+_y	Router_v1.h	/^	int _y;$/;"	m	class:CPoint
 added2OAST	Router.h	/^	bool added2OAST() { return _added2OAST; }$/;"	f	class:Edge
+added2OAST	Router_v1.h	/^	bool added2OAST() { return _added2OAST; }$/;"	f	class:Edge
+calWeight	Router.h	/^	int calWeight(Edge* e) {$/;"	f	class:Router
 calWeight	Router.h	/^	int calWeight(Pin* a, Pin* b) {$/;"	f	class:Router
+calWeight	Router_v1.h	/^	int calWeight(Edge* e) {$/;"	f	class:Router
+calWeight	Router_v1.h	/^	int calWeight(Pin* a, Pin* b) {$/;"	f	class:Router
 comparePins	Router.cpp	/^void Router::comparePins(Pin* a, Pin* b, std::pair<Pin*, Pin*>& pins)$/;"	f	class:Router
+comparePins	Router_v1.cpp	/^void Router::comparePins(Pin* a, Pin* b, std::pair<Pin*, Pin*>& pins)$/;"	f	class:Router
+deleteEdgeInOARSMT	Router.cpp	/^void Router::deleteEdgeInOARSMT(Pin* p, Edge* e1, Edge* e2)$/;"	f	class:Router
+deleteInEdgeSet	Router.cpp	/^void Router::deleteInEdgeSet(Edge* e)$/;"	f	class:Router
+detectCycleAndFix	Router.cpp	/^void Router::detectCycleAndFix(std::multiset<Edge*, sortEdgeXcoordinate>& edgeSet)$/;"	f	class:Router
+detectCycleAndFix	Router_v1.cpp	/^void Router::detectCycleAndFix(std::multiset<Edge*, sortEdgeXcoordinate>& edgeSet)$/;"	f	class:Router
+fixCycle	Router.cpp	/^void Router::fixCycle(const std::pair<Pin*, Pin*>& pins, std::multiset<Edge*, sortEdgeXcoordinate>& edgeSet)$/;"	f	class:Router
+fixCycle	Router_v1.cpp	/^void Router::fixCycle(const std::pair<Pin*, Pin*>& pins, std::multiset<Edge*, sortEdgeXcoordinate>& edgeSet)$/;"	f	class:Router
+getAnotherPin	Router.cpp	/^Pin* Router::getAnotherPin(Pin* p, Edge* e)$/;"	f	class:Router
 getBoundaryBL	Router.h	/^	const CPoint& getBoundaryBL()	const	{ return _boundaryBL; }$/;"	f	class:Router
+getBoundaryBL	Router_v1.h	/^	const CPoint& getBoundaryBL()	const	{ return _boundaryBL; }$/;"	f	class:Router
 getBoundaryTR	Router.h	/^	const CPoint& getBoundaryTR() const { return _boundaryTR; }$/;"	f	class:Router
+getBoundaryTR	Router_v1.h	/^	const CPoint& getBoundaryTR() const { return _boundaryTR; }$/;"	f	class:Router
 getCommon	Router.cpp	/^Pin* Router::getCommon(Edge* e, Edge* neighbor, std::pair<Pin*, Pin*>& endPins)$/;"	f	class:Router
-getCoordinate	Router.h	/^	const CPoint& getCoordinate() { return _coordinate; }$/;"	f	class:Pin
+getCommon	Router_v1.cpp	/^Pin* Router::getCommon(Edge* e, Edge* neighbor, std::pair<Pin*, Pin*>& endPins)$/;"	f	class:Router
+getCoordinate	Router.h	/^	const CPoint& getCoordinate() const { return _coordinate; }$/;"	f	class:Pin
+getCoordinate	Router_v1.h	/^	const CPoint& getCoordinate() const { return _coordinate; }$/;"	f	class:Pin
 getCostOARSMT	Router.cpp	/^long long Router::getCostOARSMT()	$/;"	f	class:Router
+getCostOARSMT	Router_v1.cpp	/^long long Router::getCostOARSMT()	$/;"	f	class:Router
 getCostOARST	Router.cpp	/^long long Router::getCostOARST()	$/;"	f	class:Router
+getCostOARST	Router_v1.cpp	/^long long Router::getCostOARST()	$/;"	f	class:Router
 getCostOAST	Router.cpp	/^long long Router::getCostOAST()	$/;"	f	class:Router
+getCostOAST	Router_v1.cpp	/^long long Router::getCostOAST()	$/;"	f	class:Router
+getDirection	Router.cpp	/^bool Router::getDirection(Pin* p, Pin* anotherPin, bool isH)$/;"	f	class:Router
+getFromPin	Router.h	/^	Pin* getFromPin() { return _fromPin; }$/;"	f	class:Pin
+getFromPin	Router_v1.h	/^	Pin* getFromPin() { return _fromPin; }$/;"	f	class:Pin
 getMaxHeap	Router.h	/^	EdgeMaxHeap& getMaxHeap() { return _maxHeap; }$/;"	f	class:Edge
+getMaxHeap	Router_v1.h	/^	EdgeMaxHeap& getMaxHeap() { return _maxHeap; }$/;"	f	class:Edge
 getName	Router.h	/^	std::string getName() { return _name; }$/;"	f	class:Pin
+getName	Router_v1.h	/^	std::string getName() { return _name; }$/;"	f	class:Pin
 getNumPins	Router.h	/^	const unsigned& getNumPins() const	{ return _numPins; }$/;"	f	class:Router
+getNumPins	Router_v1.h	/^	const unsigned& getNumPins() const	{ return _numPins; }$/;"	f	class:Router
+getOARSMT	Router.h	/^	const std::vector<Edge*>& getOARSMT() { return _OARSMT; }$/;"	f	class:Pin
+getOARSMT	Router_v1.h	/^	const std::vector<Edge*>& getOARSMT() { return _OARSMT; }$/;"	f	class:Pin
 getOASG	Router.h	/^	const std::vector<Edge*>& getOASG() { return _OASG; }$/;"	f	class:Pin
+getOASG	Router_v1.h	/^	const std::vector<Edge*>& getOASG() { return _OASG; }$/;"	f	class:Pin
 getOAST	Router.h	/^	const std::vector<Edge*>& getOAST() { return _OAST; }$/;"	f	class:Pin
+getOAST	Router_v1.h	/^	const std::vector<Edge*>& getOAST() { return _OAST; }$/;"	f	class:Pin
+getOtherPinsInfo	Router.cpp	/^void Router::getOtherPinsInfo(Pin* p, std::pair<Pin*, Pin*>& pins, std::pair<bool, bool>& isH, std::pair<bool, bool>& dir)$/;"	f	class:Router
 getPinIndices	Router.h	/^	const std::pair<unsigned ,unsigned>& getPinIndices() { return _pinIndices; }$/;"	f	class:Edge
+getPinIndices	Router_v1.h	/^	const std::pair<unsigned ,unsigned>& getPinIndices() { return _pinIndices; }$/;"	f	class:Edge
 getPins	Router.h	/^	const std::pair<Pin*, Pin*>& getPins() { return _pins; }$/;"	f	class:Edge
+getPins	Router_v1.h	/^	const std::pair<Pin*, Pin*>& getPins() { return _pins; }$/;"	f	class:Edge
 getTokens	Util.cpp	/^getTokens(const std::string& s, const std::string& sep)$/;"	f
 getWeight	Router.h	/^	const int& getWeight() { return _weight; }$/;"	f	class:Edge
+getWeight	Router_v1.h	/^	const int& getWeight() { return _weight; }$/;"	f	class:Edge
 getX	Router.h	/^	const int& getX() { return _coordinate.x(); }$/;"	f	class:Pin
+getX	Router_v1.h	/^	const int& getX() { return _coordinate.x(); }$/;"	f	class:Pin
 getY	Router.h	/^	const int& getY() { return _coordinate.y(); }$/;"	f	class:Pin
+getY	Router_v1.h	/^	const int& getY() { return _coordinate.y(); }$/;"	f	class:Pin
 insert2HashEdge	Router.cpp	/^Edge* Router::insert2HashEdge(Pin* a, Pin* b, std::unordered_map<std::pair<Pin*, Pin*>, Edge*, pairHashPin>& hashEdge)$/;"	f	class:Router
+insert2HashEdge	Router_v1.cpp	/^Edge* Router::insert2HashEdge(Pin* a, Pin* b, std::unordered_map<std::pair<Pin*, Pin*>, Edge*, pairHashPin>& hashEdge)$/;"	f	class:Router
+insert2HashPin	Router.cpp	/^Pin* Router::insert2HashPin(const std::string& name, const CPoint& c, std::unordered_map<CPoint, Pin*, CPointHash>& hashPin)$/;"	f	class:Router
+insert2HashPin	Router_v1.cpp	/^Pin* Router::insert2HashPin(const std::string& name, const CPoint& c, std::unordered_map<CPoint, Pin*, CPointHash>& hashPin)$/;"	f	class:Router
+isCyclePin	Router.cpp	/^bool Router::isCyclePin(Pin* p, int BLx, int BLy, int TRx, int TRy)$/;"	f	class:Router
+isCyclePin	Router_v1.cpp	/^bool Router::isCyclePin(Pin* p, int BLx, int BLy, int TRx, int TRy)$/;"	f	class:Router
 isHorizontal	Router.cpp	/^bool Router::isHorizontal(Edge* e)$/;"	f	class:Router
+isHorizontal	Router_v1.cpp	/^bool Router::isHorizontal(Edge* e)$/;"	f	class:Router
+isRealPin	Router.h	/^	bool isRealPin() { return _isPin; }$/;"	f	class:Pin
+isRealPin	Router_v1.h	/^	bool isRealPin() { return _isPin; }$/;"	f	class:Pin
 isVertical	Router.cpp	/^bool Router::isVertical(Edge* e)$/;"	f	class:Router
+isVertical	Router_v1.cpp	/^bool Router::isVertical(Edge* e)$/;"	f	class:Router
+isWithinCycle	Router.cpp	/^bool Router::isWithinCycle(Pin* p, Edge* e, int BLx, int BLy, int TRx, int TRy)$/;"	f	class:Router
+isWithinCycle	Router_v1.cpp	/^bool Router::isWithinCycle(Pin* p, Edge* e, int BLx, int BLy, int TRx, int TRy)$/;"	f	class:Router
 main	main.cpp	/^int main(int argc, char** argv) $/;"	f
-makeStraight	Router.cpp	/^void Router::makeStraight(Edge* e)$/;"	f	class:Router
-makeStraight	Router.cpp	/^void Router::makeStraight(Edge* e, Edge* neighbor, std::unordered_map<CPoint, Pin*, CPointHash>& hasPin)$/;"	f	class:Router
+makeStraight	Router.cpp	/^void Router::makeStraight(Edge* e, Edge* neighbor, std::unordered_map<CPoint, Pin*, CPointHash>& hashPin)$/;"	f	class:Router
+makeStraight	Router_v1.cpp	/^void Router::makeStraight(Edge* e)$/;"	f	class:Router
+makeStraight	Router_v1.cpp	/^void Router::makeStraight(Edge* e, Edge* neighbor, std::unordered_map<CPoint, Pin*, CPointHash>& hashPin)$/;"	f	class:Router
 operator ()	Router.cpp	/^	bool operator () (Edge* a, Edge* b) { return a -> getWeight() < b -> getWeight(); }$/;"	f	struct:sortEdge
 operator ()	Router.cpp	/^	bool operator () (Edge* a, Edge* b) { return a -> getWeight() > b -> getWeight(); }$/;"	f	struct:EdgeComparator
 operator ()	Router.cpp	/^	bool operator () (Edge* a, Edge* b) { return a -> getWeight() > b -> getWeight(); }$/;"	f	struct:MinHeapComparator
@@ -85,54 +185,125 @@ operator ()	Router.cpp	/^	bool operator () (Pin* a, Pin* b) { return (a -> getX(
 operator ()	Router.cpp	/^	bool operator () (Pin* a, Pin* b) { return a -> getX() < b -> getX(); }$/;"	f	struct:sortX
 operator ()	Router.cpp	/^	bool operator () (Pin* a, Pin* b) { return a -> getY() < b -> getY(); }$/;"	f	struct:sortY
 operator ()	Router.cpp	/^	bool operator () (Pin* a, Pin* b) { return a -> getY() > b -> getY(); }$/;"	f	struct:sortY_dec
+operator ()	Router.cpp	/^	bool operator () (std::pair<Pin*, Pin*>& a, std::pair<Pin*, Pin*>& b) {$/;"	f	struct:sortPair
 operator ()	Router.h	/^		bool operator () (Edge* a, Edge* b) { return a -> getWeight() < b -> getWeight(); }$/;"	f	struct:Edge::MaxHeapComparator
 operator ()	Router.h	/^	bool operator () (Edge* a, Edge* b) { $/;"	f	struct:sortEdgeXcoordinate
 operator ()	Router.h	/^	size_t operator () (const CPoint& c) const {$/;"	f	struct:CPointHash
 operator ()	Router.h	/^	size_t operator () (const std::pair<Pin*, Pin*>& pins) const {$/;"	f	struct:pairHashPin
+operator ()	Router_v1.cpp	/^	bool operator () (Edge* a, Edge* b) { return a -> getWeight() < b -> getWeight(); }$/;"	f	struct:sortEdge
+operator ()	Router_v1.cpp	/^	bool operator () (Edge* a, Edge* b) { return a -> getWeight() > b -> getWeight(); }$/;"	f	struct:EdgeComparator
+operator ()	Router_v1.cpp	/^	bool operator () (Edge* a, Edge* b) { return a -> getWeight() > b -> getWeight(); }$/;"	f	struct:MinHeapComparator
+operator ()	Router_v1.cpp	/^	bool operator () (Pin* a, Pin* b) { return (a -> getX() + a -> getY()) < (b -> getX() + b -> getY()); }$/;"	f	struct:sortXPlusY
+operator ()	Router_v1.cpp	/^	bool operator () (Pin* a, Pin* b) { return (a -> getX() - a -> getY()) < (b -> getX() - b -> getY()); }$/;"	f	struct:sortXMinusY
+operator ()	Router_v1.cpp	/^	bool operator () (Pin* a, Pin* b) { return a -> getX() < b -> getX(); }$/;"	f	struct:sortX
+operator ()	Router_v1.cpp	/^	bool operator () (Pin* a, Pin* b) { return a -> getY() < b -> getY(); }$/;"	f	struct:sortY
+operator ()	Router_v1.cpp	/^	bool operator () (Pin* a, Pin* b) { return a -> getY() > b -> getY(); }$/;"	f	struct:sortY_dec
+operator ()	Router_v1.cpp	/^	bool operator () (std::pair<Pin*, Pin*>& a, std::pair<Pin*, Pin*>& b) {$/;"	f	struct:sortPair
+operator ()	Router_v1.h	/^		bool operator () (Edge* a, Edge* b) { return a -> getWeight() < b -> getWeight(); }$/;"	f	struct:Edge::MaxHeapComparator
+operator ()	Router_v1.h	/^	bool operator () (Edge* a, Edge* b) { $/;"	f	struct:sortEdgeXcoordinate
+operator ()	Router_v1.h	/^	size_t operator () (const CPoint& c) const {$/;"	f	struct:CPointHash
+operator ()	Router_v1.h	/^	size_t operator () (const std::pair<Pin*, Pin*>& pins) const {$/;"	f	struct:pairHashPin
 operator <<	Router.h	/^	friend std::ostream& operator << (std::ostream& os, const CPoint& c) {$/;"	f	class:CPoint
+operator <<	Router_v1.h	/^	friend std::ostream& operator << (std::ostream& os, const CPoint& c) {$/;"	f	class:CPoint
 operator =	Router.h	/^	CPoint& operator = (const CPoint& c) { _x = c._x; _y = c._y; return *this; }$/;"	f	class:CPoint
+operator =	Router_v1.h	/^	CPoint& operator = (const CPoint& c) { _x = c._x; _y = c._y; return *this; }$/;"	f	class:CPoint
 operator ==	Router.h	/^	bool operator == (Pin* p) { return _coordinate == p -> _coordinate; }$/;"	f	class:Pin
-operator ==	Router.h	/^	bool operator == (const CPoint& c) { return (_x == c._x) && (_y == c._y); }$/;"	f	class:CPoint
+operator ==	Router.h	/^	bool operator == (const CPoint& c) const { return (_x == c._x) && (_y == c._y); }$/;"	f	class:CPoint
+operator ==	Router_v1.h	/^	bool operator == (Pin* p) { return _coordinate == p -> _coordinate; }$/;"	f	class:Pin
+operator ==	Router_v1.h	/^	bool operator == (const CPoint& c) const { return (_x == c._x) && (_y == c._y); }$/;"	f	class:CPoint
 overlapWithY	Router.cpp	/^bool Router::overlapWithY(std::pair<Pin*, Pin*>& pins, std::pair<Pin*, Pin*>& nextPins) {$/;"	f	class:Router
+overlapWithY	Router_v1.cpp	/^bool Router::overlapWithY(std::pair<Pin*, Pin*>& pins, std::pair<Pin*, Pin*>& nextPins) {$/;"	f	class:Router
 pairHashPin	Router.h	/^struct pairHashPin {$/;"	s
+pairHashPin	Router_v1.h	/^struct pairHashPin {$/;"	s
 push2MaxHeap	Router.h	/^	void push2MaxHeap(Edge* e) { _maxHeap.push(e); }$/;"	f	class:Edge
+push2MaxHeap	Router_v1.h	/^	void push2MaxHeap(Edge* e) { _maxHeap.push(e); }$/;"	f	class:Edge
+pushBackOARSMT	Router.h	/^	void pushBackOARSMT(Edge* e) { _OARSMT.push_back(e); }$/;"	f	class:Pin
+pushBackOARSMT	Router_v1.h	/^	void pushBackOARSMT(Edge* e) { _OARSMT.push_back(e); }$/;"	f	class:Pin
 pushBackOASG	Router.h	/^	void pushBackOASG(Edge* e) { _OASG.push_back(e); } $/;"	f	class:Pin
+pushBackOASG	Router_v1.h	/^	void pushBackOASG(Edge* e) { _OASG.push_back(e); } $/;"	f	class:Pin
 pushBackOAST	Router.h	/^	void pushBackOAST(Edge* e) { _OAST.push_back(e); } $/;"	f	class:Pin
+pushBackOAST	Router_v1.h	/^	void pushBackOAST(Edge* e) { _OAST.push_back(e); } $/;"	f	class:Pin
 readInput	Router.cpp	/^void Router::readInput(const std::string& inputFile)$/;"	f	class:Router
+readInput	Router_v1.cpp	/^void Router::readInput(const std::string& inputFile)$/;"	f	class:Router
 removeOverlappingEdges	Router.cpp	/^void Router::removeOverlappingEdges(std::multiset<Edge*, sortEdgeXcoordinate>& edgeSet, std::unordered_map<std::pair<Pin*, Pin*>, Edge*, pairHashPin>& hashEdge)$/;"	f	class:Router
+removeOverlappingEdges	Router_v1.cpp	/^void Router::removeOverlappingEdges(std::multiset<Edge*, sortEdgeXcoordinate>& edgeSet, std::unordered_map<std::pair<Pin*, Pin*>, Edge*, pairHashPin>& hashEdge)$/;"	f	class:Router
+reportCycles	Router.cpp	/^void Router::reportCycles(const std::pair<Pin*, Pin*>& pins)$/;"	f	class:Router
+reportCycles	Router_v1.cpp	/^void Router::reportCycles(const std::pair<Pin*, Pin*>& pins)$/;"	f	class:Router
 reportOARSMT	Router.cpp	/^void Router::reportOARSMT()$/;"	f	class:Router
+reportOARSMT	Router_v1.cpp	/^void Router::reportOARSMT()$/;"	f	class:Router
 reportOARST	Router.cpp	/^void Router::reportOARST()$/;"	f	class:Router
+reportOARST	Router_v1.cpp	/^void Router::reportOARST()$/;"	f	class:Router
 reportOASG	Router.cpp	/^void Router::reportOASG()$/;"	f	class:Router
+reportOASG	Router_v1.cpp	/^void Router::reportOASG()$/;"	f	class:Router
 reportOAST	Router.cpp	/^void Router::reportOAST()$/;"	f	class:Router
+reportOAST	Router_v1.cpp	/^void Router::reportOAST()$/;"	f	class:Router
 reportPin	Router.cpp	/^void Router::reportPin()$/;"	f	class:Router
-reportTurningPinsOARSMT	Router.cpp	/^void Router::reportTurningPinsOARSMT()$/;"	f	class:Router
-reportTurningPinsOARST	Router.cpp	/^void Router::reportTurningPinsOARST()$/;"	f	class:Router
+reportPin	Router_v1.cpp	/^void Router::reportPin()$/;"	f	class:Router
+reportTurningPins	Router.cpp	/^void Router::reportTurningPins()$/;"	f	class:Router
+reportTurningPins	Router_v1.cpp	/^void Router::reportTurningPins()$/;"	f	class:Router
 setAdded2OAST	Router.h	/^	void setAdded2OAST() { _added2OAST = true; }$/;"	f	class:Edge
+setAdded2OAST	Router_v1.h	/^	void setAdded2OAST() { _added2OAST = true; }$/;"	f	class:Edge
 setBoundaryBL	Router.h	/^	void setBoundaryBL(CPoint c)	{ _boundaryBL = c; }$/;"	f	class:Router
+setBoundaryBL	Router_v1.h	/^	void setBoundaryBL(CPoint c)	{ _boundaryBL = c; }$/;"	f	class:Router
 setBoundaryTR	Router.h	/^	void setBoundaryTR(CPoint c) 	{ _boundaryTR = c; }$/;"	f	class:Router
+setBoundaryTR	Router_v1.h	/^	void setBoundaryTR(CPoint c) 	{ _boundaryTR = c; }$/;"	f	class:Router
+setFromPin	Router.h	/^	void setFromPin(Pin* p) { _fromPin = p; }$/;"	f	class:Pin
+setFromPin	Router_v1.h	/^	void setFromPin(Pin* p) { _fromPin = p; }$/;"	f	class:Pin
 setNumPins	Router.h	/^	void setNumPins(unsigned n)	{ _numPins = n; }$/;"	f	class:Router
+setNumPins	Router_v1.h	/^	void setNumPins(unsigned n)	{ _numPins = n; }$/;"	f	class:Router
 setPinIdxFirst	Router.h	/^	void setPinIdxFirst(unsigned idx) { _pinIndices.first = idx; }$/;"	f	class:Edge
+setPinIdxFirst	Router_v1.h	/^	void setPinIdxFirst(unsigned idx) { _pinIndices.first = idx; }$/;"	f	class:Edge
 setPinIdxSecond	Router.h	/^	void setPinIdxSecond(unsigned idx) { _pinIndices.second = idx; }$/;"	f	class:Edge
+setPinIdxSecond	Router_v1.h	/^	void setPinIdxSecond(unsigned idx) { _pinIndices.second = idx; }$/;"	f	class:Edge
 setPinIndices4OAST	Router.cpp	/^void Router::setPinIndices4OAST()$/;"	f	class:Router
+setPinIndices4OAST	Router_v1.cpp	/^void Router::setPinIndices4OAST()$/;"	f	class:Router
+setVisitedInBFS	Router.h	/^	void setVisitedInBFS() { _visitedInBFS = true; }$/;"	f	class:Pin
+setVisitedInBFS	Router_v1.h	/^	void setVisitedInBFS() { _visitedInBFS = true; }$/;"	f	class:Pin
 setVisitedInOARSMT	Router.h	/^	void setVisitedInOARSMT() { _visitedInOARSMT = true; }$/;"	f	class:Edge
+setVisitedInOARSMT	Router_v1.h	/^	void setVisitedInOARSMT() { _visitedInOARSMT = true; }$/;"	f	class:Edge
 setVisitedInOARST	Router.h	/^	void setVisitedInOARST() { _visitedInOARST = true; }$/;"	f	class:Edge
+setVisitedInOARST	Router_v1.h	/^	void setVisitedInOARST() { _visitedInOARST = true; }$/;"	f	class:Edge
 sortEdge	Router.cpp	/^struct sortEdge {$/;"	s	file:
+sortEdge	Router_v1.cpp	/^struct sortEdge {$/;"	s	file:
 sortEdgeXcoordinate	Router.h	/^struct sortEdgeXcoordinate {$/;"	s
+sortEdgeXcoordinate	Router_v1.h	/^struct sortEdgeXcoordinate {$/;"	s
+sortPair	Router.cpp	/^struct sortPair {$/;"	s	file:
+sortPair	Router_v1.cpp	/^struct sortPair {$/;"	s	file:
 sortX	Router.cpp	/^struct sortX {$/;"	s	file:
+sortX	Router_v1.cpp	/^struct sortX {$/;"	s	file:
 sortXMinusY	Router.cpp	/^struct sortXMinusY {$/;"	s	file:
+sortXMinusY	Router_v1.cpp	/^struct sortXMinusY {$/;"	s	file:
 sortXPlusY	Router.cpp	/^struct sortXPlusY {$/;"	s	file:
+sortXPlusY	Router_v1.cpp	/^struct sortXPlusY {$/;"	s	file:
 sortY	Router.cpp	/^struct sortY {$/;"	s	file:
+sortY	Router_v1.cpp	/^struct sortY {$/;"	s	file:
 sortY_dec	Router.cpp	/^struct sortY_dec {$/;"	s	file:
+sortY_dec	Router_v1.cpp	/^struct sortY_dec {$/;"	s	file:
+visitedInBFS	Router.h	/^	bool visitedInBFS() { return _visitedInBFS; }$/;"	f	class:Pin
+visitedInBFS	Router_v1.h	/^	bool visitedInBFS() { return _visitedInBFS; }$/;"	f	class:Pin
 visitedInOARSMT	Router.h	/^	bool visitedInOARSMT() { return _visitedInOARSMT; }$/;"	f	class:Edge
+visitedInOARSMT	Router_v1.h	/^	bool visitedInOARSMT() { return _visitedInOARSMT; }$/;"	f	class:Edge
 visitedInOARST	Router.h	/^	bool visitedInOARST() { return _visitedInOARST; }$/;"	f	class:Edge
+visitedInOARST	Router_v1.h	/^	bool visitedInOARST() { return _visitedInOARST; }$/;"	f	class:Edge
 writeOARSMT	Router.cpp	/^void Router::writeOARSMT()$/;"	f	class:Router
+writeOARSMT	Router_v1.cpp	/^void Router::writeOARSMT()$/;"	f	class:Router
 writeOARST	Router.cpp	/^void Router::writeOARST()$/;"	f	class:Router
+writeOARST	Router_v1.cpp	/^void Router::writeOARST()$/;"	f	class:Router
 writeOASG	Router.cpp	/^void Router::writeOASG()$/;"	f	class:Router
+writeOASG	Router_v1.cpp	/^void Router::writeOASG()$/;"	f	class:Router
 writeOAST	Router.cpp	/^void Router::writeOAST()$/;"	f	class:Router
+writeOAST	Router_v1.cpp	/^void Router::writeOAST()$/;"	f	class:Router
 writeSolution	Router.cpp	/^void Router::writeSolution()$/;"	f	class:Router
+writeSolution	Router_v1.cpp	/^void Router::writeSolution()$/;"	f	class:Router
 x	Router.h	/^	const int& x() const { return _x; }$/;"	f	class:CPoint
+x	Router_v1.h	/^	const int& x() const { return _x; }$/;"	f	class:CPoint
 y	Router.h	/^	const int& y() const { return _y; }$/;"	f	class:CPoint
+y	Router_v1.h	/^	const int& y() const { return _y; }$/;"	f	class:CPoint
 ~CPoint	Router.h	/^	~CPoint() {}$/;"	f	class:CPoint
+~CPoint	Router_v1.h	/^	~CPoint() {}$/;"	f	class:CPoint
 ~Edge	Router.h	/^	~Edge() {}$/;"	f	class:Edge
+~Edge	Router_v1.h	/^	~Edge() {}$/;"	f	class:Edge
 ~Pin	Router.h	/^	~Pin() {}$/;"	f	class:Pin
+~Pin	Router_v1.h	/^	~Pin() {}$/;"	f	class:Pin
 ~Router	Router.h	/^	~Router() {}$/;"	f	class:Router
+~Router	Router_v1.h	/^	~Router() {}$/;"	f	class:Router

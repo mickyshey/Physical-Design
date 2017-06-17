@@ -54,16 +54,6 @@ public:
 	const std::vector<Edge*>& getOAST() { return _OAST; }
 	void pushBackOARSMT(Edge* e) { _OARSMT.push_back(e); }
 	const std::vector<Edge*>& getOARSMT() { return _OARSMT; }
-	void deleteInOARSMT(Edge* e) {
-		std::vector<Edge*> tmp;
-		//std::cout << "size: " << _OARSMT.size() << std::endl;
-		for( unsigned i = 0; i < _OARSMT.size(); ++i ) {
-			if( _OARSMT[i] == e ) continue;
-			tmp.push_back(_OARSMT[i]);
-		}
-		_OARSMT.swap(tmp);
-		//std::cout << "now size: " << _OARSMT.size() << std::endl;
-	}
 	void setFromPin(Pin* p) { _fromPin = p; }
 	Pin* getFromPin() { return _fromPin; }
 	void setVisitedInBFS() { _visitedInBFS = true; }
@@ -133,7 +123,7 @@ private:
 	bool		_added2OAST;										// in OAST
 	bool		_visitedInOARST;									// in OARST
 	EdgeMaxHeap	_maxHeap;										// in OARST
-	bool		_visitedInOARSMT;									// in OARSMT
+	bool		_visitedInOARSMT;
 };
 
 struct CPointHash {
@@ -182,6 +172,7 @@ public:
 	void OARST();
 	void makeStraight(Edge* e, Edge* neighbor, std::unordered_map<CPoint, Pin*, CPointHash>& hashPin);
 	Pin* getCommon(Edge* e, Edge* neighbor, std::pair<Pin*, Pin*>& endPins);
+	void makeStraight(Edge* e);
 	Pin* insert2HashPin(const std::string& name, const CPoint& c, std::unordered_map<CPoint, Pin*, CPointHash>& hashPin);
 
 	void OARSMT();
@@ -195,14 +186,6 @@ public:
 	void fixCycle(const std::pair<Pin*, Pin*>& pins, std::multiset<Edge*, sortEdgeXcoordinate>& edgeSet);
 	bool isCyclePin(Pin* p, int ,int ,int ,int);
 	bool isWithinCycle(Pin* p, Edge* e, int, int, int, int);
-	void deleteEdgeInOARSMT(Pin* p, Edge* e1, Edge* e2);
-	void deleteEdgeInOARSMT(Edge* e);
-	void LShapedRefinement(std::multiset<Edge*, sortEdgeXcoordinate>& edgeSet);
-	Pin* getAnotherPin(Pin* p, Edge* e);
-	void getOtherPinsInfo(Pin* p, std::pair<Pin*, Pin*>& pins, std::pair<bool, bool>& isH, std::pair<bool, bool>& dir);
-	bool getDirection(Pin* p, Pin* anotherPin, bool isH);
-	void deleteInEdgeSet(Edge* e);
-	void addToOARSMT(Edge* e);
 
 	long long getCostOAST();
 	long long getCostOARST();
@@ -235,8 +218,10 @@ private:
 	std::vector<Pin*>				_pinList;
 	std::vector<Edge*>			_OASG;
 	std::vector<Edge*>			_OAST;
-	std::multiset<Edge*, sortEdgeXcoordinate> _edgeSet;
-	std::unordered_map<CPoint, Pin*, CPointHash>	_hashPin;	// keep all turningPins
+	std::vector<Pin*>				_turningPins;
+	std::vector<Edge*>			_OARST;
+	std::vector<Edge*>			_OARSMT;
+	std::unordered_map<CPoint, Pin*, CPointHash>	_hashPin;
 };
 
 #endif
